@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Voogle</string>
+    <string name="enter_source">Source</string>
+    <string name="enter_destination">Destination</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

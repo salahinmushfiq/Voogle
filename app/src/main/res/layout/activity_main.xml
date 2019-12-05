@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".Activities.MainActivity"
+        android:background="@color/green_emarald">
+
+
+        <FrameLayout
+            android:id="@+id/fragmentContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="@+id/toolbar"
+            />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/voogleTitle"
+            android:paddingTop="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/voogle_name"
+            tools:ignore="MissingConstraints"
+            android:paddingBottom="60dp"
+            >
+        </androidx.appcompat.widget.AppCompatImageView>
+
+        <com.google.android.material.textfield.TextInputLayout
+
+
+            android:id="@+id/sourceTIL"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:hint="@string/enter_source"
+            app:errorEnabled="true"
+            android:textAlignment="center"
+            app:boxBackgroundColor="@color/transparent_white_percent_70"
+            app:boxCornerRadiusBottomEnd="20dp"
+            app:boxCornerRadiusBottomStart="20dp"
+            app:boxCornerRadiusTopEnd="20dp"
+            app:boxCornerRadiusTopStart="20dp"
+
+
+            app:layout_constraintBottom_toBottomOf="@+id/voogleTitle"
+            >
+
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/sourceTIET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:imeOptions="actionNext"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+
+
+            android:id="@+id/destinationTIL"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:hint="@string/enter_destination"
+            app:errorEnabled="true"
+            android:textAlignment="center"
+            app:boxCornerRadiusBottomEnd="20dp"
+            app:boxCornerRadiusBottomStart="20dp"
+            app:boxCornerRadiusTopEnd="20dp"
+            app:boxCornerRadiusTopStart="20dp"
+            app:layout_constraintTop_toBottomOf="@+id/sourceTIL"
+            app:boxBackgroundColor="@color/transparent_white_percent_70"
+            app:layout_constraintBottom_toBottomOf="@+id/voogleTitle"
+            >
+
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/destinationTIET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:imeOptions="actionDone" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:id="@+id/goBTN"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/destinationTIL"
+            app:layout_constraintRight_toLeftOf="parent"
+            app:layout_constraintLeft_toRightOf="parent"
+            android:background="@drawable/rounded_alert_box"
+            android:layout_marginTop="60dp"
+            android:text="Go"
+            android:backgroundTint="@color/Color_SeaGreen"
+            android:onClick="onClickOnGo"
+            app:strokeColor="@color/Color_White"
+            app:strokeWidth="4dp"
+            app:rippleColor="@color/transparent_white_hex_11"/>
+        <ImageView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/copyright"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:ignore="MissingConstraints" />
+    </androidx.constraintlayout.widget.ConstraintLayout></layout>
