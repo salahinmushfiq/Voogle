@@ -8,6 +8,9 @@ import android.os.Bundle;
 import com.example.voogle.Adapters.BusFragmentPagerAdapter;
 import com.example.voogle.R;
 import com.example.voogle.databinding.ActivityHomeBinding;
+import com.google.android.material.tabs.TabLayout;
+
+import java.util.Objects;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -19,6 +22,13 @@ public class HomeActivity extends AppCompatActivity {
         BusFragmentPagerAdapter busFragmentPagerAdapter=new BusFragmentPagerAdapter(getSupportFragmentManager());
         activityHomeBinding.vehicleTypeVP.setAdapter(busFragmentPagerAdapter);
         activityHomeBinding.vehicleTypeTL.setupWithViewPager(activityHomeBinding.vehicleTypeVP);
+
+        activityHomeBinding.vehicleTypeVP.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(activityHomeBinding.vehicleTypeTL));
+        activityHomeBinding.vehicleTypeTL.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(activityHomeBinding.vehicleTypeVP));
+
+        //TabLayout.Tab x;
+        Objects.requireNonNull(activityHomeBinding.vehicleTypeTL.getTabAt(0)).setCustomView(R.layout.sample_tab);
+        Objects.requireNonNull(activityHomeBinding.vehicleTypeTL.getTabAt(1)).setCustomView(R.layout.sample_tab_but_bus);
 
     }
 }
