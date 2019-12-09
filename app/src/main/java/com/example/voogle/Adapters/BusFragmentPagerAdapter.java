@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.example.voogle.Fragments.BusFragment;
+import com.example.voogle.Fragments.MapFragment;
 import com.example.voogle.Fragments.TrainFragement;
 
 public class BusFragmentPagerAdapter extends FragmentPagerAdapter {
@@ -17,17 +18,19 @@ public class BusFragmentPagerAdapter extends FragmentPagerAdapter {
         switch (position)
         {
             case 0:
-                return new BusFragment();
+                return new TrainFragement();
             case 1:
                 return new TrainFragement();
-                default:
-                    return null;
+            case 2:
+                return new MapFragment();
+            default:
+                return null;
         }
 
     }
 
     @Override
     public int getCount() {
-        return 2;
+        return 3;
     }
 }

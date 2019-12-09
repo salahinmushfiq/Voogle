@@ -33,7 +33,6 @@ public class TrainFragement extends Fragment {
 
         fragmentTrainBinding= DataBindingUtil.inflate(inflater,R.layout.fragment_train, container, false);
 
-        fragmentTrainBinding.trainTV.setText("Train Fragment");
 
 
         return fragmentTrainBinding.getRoot();

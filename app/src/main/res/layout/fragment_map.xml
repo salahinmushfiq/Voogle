@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:mapbox="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".Fragments.MapFragment">
+
+        <com.mapbox.mapboxsdk.maps.MapView
+            android:id="@+id/mapView"
+            android:layout_width="386dp"
+            android:layout_height="522dp"
+            mapbox:mapbox_cameraBearing="34.33"
+            mapbox:mapbox_cameraTargetLat="23.779328"
+            mapbox:mapbox_cameraTargetLng="90.365191"
+            mapbox:mapbox_cameraTilt="50.25"
+            mapbox:mapbox_cameraZoom="10"
+            mapbox:mapbox_cameraZoomMax="18.41"
+            mapbox:mapbox_cameraZoomMin="14"
+            mapbox:mapbox_uiRotateGestures="false"
+            tools:layout_editor_absoluteX="9dp"
+            tools:layout_editor_absoluteY="38dp" />
+
+        <Button
+            android:id="@+id/btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="28dp"
+            mapbox:layout_constraintBottom_toBottomOf="parent"
+            mapbox:layout_constraintEnd_toEndOf="parent"
+            mapbox:layout_constraintHorizontal_bias="0.554"
+            mapbox:layout_constraintStart_toStartOf="parent" />
+        <!--        <com.google.android.gms.maps.MapView-->
+        <!--            -->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="match_parent"-->
+        <!--            mapbox:cameraTargetLat="23.6850"-->
+        <!--            mapbox:cameraTargetLng="90.3563"-->
+        <!--            mapbox:mapbox_cameraZoom="12"/>-->
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

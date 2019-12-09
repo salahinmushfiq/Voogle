@@ -2,7 +2,7 @@
     <string name="app_name">Voogle</string>
     <string name="enter_source">Source</string>
     <string name="enter_destination">Destination</string>
-
+    <string name="access_token">pk.eyJ1IjoibXVzaGZpbWFxdmVyaWNrIiwiYSI6ImNqcGw3NXlqbTBiNXo0Mm9iZGc5MzN4Zm0ifQ.vizYESiSkgQLffbqo-k51w</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
