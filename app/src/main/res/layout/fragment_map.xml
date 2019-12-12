@@ -21,8 +21,9 @@
             mapbox:mapbox_cameraZoomMax="18.41"
             mapbox:mapbox_cameraZoomMin="14"
             mapbox:mapbox_uiRotateGestures="false"
-            tools:layout_editor_absoluteX="9dp"
-            tools:layout_editor_absoluteY="38dp"
+            mapbox:layout_constraintTop_toTopOf="parent"
+            mapbox:layout_constraintLeft_toLeftOf="parent"
+            mapbox:layout_constraintRight_toRightOf="parent"
             tools:ignore="MissingConstraints" />
 
         <Button
@@ -34,10 +35,19 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:background="@color/grey_hex_0a"
+            android:visibility="gone"
             android:enabled="false"
             android:text="Start navigation"
             android:textColor="@color/grey_hex_b7"
             mapbox:layout_constraintStart_toStartOf="parent"
             mapbox:layout_constraintTop_toTopOf="parent" />
+        <com.mapbox.services.android.navigation.ui.v5.NavigationView
+            android:layout_width="386dp"
+            android:id="@+id/navView"
+            android:visibility="gone"
+            android:layout_height="522dp"
+            mapbox:layout_constraintTop_toTopOf="parent"
+            mapbox:layout_constraintLeft_toLeftOf="parent"
+            mapbox:layout_constraintRight_toRightOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

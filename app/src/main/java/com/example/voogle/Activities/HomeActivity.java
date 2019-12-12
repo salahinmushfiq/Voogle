@@ -26,6 +26,8 @@ public class HomeActivity extends AppCompatActivity {
         activityHomeBinding.vehicleTypeVP.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(activityHomeBinding.vehicleTypeTL));
         activityHomeBinding.vehicleTypeTL.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(activityHomeBinding.vehicleTypeVP));
 
+        activityHomeBinding.vehicleTypeVP.requestDisallowInterceptTouchEvent(true);
+
         //TabLayout.Tab x;
         Objects.requireNonNull(activityHomeBinding.vehicleTypeTL.getTabAt(0)).setCustomView(R.layout.sample_tab);
 

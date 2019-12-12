@@ -18,6 +18,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         activityMainBinding=DataBindingUtil.setContentView(this, R.layout.activity_main);
 
+        Intent goToHome=new Intent(MainActivity.this,HomeActivity.class);
+        startActivity(goToHome);
 
     }
 
