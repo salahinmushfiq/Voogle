@@ -1,6 +1,7 @@
 package com.example.voogle.Fragments;
 
 
+
 import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
@@ -23,6 +24,8 @@ import com.example.voogle.R;
 import com.example.voogle.databinding.FragmentMapBinding;
 
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
 
@@ -33,7 +36,6 @@ import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
 
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
-import com.mapbox.mapboxsdk.annotations.PolylineOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -71,11 +73,11 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MapFragment extends Fragment implements OnMapReadyCallback {
+public class MapFragment extends Fragment implements  OnMapReadyCallback  {
     final int[] count = {0};
     FragmentMapBinding fragmentMapBinding;
     MapboxMap map;
-
+    DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("root");
     PermissionsManager permissionsManager;
 
     private LocationComponent locationComponent;
@@ -85,13 +87,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private static final LatLng SYDNEY = new LatLng(-33.88, 151.21);
     private static final LatLng MOUNTAIN_VIEW = new LatLng(37.4, -122.1);
-    
+
     public static final String TAG="mapFrag";
 
     LatLng sourceX, destinationX;
     private DirectionsRoute currentRoute;
     private NavigationMapRoute navigationMapRoute;
-
 
     public MapFragment() {
         // Required empty public constructor
@@ -105,7 +106,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         Mapbox.getInstance(getContext(), getString(R.string.access_token));
 
 
-        fragmentMapBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_map, container, false);
+        fragmentMapBinding=DataBindingUtil.inflate(inflater,R.layout.fragment_map, container, false);
 
         initMap(savedInstanceState);
 
@@ -149,6 +150,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         // Toast instructing user to tap on the map
 
 
+
                         CameraPosition position = new CameraPosition.Builder()
                                 .target(new LatLng(23.738999, 90.387202
                                 )) // Sets the new camera position
@@ -158,12 +160,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                 .build(); // Creates a CameraPosition from the builder
 
                         map.animateCamera(CameraUpdateFactory.newCameraPosition(position), 7000);
-// Move the camera instantly to Sydney with a zoom of 15.
 
+
+                        // Move the camera instantly to Sydney with a zoom of 15.
 
                         map.addOnMapLongClickListener(new MapboxMap.OnMapLongClickListener() {
                             @Override
                             public boolean onMapLongClick(@NonNull LatLng point) {
+
+                                Point source, destination;
 
                                 count[0]++;
                                 if (count[0] <= 2) {
@@ -191,7 +196,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                                 .getRoute(new Callback<DirectionsResponse>() {
                                                     @Override
                                                     public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
-// You can get the generic HTTP info about the response
+                                                        // You can get the generic HTTP info about the response
                                                         Log.d(TAG, "Response code: " + response.code());
                                                         if (response.body() == null) {
                                                             Log.e(TAG, "No routes found, make sure you set the right user and access token.");
@@ -203,7 +208,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                                                         currentRoute = response.body().routes().get(0);
 
-// Draw the route on the map
+                                                        // Draw the route on the map
+
                                                         if (navigationMapRoute != null) {
                                                             navigationMapRoute.removeRoute();
                                                         } else {
