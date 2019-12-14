@@ -15,78 +15,45 @@
             android:id="@+id/fragmentContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_constraintBottom_toBottomOf="@+id/toolbar" />
+            app:layout_constraintBottom_toBottomOf="@+id/toolbar"
+            />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/voogleTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="60dp"
-            android:paddingBottom="60dp"
+            android:paddingTop="90sp"
+            android:paddingBottom="90dp"
             android:src="@drawable/voogle_name"
-            tools:ignore="MissingConstraints" />
+            tools:ignore="MissingConstraints"
+            />
 
-        <com.google.android.material.textfield.TextInputLayout
 
 
-            android:id="@+id/sourceTIL"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+
+        <AutoCompleteTextView
+
+            android:id="@+id/sourceACTV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:hint="@string/enter_source"
+            app:layout_constraintTop_toBottomOf="@id/voogleTitle"
+            android:layout_margin="20dp"
             android:textAlignment="center"
-            app:boxBackgroundColor="@color/transparent_white_percent_70"
-            app:boxCornerRadiusBottomEnd="20dp"
-            app:boxCornerRadiusBottomStart="20dp"
-            app:boxCornerRadiusTopEnd="20dp"
-            app:boxCornerRadiusTopStart="20dp"
-            app:errorEnabled="true"
-
-
-            app:layout_constraintBottom_toBottomOf="@+id/voogleTitle">
-
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/sourceTIET"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:imeOptions="actionNext"
-                android:inputType="textEmailAddress" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-
-
-            android:id="@+id/destinationTIL"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:background="@drawable/rounded_autocomplete_textbox"
+            android:textSize="24sp"
+            />
+        <AutoCompleteTextView
+            android:id="@+id/destinationACTV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="60dp"
-            android:layout_marginRight="10dp"
-            android:hint="@string/enter_destination"
+            app:layout_constraintTop_toBottomOf="@id/sourceACTV"
+            app:layout_constraintBottom_toTopOf="@id/goBTN"
+            android:layout_margin="20dp"
+            android:background="@drawable/rounded_autocomplete_textbox"
             android:textAlignment="center"
-            app:boxBackgroundColor="@color/transparent_white_percent_70"
-            app:boxCornerRadiusBottomEnd="20dp"
-            app:boxCornerRadiusBottomStart="20dp"
-            app:boxCornerRadiusTopEnd="20dp"
-            app:boxCornerRadiusTopStart="20dp"
-            app:errorEnabled="true"
-            app:layout_constraintBottom_toBottomOf="@+id/voogleTitle"
-            app:layout_constraintTop_toBottomOf="@+id/sourceTIL">
+            android:textSize="24sp"
+            />
 
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/destinationTIET"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:imeOptions="actionDone"
-                android:inputType="textEmailAddress" />
-
-        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/goBTN"
@@ -100,7 +67,7 @@
             android:text="Go"
             app:layout_constraintLeft_toRightOf="parent"
             app:layout_constraintRight_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/destinationTIL"
+            app:layout_constraintTop_toBottomOf="@+id/destinationACTV"
             app:rippleColor="@color/transparent_white_hex_11"
             app:strokeColor="@color/Color_White"
             app:strokeWidth="4dp" />

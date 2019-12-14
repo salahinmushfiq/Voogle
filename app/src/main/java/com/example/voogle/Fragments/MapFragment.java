@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.voogle.PojoClasses.Place;
 import com.example.voogle.R;
 
 import com.example.voogle.databinding.FragmentMapBinding;
@@ -77,7 +78,7 @@ public class MapFragment extends Fragment implements  OnMapReadyCallback  {
     final int[] count = {0};
     FragmentMapBinding fragmentMapBinding;
     MapboxMap map;
-    DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("root");
+    DatabaseReference root = FirebaseDatabase.getInstance().getReference("root");
     PermissionsManager permissionsManager;
 
     private LocationComponent locationComponent;
@@ -93,7 +94,7 @@ public class MapFragment extends Fragment implements  OnMapReadyCallback  {
     LatLng sourceX, destinationX;
     private DirectionsRoute currentRoute;
     private NavigationMapRoute navigationMapRoute;
-
+    private String source=null,destination=null;
     public MapFragment() {
         // Required empty public constructor
     }
@@ -103,6 +104,10 @@ public class MapFragment extends Fragment implements  OnMapReadyCallback  {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        // Write a message to the database
+
+
+
         Mapbox.getInstance(getContext(), getString(R.string.access_token));
 
 
@@ -111,6 +116,10 @@ public class MapFragment extends Fragment implements  OnMapReadyCallback  {
         initMap(savedInstanceState);
 
 
+        source=getArguments().getString("source");
+        destination=getArguments().getString("destination");
+        Toast.makeText(getActivity(), source, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), destination, Toast.LENGTH_SHORT).show();
         return fragmentMapBinding.getRoot();
 
     }
