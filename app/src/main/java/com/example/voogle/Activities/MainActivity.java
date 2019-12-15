@@ -46,6 +46,11 @@ public class MainActivity extends AppCompatActivity {
         activityMainBinding.sourceACTV.setThreshold(2);
         activityMainBinding.destinationACTV.setAdapter(placesAdapter);
         activityMainBinding.destinationACTV.setThreshold(2);
+
+        /**
+         * TUI EKHONO EITA COMMENT OUT KOROS NAI *FACEPALM*
+         * AMI KAM SHESHE EIDA ABAR ON RAIKHA JAMU
+         */
         Intent goToHome=new Intent(MainActivity.this,HomeActivity.class);
         startActivity(goToHome);
 

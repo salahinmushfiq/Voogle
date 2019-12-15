@@ -6,7 +6,9 @@ import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
 
 import com.example.voogle.Adapters.BusFragmentPagerAdapter;
+import com.example.voogle.Fragments.BusFragment;
 import com.example.voogle.Fragments.MapFragment;
+import com.example.voogle.Fragments.TrainFragement;
 import com.example.voogle.R;
 import com.example.voogle.databinding.ActivityHomeBinding;
 import com.google.android.material.tabs.TabLayout;
@@ -21,18 +23,19 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityHomeBinding= DataBindingUtil.setContentView(this,R.layout.activity_home);
-        BusFragmentPagerAdapter busFragmentPagerAdapter=new BusFragmentPagerAdapter(getSupportFragmentManager());
-        activityHomeBinding.vehicleTypeVP.setAdapter(busFragmentPagerAdapter);
-        activityHomeBinding.vehicleTypeTL.setupWithViewPager(activityHomeBinding.vehicleTypeVP);
+
         source= getIntent().getStringExtra("source");
         destination=getIntent().getStringExtra("destination");
-
-
         Bundle bundle=new Bundle();
         bundle.putString("source",source);
         bundle.putString("destination",destination);
         MapFragment mapFragment=new MapFragment();
         mapFragment.setArguments(bundle);
+
+        // TODO : change if one needs pre-configured fragments
+        BusFragmentPagerAdapter busFragmentPagerAdapter=new BusFragmentPagerAdapter(getSupportFragmentManager(), new BusFragment(), new TrainFragement(), mapFragment);
+        activityHomeBinding.vehicleTypeVP.setAdapter(busFragmentPagerAdapter);
+        activityHomeBinding.vehicleTypeTL.setupWithViewPager(activityHomeBinding.vehicleTypeVP);
 
 
         activityHomeBinding.vehicleTypeVP.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(activityHomeBinding.vehicleTypeTL));

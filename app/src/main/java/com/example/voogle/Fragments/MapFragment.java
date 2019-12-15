@@ -118,6 +118,7 @@ public class MapFragment extends Fragment implements  OnMapReadyCallback  {
 
         source=getArguments().getString("source");
         destination=getArguments().getString("destination");
+        Log.i(TAG, "onCreateView: "+source+" and "+destination);
         Toast.makeText(getActivity(), source, Toast.LENGTH_SHORT).show();
         Toast.makeText(getActivity(), destination, Toast.LENGTH_SHORT).show();
         return fragmentMapBinding.getRoot();
