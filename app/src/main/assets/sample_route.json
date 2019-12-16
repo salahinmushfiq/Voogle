@@ -1,0 +1,1151 @@
+{
+	"routeIndex": "0",
+	"distance": 2606.1,
+	"duration": 940.9,
+	"geometry": "k|ogl@qbtkkD{AXahBf]ey@hNan@vJoEp@w@_GfBW|@Iv^{FjhAyQmF{Dq}@ss@eFaE{DqCeUePeUuPoQiP}CcDuCeDiIyHkIaIgH{FwIaImS{QaVeTaKaJ{EkEqAkAoNiMeGqFgDsCoYcUqPgMs\\aXoN{KqMeHoSoMwCuCkCsEsX{j@gAoDSiBe@}D?oEVwVqz@sJo]uCgvAoM}tAcP{CY}Jq@mAIi@EIAcEYWCq`AuEmk@eEmFg@ce@iEiIw@gGk@oAfQ",
+	"weight": 1098.8,
+	"weight_name": "routability",
+	"legs": [{
+		"distance": 2606.1,
+		"duration": 940.9,
+		"summary": "Shahid Janani Jahanara Imam Sarani, বীর উত্তম সিআর দত্ত সড়ক, হাতিরপুল",
+		"steps": [{
+			"distance": 402.9,
+			"duration": 99.4,
+			"geometry": "k|ogl@qbtkkD{AXahBf]ey@hNan@vJoEp@",
+			"name": "মিরপুর রোড",
+			"mode": "driving",
+			"maneuver": {
+				"location": [
+					90.384953,
+					23.732694
+				],
+				"bearing_before": 0,
+				"bearing_after": 345,
+				"instruction": "Head north on মিরপুর রোড",
+				"type": "depart"
+			},
+			"voiceInstructions": [{
+				"distanceAlongGeometry": 402.9,
+				"announcement": "Head north on মিরপুর রোড for a quarter mile",
+				"ssmlAnnouncement": "<speak><amazoneffect name=\"drc\"><prosody rate=\"1.08\">You have arrived at your destination, on the right<\/prosody><\/amazon:effect><\/speak>"
+			},
+				{
+					"distanceAlongGeometry": 283.7,
+					"announcement": "In 1000 feet, make a U-turn and continue on মিরপুর রোড",
+					"ssmlAnnouncement": "<speak><amazon:effect name=\"drc\"><prosody rate=\"1.08\">In 700 feet, make a sharp left onto Shahid Janani Jahanara Imam Sarani<\/prosody><\/amazon:effect><\/speak>"
+				},
+				{
+					"distanceAlongGeometry": 60.8,
+					"announcement": "Make a U-turn and continue on মিরপুর রোড",
+					"ssmlAnnouncement": "<speak><amazon:effect name=\"drc\"><prosody rate=\"1.08\">Make a U-turn and continue on মিরপুর রোড<\/prosody><\/amazon:effect><\/speak>"
+				}
+			],
+			"bannerInstructions": [{
+				"distanceAlongGeometry": 402.9,
+				"primary": {
+					"text": "মিরপুর রোড",
+					"components": [{
+						"text": "মিরপুর রোড",
+						"type": "text"
+					}],
+					"type": "turn",
+					"modifier": "uturn"
+				}
+			}],
+			"driving_side": "left",
+			"weight": 131.5,
+			"intersections": [{
+				"location": [
+					90.384953,
+					23.732694
+				],
+				"bearings": [
+					345
+				],
+				"entry": [
+					true
+				],
+				"out": 0
+			},
+				{
+					"location": [
+						90.38494,
+						23.73274
+					],
+					"bearings": [
+						165,
+						195,
+						
+						345
+					],
+					"entry": [
+						false,
+						false,
+						true
+					],
+					"in": 0,
+					"out": 2
+				},
+				{
+					"location": [
+						90.384456,
+						23.734421
+					],
+					"bearings": [
+						165,
+						255,
+						345
+					],
+					"entry": [
+						false,
+						true,
+						true
+					],
+					"in": 0,
+					"out": 2
+				}
+			]
+		},
+			{
+				"distance": 214.9,
+				"duration": 56.9,
+				"geometry": "axvgl@{frkkDw@_GfBW|@Iv^{FjhAyQ",
+				"name": "মিরপুর রোড",
+				"mode": "driving",
+				"maneuver": {
+					"location": [
+						90.383998,
+						23.736209
+					],
+					"bearing_before": 345,
+					"bearing_after": 75,
+					"instruction": "Make a U-turn and continue on মিরপুর রোড",
+					"type": "continue",
+					"modifier": "uturn"
+				},
+				"voiceInstructions": [{
+					"distanceAlongGeometry": 194.9,
+					"announcement": "In 700 feet, make a sharp left onto Shahid Janani Jahanara Imam Sarani",
+					"ssmlAnnouncement": "<speak><amazon:effect name = \"drc\"><prosody rate=\"1.08\">In 700 feet, make a sharp left onto Shahid Janani Jahanara Imam Sarani<\/prosody><\/amazon:effect><\/speak>"
+				},
+					{
+						"distanceAlongGeometry": 56.7,
+						"announcement": "Make a sharp left onto Shahid Janani Jahanara Imam Sarani",
+						"ssmlAnnouncement": "<speak><amazon:effect name=\"drc\"><prosody rate=\"1.08\">Make a sharp left onto Shahid Janani Jahanara Imam Sarani<\/prosody><\/amazon:effect><\/speak>"
+					}
+				],
+				"bannerInstructions": [{
+					"distanceAlongGeometry": 214.9,
+					"primary": {
+						"text": "Shahid Janani Jahanara Imam Sarani",
+						"components": [{
+							"text": "Shahid Janani Jahanara Imam Sarani",
+							"type": "text"
+						}],
+						"type": "turn",
+						"modifier": "sharp left"
+					}
+				}],
+				"driving_side": "left",
+				"weight": 129.4,
+				"intersections": [{
+					"location": [
+						90.383998,
+						23.736209
+					],
+					"bearings": [
+						75,
+						165,
+						255,
+						345
+					],
+					"entry": [
+						true,
+						false,
+						true,
+						
+						true
+					],
+					"in": 1,
+					"out": 0
+				},
+					{
+						"location": [
+							90.384126,
+							23.736237
+						],
+						"bearings": [
+							165,
+							255,
+							345
+						],
+						"entry": [
+							true,
+							false,
+							false
+						],
+						"in": 1,
+						"out": 0
+					},
+					{
+						"location": [
+							90.384269,
+							23.735646
+						],
+						"bearings": [
+							75,
+							165,
+							345
+						],
+						"entry": [
+							true,
+							true,
+							false
+						],
+						"in": 2,
+						"out": 1
+					}
+				]
+			},
+			{
+				"distance": 1121.1,
+				"duration": 432.8,
+				"geometry": "oksgl@sjskkDmF{Dq}@ss@eFaE{DqCeUePeUuPoQiP}CcDuCeDiIyHkIaIgH{FwIaImS{QaVeTaKaJ{EkEqAkAoNiMeGqFgDsCoYcUqPgMs\\aXoN{KqMeHoSoMwCuCkCsEsX{j@gAoDSiBe@}D?oEVwV",
+				"name": "Shahid Janani Jahanara Imam Sarani",
+				"mode": "driving",
+				"maneuver": {
+					"location": [
+						90.38457,
+						23.734472
+					
+					],
+					"bearing_before": 165,
+					"bearing_after": 36,
+					"instruction": "Make a sharp left onto Shahid Janani Jahanara Imam Sarani",
+					"type": "turn",
+					"modifier": "sharp left"
+				},
+				"voiceInstructions": [{
+					"distanceAlongGeometry": 1101.1,
+					"announcement": "Continue on Shahid Janani Jahanara Imam Sarani for a half mile",
+					"ssmlAnnouncement": "<speak><amazon:effect name=\"drc\"><prosody rate=\"1.08\">Continue on Shahid Janani Jahanara Imam Sarani for a half mile<\/prosody><\/amazon:effect><\/speak>"
+				},
+					{
+						"distanceAlongGeometry": 181.3,
+						"announcement": "In 600 feet, turn left onto বীর উত্তম সিআর দত্ত সড়ক, হাতিরপুল",
+						"ssmlAnnouncement": "<speak><amazon:effect name=\"drc\"><prosody rate=\"1.08\">In 600 feet, turn left onto বীর উত্তম সিআর দত্ত সড়ক, হাতিরপুল<\/prosody><\/amazon:effect><\/speak>"
+					},
+					{
+						"distanceAlongGeometry": 38.9,
+						"announcement": "Turn left onto বীর উত্তম সিআর দত্ত সড়ক, হাতিরপুল",
+						"ssmlAnnouncement": "<speak><amazon:effect name=\"drc\"><prosody rate=\"1.08\">Turn left onto বীর উত্তম সিআর দত্ত সড়ক, হাতিরপুল<\/prosody><\/amazon:effect><\/speak>"
+					}
+				],
+				"bannerInstructions": [{
+					"distanceAlongGeometry": 1121.1,
+					"primary": {
+						"text": "বীর উত্তম সিআর দত্ত সড়ক, হাতিরপুল",
+						"components": [{
+							"text": "বীর উত্তম সিআর দত্ত সড়ক, হাতিরপুল",
+							"type": "text"
+						}],
+						"type": "turn",
+						"modifier": "left"
+					}
+				}],
+				"driving_side": "left",
+				"weight": 442.7,
+				"intersections": [{
+					"location": [
+						90.38457,
+						23.734472
+					],
+					"bearings": [
+						30,
+						165,
+						345
+					],
+					"entry": [
+						true,
+						true,
+						false
+					],
+					"in": 2,
+					"out": 0
+				},
+					{
+						"location": [
+							90.385603,
+							23.735707
+						],
+						"bearings": [
+							30,
+							135,
+							225
+						],
+						"entry": [
+							true,
+							true,
+							false
+						],
+						"in": 2,
+						"out": 0
+					},
+					{
+						"location": [
+							90.385676,
+							23.735801
+						],
+						"bearings": [
+							30,
+							210,
+							
+							330
+						],
+						"entry": [
+							true,
+							false,
+							true
+						],
+						"in": 1,
+						"out": 0
+					},
+					{
+						"location": [
+							90.385951,
+							23.736156
+						],
+						"bearings": [
+							30,
+							135,
+							210
+						],
+						"entry": [
+							true,
+							true,
+							false
+						],
+						"in": 2,
+						"out": 0
+					},
+					{
+						"location": [
+							90.386234,
+							23.736511
+						],
+						"bearings": [
+							45,
+							150,
+							210
+						],
+						"entry": [
+							true,
+							true,
+							false
+						],
+						"in": 2,
+						"out": 0
+					},
+					{
+						"location": [
+							90.386511,
+							23.736807
+						],
+						"bearings": [
+							45,
+							150,
+							225
+						],
+						"entry": [
+							true,
+							true,
+							false
+						],
+						"in": 2,
+						"out": 0
+					},
+					{
+						"location": [
+							90.386593,
+							23.736886
+						],
+						"bearings": [
+							45,
+							225,
+							330
+						],
+						"entry": [
+							true,
+							false,
+							true
+						],
+						"in": 1,
+						"out": 0
+					},
+					{
+						"location": [
+							90.386833,
+							23.737126
+						],
+						"bearings": [
+							45,
+							150,
+							225
+						],
+						"entry": [
+							true,
+							true,
+							false
+						],
+						"in": 2,
+						"out": 0
+					},
+					{
+						"location": [
+							90.386994,
+							23.737292
+						],
+						"bearings": [
+							45,
+							150,
+							225
+						],
+						"entry": [
+							true,
+							true,
+							false
+						],
+						"in": 2,
+						"out": 0
+					},
+					{
+						"location": [
+							90.38712,
+							23.73744
+						],
+						"bearings": [
+							45,
+							150,
+							225,
+							315
+						],
+						"entry": [
+							true,
+							true,
+							false,
+							true
+						],
+						"in": 2,
+						"out": 0
+					},
+					{
+						"location": [
+							90.387281,
+							23.737612
+						],
+						"bearings": [
+							45,
+							150,
+							225,
+							330
+						],
+						"entry": [
+							true,
+							true,
+							false,
+							true
+						],
+						"in": 2,
+						"out": 0
+					},
+					{
+						"location": [
+							90.387583,
+							23.737939
+						],
+						"bearings": [
+							45,
+							150,
+							225,
+							345
+						],
+						"entry": [
+							true,
+							true,
+							false,
+							true
+						],
+						"in": 2,
+						"out": 0
+					},
+					{
+						"location": [
+							90.387922,
+							23.738308
+						],
+						"bearings": [
+							45,
+							225,
+							330
+						],
+						"entry": [
+							true,
+							false,
+							true
+						],
+						"in": 1,
+						"out": 0
+					},
+					{
+						"location": [
+							90.388099,
+							23.738501
+						],
+						"bearings": [
+							45,
+							165,
+							225
+						],
+						"entry": [
+							true,
+							true,
+							false
+						],
+						"in": 2,
+						"out": 0
+					},
+					{
+						"location": [
+							90.388201,
+							23.738611
+						],
+						"bearings": [
+							0,
+							45,
+							225
+						],
+						"entry": [
+							true, true,
+							false
+						],
+						"in": 2,
+						"out": 1
+					},
+					{
+						"location": [
+							90.388468,
+							23.7389
+						],
+						"bearings": [
+							45,
+							135,
+							225
+						],
+						"entry": [
+							true,
+							true,
+							false
+						],
+						"in": 2,
+						"out": 0
+					},
+					{
+						"location": [
+							90.388589,
+							23.739031
+						],
+						"bearings": [
+							45,
+							90,
+							225,
+							270
+						],
+						"entry": [
+							true,
+							false,
+							false,
+							true
+						],
+						"in": 2,
+						"out": 0
+					},
+					{
+						"location": [
+							90.388663,
+							23.739115
+						],
+						"bearings": [
+							30,
+							90,
+							225,
+							270
+						],
+						"entry": [
+							true, true,
+							false,
+							false
+						],
+						"in": 2,
+						"out": 0
+					},
+					{
+						"location": [
+							90.389017,
+							23.739539
+						],
+						"bearings": [
+							30,
+							210,
+							315
+						],
+						"entry": [
+							true,
+							false,
+							true
+						],
+						"in": 1,
+						"out": 0
+					},
+					{
+						"location": [
+							90.389646,
+							23.740294
+						],
+						"bearings": [
+							30,
+							225,
+							330
+						],
+						"entry": [
+							true,
+							false,
+							true
+						],
+						"in": 1,
+						"out": 0
+					},
+					{
+						"location": [
+							90.389999,
+							23.740775
+						],
+						"bearings": [
+							30,
+							90,
+							210
+						],
+						"entry": [
+							true,
+							true,
+							false
+						],
+						"in": 2,
+						"out": 0
+					},
+					{
+						"location": [
+							90.391202,
+							23.741695
+						],
+						"bearings": [
+							90,
+							240,
+							285
+						],
+						"entry": [
+							true,
+							false,
+							true
+						],
+						"in": 1,
+						"out": 0
+					},
+					{
+						"location": [
+							90.391454,
+							23.741724
+						],
+						"bearings": [
+							0,
+							90,
+							270
+						],
+						"entry": [
+							true,
+							true,
+							false
+						],
+						"in": 2,
+						"out": 1
+					}
+				]
+			},
+			{
+				"distance": 837.2,
+				"duration": 243.6,
+				"geometry": "_pahl@spalkDqz@sJo]uCgvAoM}tAcP{CY}Jq@mAIi@EIAcEYWCq`AuEmk@eEmFg@ce@iEiIw@gGk@",
+				"name": "বীর উত্তম সিআর দত্ত সড়ক, হাতিরপুল",
+				"mode": "driving",
+				"maneuver": {
+					"location": [
+						90.391834,
+						23.741712
+					],
+					"bearing_before": 91,
+					"bearing_after": 9,
+					"instruction": "Turn left onto বীর উত্তম সিআর দত্ত সড়ক, হাতিরপুল",
+					"type": "turn",
+					"modifier": "left"
+				},
+				"voiceInstructions": [{
+					"distanceAlongGeometry": 817.2,
+					"announcement": "Continue on বীর উত্তম সিআর দত্ত সড়ক, হাতিরপুল for a half mile",
+					"ssmlAnnouncement": "<speak><amazon:effect name=\"drc\"><prosody rate=\"1.08\">Continue on বীর উত্তম সিআর দত্ত সড়ক, হাতিরপুল for a half mile<\/prosody><\/amazon:effect><\/speak>"
+				},
+					{
+						"distanceAlongGeometry": 240.6,
+						"announcement": "In 800 feet, turn left",
+						"ssmlAnnouncement": "<speak><amazon:effect name=\"drc\"><prosody rate=\"1.08\">In 800 feet, turn left<\/prosody><\/amazon:effect><\/speak>"
+					},
+					{
+						"distanceAlongGeometry": 51.6,
+						"announcement": "Turn left, then you will arrive at your destination",
+						"ssmlAnnouncement": "<speak><amazon:effect name=\"drc\"><prosody rate=\"1.08\">Turn left, then you will arrive at your destination<\/prosody><\/amazon:effect><\/speak>"
+					}
+				],
+				"bannerInstructions": [{
+					"distanceAlongGeometry": 837.2,
+					"primary": {
+						"text": "Turn left",
+						"components": [{
+							"text": "Turn left",
+							"type": "text"
+						}],
+						"type": "turn",
+						"modifier": "left"
+					}
+				}],
+				"driving_side": "left",
+				"weight": 287,
+				"intersections": [{
+					"location": [
+						90.391834,
+						23.741712
+					],
+					"bearings": [
+						15,
+						105,
+						195,
+						270
+					],
+					"entry": [
+						true,
+						true,
+						false,
+						false
+					],
+					"in": 3,
+					"out": 0
+				},
+					{
+						"location": [
+							90.392095,
+							23.743153
+						],
+						"bearings": [
+							15,
+							195,
+							210
+						],
+						"entry": [
+							true,
+							false,
+							true
+						],
+						"in": 1,
+						"out": 0
+					},
+					{
+						"location": [
+							90.392601,
+							23.745924
+						],
+						"bearings": [
+							15,
+							105,
+							195
+						],
+						"entry": [
+							true,
+							false,
+							false
+						],
+						"in": 2,
+						"out": 0
+					},
+					{
+						"location": [
+							90.392614,
+							23.746002
+						],
+						"bearings": [
+							0,
+							105,
+							195,
+							270
+						],
+						"entry": [
+							true,
+							true,
+							false,
+							true
+						],
+						"in": 2,
+						"out": 0
+					},
+					{
+						"location": [
+							90.39277,
+							23.747417
+						],
+						"bearings": [
+							0,
+							90,
+							180,
+							270
+						],
+						"entry": [
+							true,
+							true,
+							false,
+							true
+						],
+						"in": 2,
+						"out": 0
+					},
+					{
+						"location": [
+							90.392869,
+							23.748128
+						],
+						"bearings": [
+							15,
+							105,
+							180,
+							285
+						],
+						"entry": [
+							true,
+							true,
+							false,
+							true
+						],
+						"in": 2,
+						"out": 0
+					},
+					{
+						"location": [
+							90.39299,
+							23.748857
+						],
+						"bearings": [
+							15,
+							90,
+							195
+						],
+						"entry": [
+							true,
+							true,
+							false
+						],
+						"in": 2,
+						"out": 0
+					},
+					{
+						"location": [
+							90.393018,
+							23.749022
+						],
+						"bearings": [
+							15,
+							90,
+							195
+						],
+						"entry": [
+							true,
+							true,
+							false
+						],
+						"in": 2,
+						"out": 0
+					}
+				]
+			},
+			{
+				"distance": 30.1,
+				"duration": 108.2,
+				"geometry": "caphl@_|clkDoAfQ",
+				"name": "",
+				"mode": "driving",
+				"maneuver": {
+					"location": [
+						90.39304,
+						23.749154
+					],
+					"bearing_before": 8,
+					"bearing_after": 278,
+					"instruction": "Turn left",
+					"type": "turn",
+					"modifier": "left"
+				},
+				"voiceInstructions": [{
+					"distanceAlongGeometry": 1.4,
+					"announcement": "You have arrived at your destination, on the right",
+					"ssmlAnnouncement": "<speak><amazon:effect name=\"drc\"><prosody rate=\"1.08\">You have arrived at your destination, on the right<\/prosody><\/amazon:effect><\/speak>"
+				}],
+				"bannerInstructions": [{
+					"distanceAlongGeometry": 30.1,
+					"primary": {
+						"text": "You will arrive",
+						"components": [{
+							"text": "You will arrive",
+							"type": "text"
+						}],
+						"type": "arrive",
+						"modifier": "right"
+					}
+				},
+					{
+						"distanceAlongGeometry": 1.4,
+						"primary": {
+							"text": "You have arrived",
+							"components": [{
+								"text": "You have arrived",
+								"type": "text"
+							}],
+							"type": "arrive",
+							"modifier": "right"
+						}
+					}
+				],
+				"driving_side": "left",
+				"weight": 108.2,
+				"intersections": [{
+					"location": [
+						90.39304,
+						23.749154
+					],
+					"bearings": [
+						0,
+						195,
+						285
+					],
+					"entry": [
+						true,
+						false,
+						true
+					],
+					"in": 1,
+					"out": 2
+				}]
+			},
+			{
+				"distance": 0,
+				"duration": 0,
+				"geometry": "scphl@wiclkD",
+				"name": "",
+				"mode": "driving",
+				"maneuver": {
+					"location": [
+						90.392748,
+						23.749194
+					],
+					"bearing_before": 279,
+					"bearing_after": 0,
+					"instruction": "You have arrived at your destination, on the right",
+					"type": "arrive",
+					"modifier": "right"
+				},
+				"voiceInstructions": [],
+				"bannerInstructions": [],
+				"driving_side": "left",
+				"weight": 0,
+				"intersections": [{
+					"location": [
+						90.392748,
+						23.749194
+					],
+					"bearings": [
+						99
+					],
+					"entry": [
+						true
+					],
+					"in": 0
+				}]
+			}
+		],
+		"annotation": {
+			"distance": [
+				5.284858796998028,
+				193.35690205602089,
+				106.51399620839271,
+				85.9129767891831,
+				11.844286655799207,
+				13.399579166557052,
+				5.911411586332615,
+				3.4853951989091327,
+				57.94107909612703,
+				134.12796483328125,
+				16.333806873391065,
+				140.51996126436578,
+				16.16020964592657,
+				12.828007833499079,
+				48.40541184658644,
+				48.88104883413784,
+				43.351490237676565,
+				12.120845984522449,
+				11.874536364333977,
+				24.337961484057384,
+				24.690422949825336,
+				20.870101614832613,
+				25.19334542336625,
+				47.62688977747052,
+				53.6266287974541,
+				28.028355939151712,
+				16.048206081140826,
+				5.980404846872397,
+				36.1179705573951,
+				19.08081799553738,
+				12.00241339801772,
+				59.35591672485704,
+				38.93235785034059,
+				66.68152223908577,
+				34.65228638149871,
+				29.927008775874796,
+				43.46141996104809,
+				11.391462181548397,
+				13.307582300132061,
+				84.78209408445805,
+				9.813610948482678,
+				5.509538851493141,
+				9.900429657074573,
+				10.5885705735374,
+				38.71202569545455,
+				107.67698767497001,
+				54.81291543839867,
+				157.05822093229094,
+				155.45951205870574,
+				8.776027246943343,
+				21.396151304822588,
+				4.367592245869215,
+				2.3556369932041714,
+				0.5653737237904484,
+				10.980236113628566,
+				1.3501579441371907,
+				117.1838287388757,
+				79.72160168995745,
+				13.391631448140421,
+				68.62279968404619,
+				18.572408260494498,
+				14.851730312552366,
+				30.058826388887393
+			],
+			"congestion": [
+				"unknown",
+				"unknown",
+				"unknown",
+				"unknown",
+				"unknown",
+				"unknown",
+				"unknown",
+				"unknown",
+				"unknown",
+				"low",
+				"low",
+				"low",
+				"low",
+				"unknown",
+				"heavy",
+				"moderate",
+				"unknown",
+				"unknown",
+				"unknown",
+				"unknown",
+				"unknown",
+				"unknown",
+				"unknown",
+				"unknown",
+				"unknown",
+				"unknown",
+				"unknown",
+				"unknown",
+				"unknown",
+				"unknown",
+				"heavy",
+				"unknown",
+				"unknown",
+				"unknown",
+				"unknown",
+				"unknown",
+				"unknown",
+				"unknown",
+				"unknown",
+				"unknown",
+				"unknown",
+				"unknown",
+				"unknown",
+				"unknown",
+				"unknown",
+				"moderate",
+				"moderate",
+				"heavy",
+				"heavy",
+				"unknown",
+				"low",
+				"low",
+				"low",
+				"low",
+				"low",
+				"low",
+				"low",
+				"low",
+				"unknown",
+				"unknown",
+				"unknown",
+				"unknown",
+				"unknown"
+			]
+		}
+	}],
+	"routeOptions": {
+		"baseUrl": "https:\/\/api.mapbox.com",
+		"user": "mapbox",
+		"profile": "driving-traffic",
+		"coordinates": [
+			[
+				90.3849557,
+				23.7326955
+			],
+			[
+				90.392783,
+				23.7494103
+			]
+		],
+		"language": "en",
+		"bearings": ";",
+		"continue_straight": true,
+		"roundabout_exits": true,
+		"geometries": "polyline6",
+		"overview": "full",
+		"steps": true,
+		"annotations": "congestion,distance",
+		"voice_instructions": true,
+		"banner_instructions": true,
+		"voice_units": "imperial",
+		"access_token": "pk.eyJ1IjoibXVzaGZpbWFxdmVyaWNrIiwiYSI6ImNqcGw3NXlqbTBiNXo0Mm9iZGc5MzN4Zm0ifQ.vizYESiSkgQLffbqo-k51w",
+		"uuid": "ck487eja300wl8clh3oxnzfvo"
+	},
+	"voiceLocale": "en-US"
+}

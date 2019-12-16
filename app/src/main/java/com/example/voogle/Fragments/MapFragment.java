@@ -2,6 +2,7 @@ package com.example.voogle.Fragments;
 
 
 
+import android.annotation.SuppressLint;
 import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
@@ -57,6 +58,9 @@ import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
 import com.mapbox.services.android.navigation.v5.navigation.MapboxNavigationOptions;
 import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
 
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -204,10 +208,12 @@ public class MapFragment extends Fragment implements  OnMapReadyCallback  {
                                                 .destination(Point.fromLngLat(destinationX.getLongitude(), destinationX.getLatitude()))
                                                 .build()
                                                 .getRoute(new Callback<DirectionsResponse>() {
+                                                    @SuppressLint("LogNotTimber")
                                                     @Override
                                                     public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
                                                         // You can get the generic HTTP info about the response
                                                         Log.d(TAG, "Response code: " + response.code());
+                                                        Log.d(TAG, "Response code: " + response.body().routes());
                                                         if (response.body() == null) {
                                                             Log.e(TAG, "No routes found, make sure you set the right user and access token.");
                                                             return;
@@ -217,6 +223,16 @@ public class MapFragment extends Fragment implements  OnMapReadyCallback  {
                                                         }
 
                                                         currentRoute = response.body().routes().get(0);
+                                                        try {
+                                                            final String chunked=new JSONObject(currentRoute.toJson()).toString(4);
+                                                            final int chunkSize = 2048;
+                                                            Log.i(TAG, "routed: ");
+                                                            for (int i = 0; i < chunked.length(); i += chunkSize) {
+                                                                Log.d(TAG, chunked.substring(i, Math.min(chunked.length(), i + chunkSize)));
+                                                            }
+                                                        } catch (JSONException e) {
+                                                            e.printStackTrace();
+                                                        }
 
                                                         // Draw the route on the map
 
