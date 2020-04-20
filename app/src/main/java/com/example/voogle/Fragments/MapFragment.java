@@ -1,63 +1,52 @@
 package com.example.voogle.Fragments;
 
 
-
 import android.annotation.SuppressLint;
-import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-
-import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.voogle.PojoClasses.Place;
+import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+
 import com.example.voogle.R;
-
 import com.example.voogle.databinding.FragmentMapBinding;
-
-
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.mapbox.android.core.permissions.PermissionsListener;
+import com.google.gson.JsonObject;
+import com.mapbox.android.core.location.LocationEngineCallback;
+import com.mapbox.android.core.location.LocationEngineProvider;
+import com.mapbox.android.core.location.LocationEngineRequest;
+import com.mapbox.android.core.location.LocationEngineResult;
 import com.mapbox.android.core.permissions.PermissionsManager;
-
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
-import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
-
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
-import com.mapbox.mapboxsdk.location.modes.CameraMode;
+import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
+import com.mapbox.mapboxsdk.location.modes.RenderMode;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.maps.UiSettings;
-
-import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
-import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
-import com.mapbox.services.android.navigation.ui.v5.NavigationView;
-import com.mapbox.services.android.navigation.ui.v5.NavigationViewOptions;
+import com.mapbox.mapboxsdk.plugins.annotation.Symbol;
+import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager;
+import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions;
 import com.mapbox.services.android.navigation.ui.v5.OnNavigationReadyCallback;
 import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
-import com.mapbox.services.android.navigation.v5.navigation.MapboxNavigationOptions;
 import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
-
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -66,14 +55,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAllowOverlap;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconIgnorePlacement;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -81,12 +65,14 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage;
 public class MapFragment extends Fragment implements  OnMapReadyCallback  {
     final int[] count = {0};
     FragmentMapBinding fragmentMapBinding;
+
     MapboxMap map;
     DatabaseReference root = FirebaseDatabase.getInstance().getReference("root");
     PermissionsManager permissionsManager;
-
-    private LocationComponent locationComponent;
-
+    SymbolManager symbolManager;
+    LocationComponent locationComponent;
+    LocationComponentActivationOptions locationComponentActivationOptions;
+    String sourceLat,sourceLng,destinationLat,destinationLng;
     Geocoder geocoder;
     private MapView mapView;
 
@@ -94,7 +80,7 @@ public class MapFragment extends Fragment implements  OnMapReadyCallback  {
     private static final LatLng MOUNTAIN_VIEW = new LatLng(37.4, -122.1);
 
     public static final String TAG="mapFrag";
-
+    private ArrayList<Symbol> symbolArrayList = new ArrayList<>();
     LatLng sourceX, destinationX;
     private DirectionsRoute currentRoute;
     private NavigationMapRoute navigationMapRoute;
@@ -122,15 +108,23 @@ public class MapFragment extends Fragment implements  OnMapReadyCallback  {
 
         source=getArguments().getString("source");
         destination=getArguments().getString("destination");
+        sourceLat=getArguments().getString("sourceLat");
+        destinationLat=getArguments().getString("destinationLat");
+        sourceLng=getArguments().getString("sourceLng");
+        destinationLng=getArguments().getString("destinationLng");
         Log.i(TAG, "onCreateView: "+source+" and "+destination);
         Toast.makeText(getActivity(), source, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), sourceLat, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), sourceLng, Toast.LENGTH_SHORT).show();
         Toast.makeText(getActivity(), destination, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), destinationLat, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), destinationLng, Toast.LENGTH_SHORT).show();
         return fragmentMapBinding.getRoot();
 
     }
 
     private void initMap(Bundle savedInstanceState) {
-        LatLng source = new LatLng(23, 90), destination = new LatLng(23, 90);
+//        LatLng source = new LatLng(Double.valueOf(sourceLat), Double.valueOf(sourceLng)), destination = new LatLng(Double.valueOf(destinationLat), Double.valueOf(destinationLng));
         mapView = fragmentMapBinding.mapView;
 
         mapView.onCreate(savedInstanceState);
@@ -149,9 +143,12 @@ public class MapFragment extends Fragment implements  OnMapReadyCallback  {
             public void onMapReady(@NonNull MapboxMap mapboxMap) {
                 map = mapboxMap;
                 fragmentMapBinding.navView.onMapReady(map);
-                map.setStyle(getString(R.string.navigation_guidance_day), new Style.OnStyleLoaded() {
+                map.setStyle(new Style.Builder().fromUri(/*"mapbox://styles/mapbox/cjf4m44iw0uza2spb3q0a7s41"*/ /*"mapbox://styles/mapbox/light-v10"*/ "mapbox://styles/mapbox/navigation-preview-day-v4")
+                        .withImage("X", getActivity().getDrawable(R.drawable.ic_location_on_black_24dp)), new Style.OnStyleLoaded() {
                     @Override
                     public void onStyleLoaded(@NonNull Style style) {
+
+                        symbolManager = new SymbolManager(mapView, mapboxMap, style);
 
                         // Map is set up and the style has loaded. Now you can add data or make other map adjustments
 // Obtain the map from a MapFragment or MapView.
@@ -160,7 +157,10 @@ public class MapFragment extends Fragment implements  OnMapReadyCallback  {
                         uiSettings.setZoomGesturesEnabled(true);
                         uiSettings.setQuickZoomGesturesEnabled(true);
                         uiSettings.setCompassEnabled(false);
-
+//                        symbolManager.setIconAllowOverlap(true);
+//                        symbolManager.setTextAllowOverlap(true);
+//                        symbolManager.setIconIgnorePlacement(true);
+//                        symbolManager.setTextIgnorePlacement(true);
                         // Toast instructing user to tap on the map
 
 
@@ -172,109 +172,77 @@ public class MapFragment extends Fragment implements  OnMapReadyCallback  {
                                 .bearing(180) // Rotate the camera
                                 .tilt(30) // Set the camera tilt
                                 .build(); // Creates a CameraPosition from the builder
+                        locationComponent = mapboxMap.getLocationComponent();
+
+                        locationComponent.activateLocationComponent(locationComponentActivationOptions = LocationComponentActivationOptions.builder(getActivity(), style).build());
+
 
                         map.animateCamera(CameraUpdateFactory.newCameraPosition(position), 7000);
 
 
+
+                                Symbol x = symbolManager.create(new SymbolOptions().withIconImage("X").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng(Double.valueOf(sourceLat), Double.valueOf(sourceLng))).withTextField("Source"));
+                                Symbol y = symbolManager.create(new SymbolOptions().withIconImage("X").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng(Double.valueOf(destinationLat), Double.valueOf(destinationLng))).withTextField("Destination"));
+                                symbolArrayList.add(x);
+                                symbolArrayList.add(y);
+
+                        for (Symbol symbol : symbolArrayList) {
+
+                           // symbol.setIconImage("XRed");
+                            symbolManager.update(symbol);
+                        }
+
+                        NavigationRoute.Builder builder=NavigationRoute.builder(getActivity()).accessToken(getString(R.string.access_token))
+                                .origin(Point.fromLngLat( Double.valueOf(sourceLng),Double.valueOf(sourceLat)))
+                                .destination(Point.fromLngLat(Double.valueOf(destinationLng),Double.valueOf(destinationLat)));
+                                 builder.addWaypoint(Point.fromLngLat( 90.373302,23.759788));
+                            //     builder.addWaypoint(Point.fromLngLat( 90.388891,23.759243));
+                                 builder.build()
+                                .getRoute(new Callback<DirectionsResponse>() {
+                                    @SuppressLint("LogNotTimber")
+                                    @Override
+                                    public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
+                                        // You can get the generic HTTP info about the response
+                                       // Log.d(TAG, "Response code: " + response.code());
+                                       // Log.d(TAG, "Response code: " + response.body().routes());
+                                        if (response.body() == null) {
+                                            Log.e(TAG, "No routes found, make sure you set the right user and access token.");
+                                            return;
+                                        } else if (response.body().routes().size() < 1) {
+                                            Log.e(TAG, "No routes found");
+                                            return;
+                                        }
+
+                                        currentRoute = response.body().routes().get(0);
+                                        try {
+                                            final String chunked=new JSONObject(currentRoute.toJson()).toString(4);
+                                            final int chunkSize = 2048;
+                                            Log.i(TAG, "routed: ");
+                                            for (int i = 0; i < chunked.length(); i += chunkSize) {
+                                                Log.d(TAG, chunked.substring(i, Math.min(chunked.length(), i + chunkSize)));
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                        // Draw the route on the map
+
+                                        if (navigationMapRoute != null) {
+                                            navigationMapRoute.removeRoute();
+                                        } else {
+                                            navigationMapRoute = new NavigationMapRoute(null, mapView, mapboxMap, R.style.NavigationMapRoute);
+                                        }
+                                        navigationMapRoute.addRoute(currentRoute);
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<DirectionsResponse> call, Throwable throwable) {
+                                        Log.e(TAG, "Error: " + throwable.getMessage());
+                                    }
+                                });
+
                         // Move the camera instantly to Sydney with a zoom of 15.
 
-                        map.addOnMapLongClickListener(new MapboxMap.OnMapLongClickListener() {
-                            @Override
-                            public boolean onMapLongClick(@NonNull LatLng point) {
-
-                                Point source, destination;
-
-                                count[0]++;
-                                if (count[0] <= 2) {
-
-                                    try {
-                                        List<Address> addresses = geocoder.getFromLocation(point.getLatitude(), point.getLongitude(), 1);
-                                        mapboxMap.addMarker(new MarkerOptions().position(point).snippet(addresses.get(0).getAddressLine(0)));
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                    if (count[0] == 1) {
-                                        sourceX = point;
-                                        Toast.makeText(getContext(), "source", Toast.LENGTH_SHORT).show();
-                                    }
-                                    if (count[0] == 2) {
-                                        destinationX = point;
-                                        Toast.makeText(getContext(), "Destination", Toast.LENGTH_SHORT).show();
-
-                                        NavigationRoute
-                                                .builder(getActivity())
-                                                .accessToken(getString(R.string.access_token))
-                                                .origin(Point.fromLngLat(sourceX.getLongitude(), sourceX.getLatitude()))
-                                                .destination(Point.fromLngLat(destinationX.getLongitude(), destinationX.getLatitude()))
-                                                .build()
-                                                .getRoute(new Callback<DirectionsResponse>() {
-                                                    @SuppressLint("LogNotTimber")
-                                                    @Override
-                                                    public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
-                                                        // You can get the generic HTTP info about the response
-                                                        Log.d(TAG, "Response code: " + response.code());
-                                                        Log.d(TAG, "Response code: " + response.body().routes());
-                                                        if (response.body() == null) {
-                                                            Log.e(TAG, "No routes found, make sure you set the right user and access token.");
-                                                            return;
-                                                        } else if (response.body().routes().size() < 1) {
-                                                            Log.e(TAG, "No routes found");
-                                                            return;
-                                                        }
-
-                                                        currentRoute = response.body().routes().get(0);
-                                                        try {
-                                                            final String chunked=new JSONObject(currentRoute.toJson()).toString(4);
-                                                            final int chunkSize = 2048;
-                                                            Log.i(TAG, "routed: ");
-                                                            for (int i = 0; i < chunked.length(); i += chunkSize) {
-                                                                Log.d(TAG, chunked.substring(i, Math.min(chunked.length(), i + chunkSize)));
-                                                            }
-                                                        } catch (JSONException e) {
-                                                            e.printStackTrace();
-                                                        }
-
-                                                        // Draw the route on the map
-
-                                                        if (navigationMapRoute != null) {
-                                                            navigationMapRoute.removeRoute();
-                                                        } else {
-                                                            navigationMapRoute = new NavigationMapRoute(null, mapView, mapboxMap, R.style.NavigationMapRoute);
-                                                        }
-                                                        navigationMapRoute.addRoute(currentRoute);
-                                                    }
-
-                                                    @Override
-                                                    public void onFailure(Call<DirectionsResponse> call, Throwable throwable) {
-                                                        Log.e(TAG, "Error: " + throwable.getMessage());
-                                                    }
-                                                });
-                                    }
-
-                                } else {
-                                    Toast.makeText(getContext(), "Already source and destination added", Toast.LENGTH_SHORT).show();
-                                }
-
-//                                List <Address>addresses=null;
-//                                Point destinationPoint = Point.fromLngLat(point.getLongitude(), point.getLatitude());
-//
-//                                Point originPoint = Point.fromLngLat(locationComponent.getLastKnownLocation().getLongitude(),
-//                                        locationComponent.getLastKnownLocation().getLatitude());
-//
-//                                GeoJsonSource source = mapboxMap.getStyle().getSourceAs("destination-source-id");
-//                                if (source != null) {
-//                                    source.setGeoJson(Feature.fromGeometry(destinationPoint));  //adding marker
-//                                    try {
-//                                        addresses=geocoder.getFromLocation(destination.getLatitude(),destination.getLongitude(),1);
-//
-//                                    } catch (IOException e) {
-//                                        e.printStackTrace();
-//                                    }
-//                                    Toast.makeText(getContext(), addresses.get(0).getAddressLine(0), Toast.LENGTH_SHORT).show();
-//                                }
-                                return true;
-                            }
-                        });
                     }
 
                 });

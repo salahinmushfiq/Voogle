@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.example.voogle.Adapters.BusFragmentPagerAdapter;
 import com.example.voogle.Fragments.BusFragment;
@@ -18,7 +19,7 @@ import java.util.Objects;
 public class HomeActivity extends AppCompatActivity {
 
     ActivityHomeBinding activityHomeBinding;
-    String source ,destination;
+    String source ,destination,sourceLat,sourceLng,destinationLat,destinationLng;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,9 +27,25 @@ public class HomeActivity extends AppCompatActivity {
 
         source= getIntent().getStringExtra("source");
         destination=getIntent().getStringExtra("destination");
+        sourceLat= getIntent().getStringExtra("sourceLat");
+        destinationLat=getIntent().getStringExtra("destinationLat");
+        sourceLng= getIntent().getStringExtra("sourceLng");
+        destinationLng=getIntent().getStringExtra("destinationLng");
         Bundle bundle=new Bundle();
         bundle.putString("source",source);
         bundle.putString("destination",destination);
+        bundle.putString("sourceLat",sourceLat);
+        bundle.putString("destinationLat",destinationLat);
+        bundle.putString("sourceLng",sourceLng);
+        bundle.putString("destinationLng",destinationLng);
+
+        Toast.makeText(this, "Source"+source, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Source Lat: "+sourceLat, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Source Lng: "+sourceLng, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Destination: "+destination, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Destination Lat: "+destinationLat, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Destination Lng: "+destinationLng, Toast.LENGTH_SHORT).show();
+
         MapFragment mapFragment=new MapFragment();
         mapFragment.setArguments(bundle);
 
