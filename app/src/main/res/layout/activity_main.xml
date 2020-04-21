@@ -41,6 +41,7 @@
             android:textAlignment="center"
             android:background="@drawable/rounded_autocomplete_textbox"
             android:textSize="24sp"
+
             />
         <AutoCompleteTextView
             android:id="@+id/destinationACTV"
