@@ -1,84 +1,49 @@
 package com.example.voogle.Fragments;
 
 
-
 import android.annotation.SuppressLint;
-import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-
-import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
-import com.example.voogle.PojoClasses.Place;
+import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
 import com.example.voogle.R;
-
 import com.example.voogle.databinding.FragmentMapBinding;
-
-
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
-
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
-import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
-
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
-import com.mapbox.mapboxsdk.location.modes.CameraMode;
-import com.mapbox.mapboxsdk.maps.MapView;
-import com.mapbox.mapboxsdk.maps.MapboxMap;
-import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
-import com.mapbox.mapboxsdk.maps.Style;
-import com.mapbox.mapboxsdk.maps.UiSettings;
-
-import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
-import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
-import com.mapbox.services.android.navigation.ui.v5.NavigationView;
-import com.mapbox.services.android.navigation.ui.v5.NavigationViewOptions;
+import com.mapbox.mapboxsdk.maps.*;
 import com.mapbox.services.android.navigation.ui.v5.OnNavigationReadyCallback;
 import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
-import com.mapbox.services.android.navigation.v5.navigation.MapboxNavigationOptions;
 import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
-
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAllowOverlap;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconIgnorePlacement;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MapFragment extends Fragment implements  OnMapReadyCallback  {
+public class MapFragment extends Fragment implements OnMapReadyCallback {
     final int[] count = {0};
     FragmentMapBinding fragmentMapBinding;
     MapboxMap map;
@@ -93,12 +58,13 @@ public class MapFragment extends Fragment implements  OnMapReadyCallback  {
     private static final LatLng SYDNEY = new LatLng(-33.88, 151.21);
     private static final LatLng MOUNTAIN_VIEW = new LatLng(37.4, -122.1);
 
-    public static final String TAG="mapFrag";
+    public static final String TAG = "mapFrag";
 
     LatLng sourceX, destinationX;
     private DirectionsRoute currentRoute;
     private NavigationMapRoute navigationMapRoute;
-    private String source=null,destination=null;
+    private String source = null, destination = null;
+
     public MapFragment() {
         // Required empty public constructor
     }
@@ -111,18 +77,17 @@ public class MapFragment extends Fragment implements  OnMapReadyCallback  {
         // Write a message to the database
 
 
-
         Mapbox.getInstance(getContext(), getString(R.string.access_token));
 
 
-        fragmentMapBinding=DataBindingUtil.inflate(inflater,R.layout.fragment_map, container, false);
+        fragmentMapBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_map, container, false);
 
         initMap(savedInstanceState);
 
 
-        source=getArguments().getString("source");
-        destination=getArguments().getString("destination");
-        Log.i(TAG, "onCreateView: "+source+" and "+destination);
+        source = getArguments().getString("source");
+        destination = getArguments().getString("destination");
+        Log.i(TAG, "onCreateView: " + source + " and " + destination);
         Toast.makeText(getActivity(), source, Toast.LENGTH_SHORT).show();
         Toast.makeText(getActivity(), destination, Toast.LENGTH_SHORT).show();
         return fragmentMapBinding.getRoot();
@@ -162,7 +127,6 @@ public class MapFragment extends Fragment implements  OnMapReadyCallback  {
                         uiSettings.setCompassEnabled(false);
 
                         // Toast instructing user to tap on the map
-
 
 
                         CameraPosition position = new CameraPosition.Builder()
@@ -224,7 +188,7 @@ public class MapFragment extends Fragment implements  OnMapReadyCallback  {
 
                                                         currentRoute = response.body().routes().get(0);
                                                         try {
-                                                            final String chunked=new JSONObject(currentRoute.toJson()).toString(4);
+                                                            final String chunked = new JSONObject(currentRoute.toJson()).toString(4);
                                                             final int chunkSize = 2048;
                                                             Log.i(TAG, "routed: ");
                                                             for (int i = 0; i < chunked.length(); i += chunkSize) {
@@ -237,7 +201,7 @@ public class MapFragment extends Fragment implements  OnMapReadyCallback  {
                                                         // Draw the route on the map
 
                                                         if (navigationMapRoute != null) {
-                                                            navigationMapRoute.removeRoute();
+                                                            navigationMapRoute.updateRouteVisibilityTo(true);
                                                         } else {
                                                             navigationMapRoute = new NavigationMapRoute(null, mapView, mapboxMap, R.style.NavigationMapRoute);
                                                         }
