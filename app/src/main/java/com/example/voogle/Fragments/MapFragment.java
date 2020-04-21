@@ -9,16 +9,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
+import com.example.voogle.Activities.MainActivity;
+import com.example.voogle.GlobalVariables;
 import com.example.voogle.R;
 import com.example.voogle.databinding.FragmentMapBinding;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.JsonObject;
 import com.mapbox.android.core.location.LocationEngineCallback;
 import com.mapbox.android.core.location.LocationEngineProvider;
@@ -197,6 +203,15 @@ public class MapFragment extends Fragment implements  OnMapReadyCallback  {
                                 .destination(Point.fromLngLat(Double.valueOf(destinationLng),Double.valueOf(destinationLat)));
                                  builder.addWaypoint(Point.fromLngLat( 90.373302,23.759788));
                             //     builder.addWaypoint(Point.fromLngLat( 90.388891,23.759243));
+                                 getWayPoints(builder);
+                        for (Integer route : GlobalVariables.sourceRoutes) {
+                            //      destinationRoute.add(route);
+                            Toast.makeText(getActivity(), "Source Root Map:"+route.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                        for (Integer route : GlobalVariables.destinationRoutes) {
+                            //      destinationRoute.add(route);
+                            Toast.makeText(getActivity(), "Destinaion Root Map:"+route.toString(), Toast.LENGTH_SHORT).show();
+                        }
                                  builder.build()
                                 .getRoute(new Callback<DirectionsResponse>() {
                                     @SuppressLint("LogNotTimber")
@@ -252,6 +267,51 @@ public class MapFragment extends Fragment implements  OnMapReadyCallback  {
 
         });
 
+    }
+
+    private void getWayPoints(NavigationRoute.Builder builder) {
+       // stopRef = FirebaseDatabase.getInstance().getReference().child("root").child("stops");
+      //  stopRef.addValueEventListener(new ValueEventListener() {
+          //  @Override
+         //   public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+          //      if (dataSnapshot.exists()) {
+             //       for (DataSnapshot data : dataSnapshot.getChildren()) {
+               //         if(!data.child("s_no").getValue().toString().equals(source)||!) {
+//                            stop = data.child("name").getValue().toString();
+//                            Toast.makeText(MainActivity.this,"Stop: "+stop, Toast.LENGTH_SHORT).show();
+//                            lat = Double.valueOf(data.child("lat").getValue().toString());
+//                            lng = Double.valueOf(data.child("lng").getValue().toString());
+//                            Toast.makeText(MainActivity.this, String.valueOf(lat), Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(MainActivity.this, String.valueOf(lng), Toast.LENGTH_SHORT).show();
+//                            goToHome.putExtra("sourceLat", data.child("lat").getValue().toString());
+//                            goToHome.putExtra("sourceLng", data.child("lng").getValue().toString());
+                    //    }
+                     //   if(data.child("name").getValue().toString().equals(destination)) {
+//                            stop = data.child("name").getValue().toString();
+//                            Toast.makeText(MainActivity.this,"Stop: "+stop, Toast.LENGTH_SHORT).show();
+//                            lat = Double.valueOf(data.child("lat").getValue().toString());
+//                            lng = Double.valueOf(data.child("lng").getValue().toString());
+//                            Toast.makeText(MainActivity.this, String.valueOf(lat), Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(MainActivity.this, String.valueOf(lng), Toast.LENGTH_SHORT).show();
+//                            goToHome.putExtra("destinationLat", String.valueOf(lat));
+//                            goToHome.putExtra("destinationLng", String.valueOf(lng));
+                   //    }
+
+
+                   // }
+//                    goToHome.putExtra("source", source);
+//                    goToHome.putExtra("destination", destination);
+//                    startActivity(goToHome);
+             //   } else {
+             //       Toast.makeText(getActivity(), "Empty Database", Toast.LENGTH_SHORT).show();
+             //   }
+          //  }
+
+         //   @Override
+         //   public void onCancelled(@NonNull DatabaseError databaseError) {
+          //      Toast.makeText(getActivity(), databaseError.toString(), Toast.LENGTH_SHORT).show();
+        //    }
+       // });
     }
 
     @Override
