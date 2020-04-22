@@ -1,9 +1,15 @@
 package com.example.voogle.PojoClasses;
 
+import androidx.annotation.NonNull;
+
 public class Stops {
     String name;
     double lat;
     double lng;
+
+    public Stops() {
+    }
+
     String frontOrback;
     int routes[];
 
@@ -53,5 +59,11 @@ public class Stops {
 
     public void setRoutes(int[] routes) {
         this.routes = routes;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Name: "+name+" Lat: "+lat+" Lng: "+lng;
     }
 }
