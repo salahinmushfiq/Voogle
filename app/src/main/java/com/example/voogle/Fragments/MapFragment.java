@@ -91,7 +91,7 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineWidth;
 public class MapFragment extends Fragment implements OnMapReadyCallback {
     final int[] count = {0};
     FragmentMapBinding fragmentMapBinding;
-    Po
+
     MapboxMap map;
     DatabaseReference root = FirebaseDatabase.getInstance().getReference("root");
     DatabaseReference stopRef;
@@ -249,7 +249,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                 points) {
                             builder.addWaypoint(wayPoint);
                         }*/
-                        List<Points> orderNumbers=points;
+                    //    List<Points> orderNumbers=points;
                         navigationMapRoute = new NavigationMapRoute(null, mapView, map);
                         NavigationRoute.builder(getActivity())
                                 .accessToken(Mapbox.getAccessToken())
@@ -261,7 +261,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                     @Override
                                     public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
                                         currentRoute=response.body().routes().get(0);
-                                       // currentRoute.routeOptions(RouteOptions.builder().coordinates(orderNumbers).build());
+                                       // currentRoute.routeOptions(RouteOptions.builder().coordinates(pointso).build());
+                                        navigationMapRoute.addRoute(currentRoute);
                                     }
 
                                     @Override
