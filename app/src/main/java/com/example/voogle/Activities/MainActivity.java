@@ -79,16 +79,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         activityMainBinding=DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-
-
-
-        /**
-         * TUI EKHONO EITA COMMENT OUT KOROS NAI *FACEPALM*
-         * AMI KAM SHESHE EIDA ABAR ON RAIKHA JAMU
-         */
-        Intent goToHome=new Intent(MainActivity.this,HomeActivity.class);
-        startActivity(goToHome);
-
     }
     public void onClickOnGo(View view) {
         Intent goToHome=new Intent(MainActivity.this,HomeActivity.class);

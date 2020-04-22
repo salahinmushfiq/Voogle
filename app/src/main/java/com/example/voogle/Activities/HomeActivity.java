@@ -10,7 +10,6 @@ import com.example.voogle.Adapters.BusFragmentPagerAdapter;
 import com.example.voogle.Fragments.BusFragment;
 import com.example.voogle.Fragments.MapFragment;
 import com.example.voogle.Fragments.TrainFragement;
-import com.example.voogle.GlobalVariables;
 import com.example.voogle.R;
 import com.example.voogle.databinding.ActivityHomeBinding;
 import com.google.android.material.tabs.TabLayout;
@@ -23,8 +22,7 @@ public class HomeActivity extends AppCompatActivity {
 
     ActivityHomeBinding activityHomeBinding;
     String source ,destination,sourceLat,sourceLng,destinationLat,destinationLng,sourceS_no,destinationS_no;
-    ArrayList<Integer>sourceRoute;
-    ArrayList<Integer>destinationRoute;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,8 +36,7 @@ public class HomeActivity extends AppCompatActivity {
         destinationS_no=getIntent().getStringExtra("destinationS_no");
         sourceLng= getIntent().getStringExtra("sourceLng");
 
-        sourceRoute = GlobalVariables.sourceRoutes;
-        destinationRoute = GlobalVariables.destinationRoutes;
+
 
         destinationLng=getIntent().getStringExtra("destinationLng");
         sourceS_no= getIntent().getStringExtra("sourceS_no");
