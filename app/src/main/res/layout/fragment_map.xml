@@ -19,7 +19,7 @@
             mapbox:mapbox_cameraTilt="50.25"
             mapbox:mapbox_cameraZoom="10"
             mapbox:mapbox_cameraZoomMax="18.41"
-            mapbox:mapbox_cameraZoomMin="14"
+            mapbox:mapbox_cameraZoomMin="8"
             mapbox:mapbox_uiRotateGestures="false"
             mapbox:layout_constraintTop_toTopOf="parent"
             mapbox:layout_constraintLeft_toLeftOf="parent"

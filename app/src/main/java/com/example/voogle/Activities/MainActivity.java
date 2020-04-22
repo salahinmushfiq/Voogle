@@ -121,8 +121,8 @@ public class MainActivity extends AppCompatActivity {
 //                            Toast.makeText(MainActivity.this, Arrays.toString(sourceRoute.toArray()), Toast.LENGTH_SHORT).show();
                       //      Toast.makeText(MainActivity.this, String.valueOf(lat), Toast.LENGTH_SHORT).show();
                       //      Toast.makeText(MainActivity.this, String.valueOf(lng), Toast.LENGTH_SHORT).show();
-                            goToHome.putExtra("sourceLat", String.valueOf(lat));
-                            goToHome.putExtra("sourceLng", String.valueOf(lng));
+                            goToHome.putExtra("sourceLat", lat);
+                            goToHome.putExtra("sourceLng", lng);
                             goToHome.putExtra("sourceS_no", String.valueOf(s_no));
 
                         }
@@ -139,8 +139,8 @@ public class MainActivity extends AppCompatActivity {
 
                          //   Toast.makeText(MainActivity.this, String.valueOf(lat), Toast.LENGTH_SHORT).show();
                          //   Toast.makeText(MainActivity.this, String.valueOf(lng), Toast.LENGTH_SHORT).show();
-                            goToHome.putExtra("destinationLat", String.valueOf(lat));
-                            goToHome.putExtra("destinationLng", String.valueOf(lng));
+                            goToHome.putExtra("destinationLat", lat);
+                            goToHome.putExtra("destinationLng", lng);
                             goToHome.putExtra("destinationS_no", String.valueOf(s_no));
 
                         }

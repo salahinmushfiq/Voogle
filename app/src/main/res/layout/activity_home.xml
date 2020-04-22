@@ -68,7 +68,7 @@
 
             </com.google.android.material.tabs.TabLayout>
 
-            <androidx.viewpager.widget.ViewPager
+            <com.example.voogle.components.Custompager
                 android:id="@+id/vehicleTypeVP"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />

@@ -1,4 +1,4 @@
-package com.example.voogle.Components;
+package com.example.voogle.components;
 
 import android.animation.LayoutTransition;
 import android.animation.StateListAnimator;

@@ -1,23 +1,18 @@
 package com.example.voogle.Fragments;
 
 
-import android.annotation.SuppressLint;
-import android.graphics.Color;
-import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
-import com.example.voogle.Activities.MainActivity;
 import com.example.voogle.GlobalVariables;
 import com.example.voogle.PojoClasses.Stops;
 import com.example.voogle.R;
@@ -27,11 +22,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.gson.JsonObject;
-import com.mapbox.android.core.location.LocationEngineCallback;
-import com.mapbox.android.core.location.LocationEngineProvider;
-import com.mapbox.android.core.location.LocationEngineRequest;
-import com.mapbox.android.core.location.LocationEngineResult;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.directions.v5.MapboxDirections;
@@ -43,13 +33,11 @@ import com.mapbox.geojson.FeatureCollection;
 import com.mapbox.geojson.LineString;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
-import com.mapbox.mapboxsdk.location.modes.RenderMode;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
@@ -58,32 +46,20 @@ import com.mapbox.mapboxsdk.maps.UiSettings;
 import com.mapbox.mapboxsdk.plugins.annotation.Symbol;
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager;
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions;
-import com.mapbox.mapboxsdk.style.expressions.Expression;
-import com.mapbox.mapboxsdk.style.layers.LineLayer;
-import com.mapbox.mapboxsdk.style.layers.Property;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.mapbox.services.android.navigation.ui.v5.OnNavigationReadyCallback;
 import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
 import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.mapbox.core.constants.Constants.BASE_API_URL;
 import static com.mapbox.core.constants.Constants.PRECISION_6;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineCap;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineColor;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineJoin;
-import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineWidth;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -99,7 +75,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     SymbolManager symbolManager;
     LocationComponent locationComponent;
     LocationComponentActivationOptions locationComponentActivationOptions;
-    String sourceLat, sourceLng, destinationLat, destinationLng;
+    double sourceLat;
+    double sourceLng;
+    double destinationLat;
+    double destinationLng;
     Geocoder geocoder;
     private MapView mapView;
     ArrayList<Integer> sourceRoutes, destinationRoutes;
@@ -116,6 +95,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private Bundle savedInstanceState;
     private static final String LINE_GEOJSON_SOURCE_ID = "LINE_GEOJSON_SOURCE_ID";
     private static final String CIRCLE_GEOJSON_SOURCE_ID = "CIRCLE_GEOJSON_SOURCE_ID";
+
     public MapFragment() {
         // Required empty public constructor
     }
@@ -132,7 +112,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         this.savedInstanceState = savedInstanceState;
 
-        Mapbox.getInstance(getContext(), getString(R.string.access_token));
+        Mapbox.getInstance(getActivity(), getString(R.string.access_token));
 
 
         fragmentMapBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_map, container, false);
@@ -142,10 +122,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         source = getArguments().getString("source");
         destination = getArguments().getString("destination");
-        sourceLat = getArguments().getString("sourceLat");
-        destinationLat = getArguments().getString("destinationLat");
-        sourceLng = getArguments().getString("sourceLng");
-        destinationLng = getArguments().getString("destinationLng");
+        sourceLat = getArguments().getDouble("sourceLat");
+        destinationLat = getArguments().getDouble("destinationLat");
+        sourceLng = getArguments().getDouble("sourceLng");
+        destinationLng = getArguments().getDouble("destinationLng");
         Log.i(TAG, "onCreateView: " + source + " and " + destination);
         Toast.makeText(getActivity(), source, Toast.LENGTH_SHORT).show();
         // Toast.makeText(getActivity(), sourceLat, Toast.LENGTH_SHORT).show();
@@ -168,11 +148,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         geocoder = new Geocoder(getContext());
 
-        fragmentMapBinding.navView.initialize(new OnNavigationReadyCallback() {
-            @Override
-            public void onNavigationReady(boolean isRunning) {
+        fragmentMapBinding.navView.initialize(isRunning -> {
 
-            }
         });
 
         mapView.getMapAsync(new OnMapReadyCallback() {
@@ -181,133 +158,146 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 map = mapboxMap;
                 fragmentMapBinding.navView.onMapReady(map);
                 map.setStyle(new Style.Builder().fromUri(/*"mapbox://styles/mapbox/cjf4m44iw0uza2spb3q0a7s41"*/ /*"mapbox://styles/mapbox/light-v10"*/ "mapbox://styles/mapbox/navigation-preview-day-v4")
-                        .withImage("X", getActivity().getDrawable(R.drawable.ic_location_on_black_24dp)), new Style.OnStyleLoaded() {
-                    @Override
-                    public void onStyleLoaded(@NonNull Style style) {
+                        .withImage("X", getActivity().getDrawable(R.drawable.ic_location_on_black_24dp)), style -> {
 
-                        symbolManager = new SymbolManager(mapView, mapboxMap, style);
+                    symbolManager = new SymbolManager(mapView, mapboxMap, style);
 
-                        // Map is set up and the style has loaded. Now you can add data or make other map adjustments
-// Obtain the map from a MapFragment or MapView.
-                        UiSettings uiSettings = mapboxMap.getUiSettings();
-                        uiSettings.areAllGesturesEnabled();
-                        uiSettings.setZoomGesturesEnabled(true);
-                        uiSettings.setQuickZoomGesturesEnabled(true);
-                        uiSettings.setCompassEnabled(false);
-//                        symbolManager.setIconAllowOverlap(true);
-//                        symbolManager.setTextAllowOverlap(true);
-//                        symbolManager.setIconIgnorePlacement(true);
-//                        symbolManager.setTextIgnorePlacement(true);
-                        // Toast instructing user to tap on the map
+                    // Map is set up and the style has loaded. Now you can add data or make other map adjustments
+                    // Obtain the map from a MapFragment or MapView.
+                    UiSettings uiSettings = mapboxMap.getUiSettings();
+                    uiSettings.setZoomGesturesEnabled(true);
+                    uiSettings.setQuickZoomGesturesEnabled(true);
+                    uiSettings.setCompassEnabled(true);
+                    //                        symbolManager.setIconAllowOverlap(true);
+                    //                        symbolManager.setTextAllowOverlap(true);
+                    //                        symbolManager.setIconIgnorePlacement(true);
+                    //                        symbolManager.setTextIgnorePlacement(true);
+                    // Toast instructing user to tap on the map
 
 
-                        CameraPosition position = new CameraPosition.Builder()
-                                .target(new LatLng(23.738999, 90.387202
-                                )) // Sets the new camera position
-                                .zoom(14) // Sets the zoom
-                                .bearing(180) // Rotate the camera
-                                .tilt(30) // Set the camera tilt
-                                .build(); // Creates a CameraPosition from the builder
-                        locationComponent = mapboxMap.getLocationComponent();
+                    CameraPosition position = new CameraPosition.Builder()
+                            .target(new LatLng(sourceLat, sourceLng
+                            )) // Sets the new camera position
+                            .zoom(14) // Sets the zoom
+                            .tilt(30) // Set the camera tilt
+                            .build(); // Creates a CameraPosition from the builder
+                    locationComponent = mapboxMap.getLocationComponent();
 
-                        locationComponent.activateLocationComponent(locationComponentActivationOptions = LocationComponentActivationOptions.builder(getActivity(), style).build());
-
-
-                        map.animateCamera(CameraUpdateFactory.newCameraPosition(position), 7000);
+                    locationComponent.activateLocationComponent(locationComponentActivationOptions = LocationComponentActivationOptions.builder(getActivity(), style).build());
 
 
-                        Symbol x = symbolManager.create(new SymbolOptions().withIconImage("X").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng(Double.valueOf(sourceLat), Double.valueOf(sourceLng))).withTextField("Source"));
-                        Symbol y = symbolManager.create(new SymbolOptions().withIconImage("X").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng(Double.valueOf(destinationLat), Double.valueOf(destinationLng))).withTextField("Destination"));
-                        symbolArrayList.add(x);
-                        symbolArrayList.add(y);
+                    map.animateCamera(CameraUpdateFactory.newCameraPosition(position), 7000);
 
-                        for (Symbol symbol : symbolArrayList) {
 
-                            // symbol.setIconImage("XRed");
-                            symbolManager.update(symbol);
+                    Symbol x = symbolManager.create(new SymbolOptions().withIconImage("X").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng(Double.valueOf(sourceLat), Double.valueOf(sourceLng))).withTextField("Source"));
+                    Symbol y = symbolManager.create(new SymbolOptions().withIconImage("X").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng(Double.valueOf(destinationLat), Double.valueOf(destinationLng))).withTextField("Destination"));
+                    symbolArrayList.add(x);
+                    symbolArrayList.add(y);
+
+                    for (Symbol symbol : symbolArrayList) {
+
+                        // symbol.setIconImage("XRed");
+                        symbolManager.update(symbol);
+                    }
+
+                    MapboxDirections directionsBuilder = MapboxDirections.builder()
+                            .accessToken(getString(R.string.access_token))
+                            .origin(Point.fromLngLat(Double.valueOf(sourceLng), Double.valueOf(sourceLat)))
+                            .destination(Point.fromLngLat(Double.valueOf(destinationLng), Double.valueOf(destinationLat)))
+                            .profile(DirectionsCriteria.PROFILE_DRIVING)
+                            .accessToken(getString(R.string.access_token))
+                            .overview(DirectionsCriteria.OVERVIEW_FULL)
+                            .build();
+
+                    //                        for (Point wayPoint :
+                    //                                points) {
+                    //                            directionsBuilder.addWaypoint(wayPoint);
+                    //                        }
+
+                            /*NavigationRoute.Builder builder = NavigationRoute.builder(getActivity()).accessToken(getString(R.string.access_token))
+                                    .origin(Point.fromLngLat(Double.valueOf(sourceLng), Double.valueOf(sourceLat)))
+                                    .destination(Point.fromLngLat(Double.valueOf(destinationLng), Double.valueOf(destinationLat)));
+                            builder.profile(DirectionsCriteria.PROFILE_DRIVING).user("azkzero");
+                            for (Point wayPoint :
+                                    points) {
+                                builder.addWaypoint(wayPoint);
+                            }*/
+                    List<Point> orderNumbers = points;
+                    for (Point xtx :
+                            orderNumbers) {
+                        Log.i(TAG, "onStyleLoaded: " + xtx.longitude() + " " + xtx.latitude());
+                    }
+                    navigationMapRoute = new NavigationMapRoute(null, mapView, map);
+                    NavigationRoute.Builder testB;
+                    NavigationRoute test = (testB = NavigationRoute.builder(getActivity()))
+                            .accessToken(Mapbox.getAccessToken())
+                            .origin(orderNumbers.get(0))
+                            .destination(orderNumbers.get(orderNumbers.size() - 1))
+                            .routeOptions(RouteOptions.builder().steps(true).coordinates(orderNumbers).profile(DirectionsCriteria.PROFILE_DRIVING).baseUrl(BASE_API_URL).user(DirectionsCriteria.PROFILE_DEFAULT_USER).geometries(DirectionsCriteria.GEOMETRY_POLYLINE).accessToken(getString(R.string.access_token)).requestUuid("mapboxzero").build()).profile(DirectionsCriteria.PROFILE_DRIVING)
+                            .alternatives(true)
+                            .build();
+                    Log.i(TAG, "onStyleLoaded: " + test);
+
+                    //                        testB.routeOptions(RouteOptions.builder().coordinates(orderNumbers).baseUrl(BASE_API_URL).user(DirectionsCriteria.PROFILE_DEFAULT_USER).geometries(DirectionsCriteria.GEOMETRY_POLYLINE).accessToken(getString(R.string.access_token)).requestUuid("mapboxzero").build());
+
+                            /*for (Point point:
+                                 points) {
+                                testB.addWaypoint(point);
+                            }*/
+
+                    test.getRoute(new Callback<DirectionsResponse>() {
+                        @Override
+                        public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
+                            if (response.body() != null) {
+                                Log.i(TAG, "onResponse: " + response.body().routes().size());
+                                for (DirectionsRoute x :
+                                        response.body().routes()) {
+                                    navigationMapRoute.addRoute(x);
+                                }
+                            } else Log.i(TAG, "onResponse: " + response);
                         }
 
-                        MapboxDirections directionsBuilder = MapboxDirections.builder()
-                                .accessToken(getString(R.string.access_token))
-                                .origin(Point.fromLngLat(Double.valueOf(sourceLng), Double.valueOf(sourceLat)))
-                                .destination(Point.fromLngLat(Double.valueOf(destinationLng), Double.valueOf(destinationLat)))
-                                .profile(DirectionsCriteria.PROFILE_DRIVING)
-                                .accessToken(getString(R.string.access_token))
-                                .overview(DirectionsCriteria.OVERVIEW_FULL)
-                                .build();
+                        @Override
+                        public void onFailure(Call<DirectionsResponse> call, Throwable t) {
 
-//                        for (Point wayPoint :
-//                                points) {
-//                            directionsBuilder.addWaypoint(wayPoint);
-//                        }
+                        }
+                    });
+                            /*builder.build()
+                                    .getRoute(*/
+                    //                        directionsBuilder.enqueueCall(new Callback<DirectionsResponse>() {
+                    //                            @Override public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
+                    //
+                    //                                if (response.body() == null) {
+                    //                                   // Log.e("No routes found, make sure you set the right user and access token.");
+                    //                                    Toast.makeText(getActivity(), "Routes Not Found", Toast.LENGTH_SHORT).show();
+                    //                                    return;
+                    //                                } else if (response.body().routes().size() < 1) {
+                    //                                   // Log.e("No routes found");
+                    //                                    Toast.makeText(getActivity(), "No Routes Found", Toast.LENGTH_SHORT).show();
+                    //                                    return;
+                    //                                }
+                    //
+                    //// Retrieve the directions route from the API response
+                    //                                currentRoute = response.body().routes().get(0);
+                    //                                currentRoute.routeOptions();
+                    //                               // currentRoute.duration().toString();
+                    //
+                    //
+                    //                                Toast.makeText(getActivity(), "Current Route"+currentRoute, Toast.LENGTH_SHORT).show();
+                    //                                Toast.makeText(getActivity(), currentRoute.duration().toString(), Toast.LENGTH_SHORT).show();
+                    //                                Log.d(TAG, currentRoute.toString());
+                    //                                drawNavigationPolylineRoute(response.body().routes().get(0), response);
+                    //                               //  currentRoute.toBuilder().build();
+                    //                            }
+                    //
+                    //                            @Override public void onFailure(Call<DirectionsResponse> call, Throwable throwable) {
+                    //
+                    //                                Log.e(TAG, "Error: " + throwable.getMessage());
+                    //
+                    //                            }
+                    //                        });
 
-                        /*NavigationRoute.Builder builder = NavigationRoute.builder(getActivity()).accessToken(getString(R.string.access_token))
-                                .origin(Point.fromLngLat(Double.valueOf(sourceLng), Double.valueOf(sourceLat)))
-                                .destination(Point.fromLngLat(Double.valueOf(destinationLng), Double.valueOf(destinationLat)));
-                        builder.profile(DirectionsCriteria.PROFILE_DRIVING).user("azkzero");
-                        for (Point wayPoint :
-                                points) {
-                            builder.addWaypoint(wayPoint);
-                        }*/
-                    //    List<Points> orderNumbers=points;
-                        navigationMapRoute = new NavigationMapRoute(null, mapView, map);
-                        NavigationRoute.builder(getActivity())
-                                .accessToken(Mapbox.getAccessToken())
-                                .origin(Point.fromLngLat(Double.valueOf(sourceLng), Double.valueOf(sourceLat)))
-                                .destination(Point.fromLngLat(Double.valueOf(destinationLng), Double.valueOf(destinationLat)))
-                                .alternatives(true)
-                                .build()
-                                .getRoute(new Callback<DirectionsResponse>() {
-                                    @Override
-                                    public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
-                                        currentRoute=response.body().routes().get(0);
-                                       // currentRoute.routeOptions(RouteOptions.builder().coordinates(pointso).build());
-                                        navigationMapRoute.addRoute(currentRoute);
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<DirectionsResponse> call, Throwable t) {
-
-                                    }
-                                });
-                        /*builder.build()
-                                .getRoute(*/
-//                        directionsBuilder.enqueueCall(new Callback<DirectionsResponse>() {
-//                            @Override public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
-//
-//                                if (response.body() == null) {
-//                                   // Log.e("No routes found, make sure you set the right user and access token.");
-//                                    Toast.makeText(getActivity(), "Routes Not Found", Toast.LENGTH_SHORT).show();
-//                                    return;
-//                                } else if (response.body().routes().size() < 1) {
-//                                   // Log.e("No routes found");
-//                                    Toast.makeText(getActivity(), "No Routes Found", Toast.LENGTH_SHORT).show();
-//                                    return;
-//                                }
-//
-//// Retrieve the directions route from the API response
-//                                currentRoute = response.body().routes().get(0);
-//                                currentRoute.routeOptions();
-//                               // currentRoute.duration().toString();
-//
-//
-//                                Toast.makeText(getActivity(), "Current Route"+currentRoute, Toast.LENGTH_SHORT).show();
-//                                Toast.makeText(getActivity(), currentRoute.duration().toString(), Toast.LENGTH_SHORT).show();
-//                                Log.d(TAG, currentRoute.toString());
-//                                drawNavigationPolylineRoute(response.body().routes().get(0), response);
-//                               //  currentRoute.toBuilder().build();
-//                            }
-//
-//                            @Override public void onFailure(Call<DirectionsResponse> call, Throwable throwable) {
-//
-//                                Log.e(TAG, "Error: " + throwable.getMessage());
-//
-//                            }
-//                        });
-
-                        // Move the camera instantly to Sydney with a zoom of 15.
-
-                    }
+                    // Move the camera instantly to Sydney with a zoom of 15.
 
                 });
 
@@ -341,7 +331,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         if (lineLayerSource != null && currentRoute.geometry() != null) {
                             lineLayerSource.setGeoJson(Feature.fromGeometry(LineString.fromPolyline(
                                     currentRoute.geometry(), PRECISION_6)));
-                                Log.d(TAG, currentRoute.toString());
+                            Log.d(TAG, currentRoute.toString());
                         }
 
 // Ease the camera to fit to the Directions route.
@@ -358,7 +348,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         for (Integer sourceRoute : GlobalVariables.sourceRoutes) {
             sourceRoutes.add(sourceRoute);
             for (Integer destinationRoute : GlobalVariables.destinationRoutes) {
-                if (sourceRoute.equals(destinationRoute) ) {
+                if (sourceRoute.equals(destinationRoute)) {
                     commonRoutes.add(sourceRoute);
                 }
             }
@@ -388,9 +378,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                     lat = stops.child("lat").getValue(Double.class);
                                     lng = stops.child("lng").getValue(Double.class);
 
-                                //    Toast.makeText(getActivity(), stops.child("name").getValue().toString(), Toast.LENGTH_SHORT).show();
-                               //     Toast.makeText(getActivity(), lat.toString(), Toast.LENGTH_SHORT).show();
-                               //     Toast.makeText(getActivity(), lng.toString(), Toast.LENGTH_SHORT).show();
+                                    //    Toast.makeText(getActivity(), stops.child("name").getValue().toString(), Toast.LENGTH_SHORT).show();
+                                    //     Toast.makeText(getActivity(), lat.toString(), Toast.LENGTH_SHORT).show();
+                                    //     Toast.makeText(getActivity(), lng.toString(), Toast.LENGTH_SHORT).show();
                                     points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
 //                                        Integer[] item = points.toArray(new String[points.size()]);
 //                                        List<Integer>l2 = new ArrayList<>();
