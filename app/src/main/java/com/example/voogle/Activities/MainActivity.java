@@ -35,8 +35,8 @@ public class MainActivity extends AppCompatActivity {
 
     DatabaseReference stopRef,root;
     ActivityMainBinding activityMainBinding;
-    ArrayList<String>stops;
-    String stop;
+    ArrayList<String>stopNames;
+    String stopName;
     private ArrayAdapter stopsAdapter;
     private Double lat,lng,s_no;
     ArrayList<Integer>sourceRoute;
@@ -45,18 +45,26 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         root= FirebaseDatabase.getInstance().getReference().child("root");
-        stops=new ArrayList<>();
+        stopNames=new ArrayList<>();
         sourceRoute=new ArrayList<>();
         destinationRoute=new ArrayList<>();
         stopRef = FirebaseDatabase.getInstance().getReference().child("root").child("stops");
+        initACTV(stopRef);
+
+        super.onCreate(savedInstanceState);
+        activityMainBinding=DataBindingUtil.setContentView(this, R.layout.activity_main);
+
+    }
+
+    private void initACTV(DatabaseReference stopRef) {
         stopRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot data : dataSnapshot.getChildren()) {
-                        stop= data.child("name").getValue().toString();
-                        stops.add(stop);
-                        ArrayAdapter placesAdapter=new ArrayAdapter(MainActivity.this,android.R.layout.simple_list_item_1, stops);
+                        stopName= data.child("name").getValue().toString();
+                        stopNames.add(stopName);
+                        ArrayAdapter placesAdapter=new ArrayAdapter(MainActivity.this,android.R.layout.simple_list_item_1, stopNames);
                         placesAdapter.notifyDataSetChanged();
                         activityMainBinding.sourceACTV.setAdapter(placesAdapter);
                         activityMainBinding.sourceACTV.setThreshold(2);
@@ -75,11 +83,8 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, databaseError.toString(), Toast.LENGTH_SHORT).show();
             }
         });
-
-        super.onCreate(savedInstanceState);
-        activityMainBinding=DataBindingUtil.setContentView(this, R.layout.activity_main);
-
     }
+
     public void onClickOnGo(View view) {
         Intent goToHome=new Intent(MainActivity.this,HomeActivity.class);
         //ArrayList<String>stopNames=new ArrayList<>();
@@ -104,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot data : dataSnapshot.getChildren()) {
                         if(data.child("name").getValue().toString().trim().equals(source)) {
-                            stop = data.child("name").getValue().toString();
+                            stopName = data.child("name").getValue().toString();
                       //     Toast.makeText(MainActivity.this,"Stop: "+stop, Toast.LENGTH_SHORT).show();
                             lat = Double.valueOf(data.child("lat").getValue().toString());
                             lng = Double.valueOf(data.child("lng").getValue().toString());
@@ -112,23 +117,16 @@ public class MainActivity extends AppCompatActivity {
                             for (DataSnapshot routes : data.child("route").getChildren()) {
 
                                 Toast.makeText(MainActivity.this, "Source Route: "+routes.getValue().toString(), Toast.LENGTH_SHORT).show();
-                              //  sourceRoute.add(Integer.valueOf(routes.getValue().toString()));
                                 sourceRoute.add(Integer.parseInt(routes.getValue().toString().trim()));
-                               // Integer.parseInt(string)
+
                             }
-
-
-//                            Toast.makeText(MainActivity.this, Arrays.toString(sourceRoute.toArray()), Toast.LENGTH_SHORT).show();
-                      //      Toast.makeText(MainActivity.this, String.valueOf(lat), Toast.LENGTH_SHORT).show();
-                      //      Toast.makeText(MainActivity.this, String.valueOf(lng), Toast.LENGTH_SHORT).show();
                             goToHome.putExtra("sourceLat", lat);
                             goToHome.putExtra("sourceLng", lng);
                             goToHome.putExtra("sourceS_no", String.valueOf(s_no));
 
                         }
                         if(data.child("name").getValue().toString().trim().equals(destination)) {
-                            stop = data.child("name").getValue().toString();
-                   //         Toast.makeText(MainActivity.this,"Stop: "+stop, Toast.LENGTH_SHORT).show();
+                            stopName = data.child("name").getValue().toString();
                             lat = Double.valueOf(data.child("lat").getValue().toString());
                             lng = Double.valueOf(data.child("lng").getValue().toString());
                             s_no = Double.valueOf(data.child("s_no").getValue().toString());
@@ -137,15 +135,13 @@ public class MainActivity extends AppCompatActivity {
                             }
 
 
-                         //   Toast.makeText(MainActivity.this, String.valueOf(lat), Toast.LENGTH_SHORT).show();
-                         //   Toast.makeText(MainActivity.this, String.valueOf(lng), Toast.LENGTH_SHORT).show();
                             goToHome.putExtra("destinationLat", lat);
                             goToHome.putExtra("destinationLng", lng);
                             goToHome.putExtra("destinationS_no", String.valueOf(s_no));
 
                         }
-                        stops.add(stop);
-                        ArrayAdapter placesAdapter=new ArrayAdapter(MainActivity.this,android.R.layout.simple_list_item_1, stops);
+                        stopNames.add(stopName);
+                        ArrayAdapter placesAdapter=new ArrayAdapter(MainActivity.this,android.R.layout.simple_list_item_1, stopNames);
                         placesAdapter.notifyDataSetChanged();
                         activityMainBinding.sourceACTV.setAdapter(placesAdapter);
                         activityMainBinding.sourceACTV.setThreshold(2);

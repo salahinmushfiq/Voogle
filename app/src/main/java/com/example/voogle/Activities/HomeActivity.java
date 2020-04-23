@@ -10,6 +10,7 @@ import com.example.voogle.Adapters.BusFragmentPagerAdapter;
 import com.example.voogle.Fragments.BusFragment;
 import com.example.voogle.Fragments.MapFragment;
 import com.example.voogle.Fragments.TrainFragement;
+import com.example.voogle.GlobalVariables;
 import com.example.voogle.R;
 import com.example.voogle.components.Custompager;
 import com.example.voogle.databinding.ActivityHomeBinding;
@@ -38,6 +39,7 @@ public class HomeActivity extends AppCompatActivity {
         destination = getIntent().getStringExtra("destination");
         sourceLat = getIntent().getDoubleExtra("sourceLat", 23);
         sourceS_no = getIntent().getStringExtra("sourceS_no");
+
         destinationLat = getIntent().getDoubleExtra("destinationLat", 23);
         destinationS_no = getIntent().getStringExtra("destinationS_no");
         sourceLng = getIntent().getDoubleExtra("sourceLng", 90);

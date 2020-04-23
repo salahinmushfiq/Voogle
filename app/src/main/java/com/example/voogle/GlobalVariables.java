@@ -8,4 +8,6 @@ public class GlobalVariables {
     public static ArrayList<Integer> sourceRoutes=new ArrayList<>();
     public static ArrayList<Integer> destinationRoutes=new ArrayList<>();
     public static ArrayList<Stops> stops=new ArrayList<>();
+    public static int sourceS_no;
+    public static int destinationS_no;
 }

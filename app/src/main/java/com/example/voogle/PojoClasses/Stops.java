@@ -2,24 +2,29 @@ package com.example.voogle.PojoClasses;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
+
 public class Stops {
     String name;
     double lat;
     double lng;
-
+    ArrayList<String>routes=new ArrayList<>();
     public Stops() {
     }
 
     String frontOrback;
-    int routes[];
 
-    public Stops(String name, double lat, double lng, String frontOrback, int[] routes) {
+
+    public Stops(String name, double lat, double lng,String frontOrback, ArrayList<String> routes) {
         this.name = name;
         this.lat = lat;
         this.lng = lng;
-        this.frontOrback = frontOrback;
         this.routes = routes;
+        this.frontOrback = frontOrback;
     }
+
+
+
 
     public String getName() {
         return name;
@@ -53,12 +58,8 @@ public class Stops {
         this.frontOrback = frontOrback;
     }
 
-    public int[] getRoutes() {
+    public ArrayList<String> getRoutes() {
         return routes;
-    }
-
-    public void setRoutes(int[] routes) {
-        this.routes = routes;
     }
 
     @NonNull
