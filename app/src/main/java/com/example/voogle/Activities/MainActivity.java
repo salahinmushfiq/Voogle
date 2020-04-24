@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
                     goToHome.putExtra("destinationRoute",destination);
                     GlobalVariables.sourceRoutes=sourceRoute;
                     GlobalVariables.destinationRoutes=destinationRoute;
-                    Toast.makeText(MainActivity.this, "Global Variable"+GlobalVariables.sourceRoutes.toString(), Toast.LENGTH_SHORT).show();
+             //       Toast.makeText(MainActivity.this, "Global Variable"+GlobalVariables.sourceRoutes.toString(), Toast.LENGTH_SHORT).show();
                     startActivity(goToHome);
                 } else {
                       Toast.makeText(MainActivity.this, "Empty Database", Toast.LENGTH_SHORT).show();

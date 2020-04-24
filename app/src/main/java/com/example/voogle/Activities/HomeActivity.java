@@ -55,14 +55,14 @@ public class HomeActivity extends AppCompatActivity {
         bundle.putDouble("sourceLng", sourceLng);
         bundle.putDouble("destinationLng", destinationLng);
 
-        Toast.makeText(this, "Source" + source, Toast.LENGTH_SHORT).show();
+       // Toast.makeText(this, "Source" + source, Toast.LENGTH_SHORT).show();
         //  Toast.makeText(this, "Source Sl No.: "+sourceS_no, Toast.LENGTH_SHORT).show();
         //  Toast.makeText(this, "Source Route No.: "+ (sourceRoute.toString()), Toast.LENGTH_SHORT).show();
 
         //  Toast.makeText(this, "Source Lat: "+sourceLat, Toast.LENGTH_SHORT).show();
 //        Toast.makeText(this, "Source Lng: "+sourceLng, Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, "Destination: " + destination, Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, "Destination Sl No.:: " + destinationS_no, Toast.LENGTH_SHORT).show();
+      //  Toast.makeText(this, "Destination: " + destination, Toast.LENGTH_SHORT).show();
+      //  Toast.makeText(this, "Destination Sl No.:: " + destinationS_no, Toast.LENGTH_SHORT).show();
         //Toast.makeText(this, "Destination Route No.: "+ Arrays.toString(destinationRoute.toArray()), Toast.LENGTH_SHORT).show();
 //        Toast.makeText(this, "Destination Lat: "+destinationLat, Toast.LENGTH_SHORT).show();
 //        Toast.makeText(this, "Destination Lng: "+destinationLng, Toast.LENGTH_SHORT).show();
