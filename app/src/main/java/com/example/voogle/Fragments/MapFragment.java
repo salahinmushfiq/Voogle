@@ -11,12 +11,11 @@
         import android.widget.Toast;
 
         import androidx.annotation.NonNull;
-        import androidx.annotation.Nullable;
+
         import androidx.databinding.DataBindingUtil;
         import androidx.fragment.app.Fragment;
 
-        import com.example.voogle.Activities.HomeActivity;
-        import com.example.voogle.Activities.testActivity;
+
         import com.example.voogle.GlobalVariables;
         import com.example.voogle.PojoClasses.Stops;
         import com.example.voogle.R;
@@ -27,20 +26,17 @@
         import com.google.firebase.database.FirebaseDatabase;
         import com.google.firebase.database.ValueEventListener;
         import com.mapbox.android.core.permissions.PermissionsManager;
-        import com.mapbox.api.directions.v5.DirectionsCriteria;
-        import com.mapbox.api.directions.v5.MapboxDirections;
-        import com.mapbox.api.directions.v5.models.DirectionsResponse;
+
         import com.mapbox.api.directions.v5.models.DirectionsRoute;
-        import com.mapbox.api.directions.v5.models.RouteOptions;
-        import com.mapbox.geojson.Feature;
+
         import com.mapbox.geojson.FeatureCollection;
-        import com.mapbox.geojson.LineString;
+
         import com.mapbox.geojson.Point;
         import com.mapbox.mapboxsdk.Mapbox;
         import com.mapbox.mapboxsdk.camera.CameraPosition;
         import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
         import com.mapbox.mapboxsdk.geometry.LatLng;
-        import com.mapbox.mapboxsdk.geometry.LatLngBounds;
+
         import com.mapbox.mapboxsdk.location.LocationComponent;
         import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
         import com.mapbox.mapboxsdk.maps.MapView;
@@ -55,26 +51,14 @@
         import com.mapbox.mapboxsdk.style.layers.Property;
         import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
         import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
-        import com.mapbox.services.android.navigation.ui.v5.OnNavigationReadyCallback;
-        import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
-        import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
 
-        import java.io.InputStream;
-        import java.lang.ref.WeakReference;
+        import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
         import java.net.URI;
         import java.net.URISyntaxException;
         import java.util.ArrayList;
-        import java.util.List;
-        import java.util.Scanner;
 
-        import retrofit2.Call;
-        import retrofit2.Callback;
-        import retrofit2.Response;
-        import timber.log.Timber;
 
-        import static com.mapbox.core.constants.Constants.BASE_API_URL;
-        import static com.mapbox.core.constants.Constants.PRECISION_6;
-        import static com.mapbox.mapboxsdk.camera.CameraUpdateFactory.newLatLngBounds;
+
 
         /**
  * A simple {@link Fragment} subclass.
@@ -117,11 +101,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private NavigationMapRoute navigationMapRoute;
     private String source = null, destination = null,name;
     ArrayList<String>routes=new ArrayList<>();
-
+    int addLayer1Flag,addLayer2Flag,addLayer3Flag,addLayer4Flag,addLayer5Flag,addLayer6Flag,addLayer7Flag;
     private Bundle savedInstanceState;
     private static final String LINE_GEOJSON_SOURCE_ID = "LINE_GEOJSON_SOURCE_ID";
     private static final String CIRCLE_GEOJSON_SOURCE_ID = "CIRCLE_GEOJSON_SOURCE_ID";
-
+            LineLayer route1,route2,route3,route4,route5,route7;
     public MapFragment() {
         // Required empty public constructor
     }
@@ -147,12 +131,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mapView = fragmentMapBinding.mapView;
 
 
-        source = getArguments().getString("source");
-        destination = getArguments().getString("destination");
-        sourceLat = getArguments().getDouble("sourceLat");
-        destinationLat = getArguments().getDouble("destinationLat");
-        sourceLng = getArguments().getDouble("sourceLng");
-        destinationLng = getArguments().getDouble("destinationLng");
+
+//        source = getArguments().getString("source");
+//        destination = getArguments().getString("destination");
+//        sourceLat = getArguments().getDouble("sourceLat");
+//        destinationLat = getArguments().getDouble("destinationLat");
+//        sourceLng = getArguments().getDouble("sourceLng");
+//        destinationLng = getArguments().getDouble("destinationLng");
+
+        source=GlobalVariables.sourceName;
+        destination=GlobalVariables.destinationName;
+        sourceLat=GlobalVariables.sourceLat;
+        sourceLng=GlobalVariables.sourceLng;
+        destinationLat=GlobalVariables.destinationLat;
+        destinationLng=GlobalVariables.destinationLng;
+
         Log.i(TAG, "onCreateView: " + source + " and " + destination);
         Toast.makeText(getActivity(), source, Toast.LENGTH_SHORT).show();
         // Toast.makeText(getActivity(), sourceLat, Toast.LENGTH_SHORT).show();
@@ -160,6 +153,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         Toast.makeText(getActivity(), destination, Toast.LENGTH_SHORT).show();
         //   Toast.makeText(getActivity(), destinationLat, Toast.LENGTH_SHORT).show();
         //    Toast.makeText(getActivity(), destinationLng, Toast.LENGTH_SHORT).show();
+
 
         getCommonRoutes();
 
@@ -254,7 +248,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     }
                     GeoJsonSource geoJsonSource7=new GeoJsonSource("ROUTE7");
                     try {
-                        URI uri = new URI("asset://Route7.geojson");
+                        URI uri = new URI("asset://route7.geojson");
                         Log.i(TAG, "onStyleLoaded: " + uri);
                         style.addSource(geoJsonSource7 = new GeoJsonSource("ROUTE7", uri));
                         Log.i(TAG, "onStyleLoaded: " + style.getSources());
@@ -266,62 +260,80 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 //                    } catch (Exception e) {
 //                        e.printStackTrace();
 //                    }
-                    LineLayer route1 = new LineLayer("ROUTE1L", "ROUTE1");
-                    LineLayer route2 = new LineLayer("ROUTE2L", "ROUTE2");
-                    LineLayer route3 = new LineLayer("ROUTE3L", "ROUTE3");
-                    LineLayer route4 = new LineLayer("ROUTE4L", "ROUTE4");
-                    LineLayer route5 = new LineLayer("ROUTE5L", "ROUTE5");
-                    LineLayer route7 = new LineLayer("ROUTE7L", "ROUTE7");
+                    route1 = new LineLayer("ROUTE1L", "ROUTE1");
+                    route2 = new LineLayer("ROUTE2L", "ROUTE2");
+                    route3 = new LineLayer("ROUTE3L", "ROUTE3");
+                    route4 = new LineLayer("ROUTE4L", "ROUTE4");
+                    route5 = new LineLayer("ROUTE5L", "ROUTE5");
+                    route7 = new LineLayer("ROUTE7L", "ROUTE7");
 
                     route1.setProperties(PropertyFactory.fillColor(Color.RED), PropertyFactory.fillOpacity(0.5f),PropertyFactory.lineWidth(6.23f),PropertyFactory.lineColor(Color.parseColor("#5eafe5")));
                     route2.setProperties(PropertyFactory.fillColor(Color.RED), PropertyFactory.fillOpacity(0.5f),PropertyFactory.lineWidth(6.23f),PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-                    route3.setProperties(PropertyFactory.fillColor(Color.RED), PropertyFactory.fillOpacity(0.5f),PropertyFactory.lineWidth(6.23f),PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
+                    route3.setProperties(PropertyFactory.fillColor(Color.RED), PropertyFactory.fillOpacity(0.5f),PropertyFactory.lineWidth(6.23f),PropertyFactory.lineColor(Color.parseColor("#5ee5b8")));
                     route4.setProperties(PropertyFactory.fillColor(Color.RED), PropertyFactory.fillOpacity(0.5f),PropertyFactory.lineWidth(6.23f),PropertyFactory.lineColor(Color.parseColor("#e5e15e")));
-                    route5.setProperties(PropertyFactory.fillColor(Color.RED), PropertyFactory.fillOpacity(0.5f),PropertyFactory.lineWidth(6.23f),PropertyFactory.lineColor(Color.parseColor("#e55e5e")));
+                /* red color*/route5.setProperties(PropertyFactory.fillColor(Color.RED), PropertyFactory.fillOpacity(0.5f),PropertyFactory.lineWidth(6.23f),PropertyFactory.lineColor(Color.parseColor("#e55e5e")));
                     route7.setProperties(PropertyFactory.fillColor(Color.RED), PropertyFactory.fillOpacity(0.5f),PropertyFactory.lineWidth(6.23f),PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
 
-                    for(int commonRoute:commonRoutes)
-                    {
-                        if(commonRoute==1)
-                        {
-                            style.addLayer(route1);
+                    addLayer1Flag=0;
+                    addLayer2Flag=0;
+                    addLayer3Flag=0;
+                    addLayer4Flag=0;
+                    addLayer5Flag=0;
+                    addLayer6Flag=0;
+                    addLayer7Flag=0;
+
+                    if(!commonRoutes.isEmpty()) {
+                        for (int commonRoute : commonRoutes) {
+
+                            if (addLayer1Flag == 0) {
+                                if (commonRoute == 1) {
+                                    Toast.makeText(getActivity(), "Route 1 called", Toast.LENGTH_SHORT).show();
+                                    style.addLayer(route1);
+                                    addLayer1Flag = 1;
+                                }
+                            }
+
+                            if (addLayer2Flag == 0) {
+                                if (commonRoute == 2) {
+                                    Toast.makeText(getActivity(), "Route 2 called", Toast.LENGTH_SHORT).show();
+                                    style.addLayer(route2);
+                                    addLayer2Flag = 1;
+                                }
+                            }
+
+                            if (addLayer3Flag == 0) {
+                                if (commonRoute == 3) {
+                                    Toast.makeText(getActivity(), "Route 3 called", Toast.LENGTH_SHORT).show();
+                                    style.addLayer(route3);
+                                    addLayer3Flag = 1;
+                                }
+                            }
+                            if (addLayer4Flag == 0) {
+                                if (commonRoute == 4) {
+                                    Toast.makeText(getActivity(), "Route 4 called", Toast.LENGTH_SHORT).show();
+                                    style.addLayer(route4);
+                                    addLayer4Flag = 1;
+                                }
+                            }
+
+                            if (addLayer5Flag == 0) {
+                                if (commonRoute == 5) {
+                                    Toast.makeText(getActivity(), "Route 5 called", Toast.LENGTH_SHORT).show();
+                                    style.addLayer(route5);
+                                    addLayer5Flag = 1;
+                                }
+                            }
+                            if (addLayer7Flag == 0) {
+                                if (commonRoute == 7) {
+                                    Toast.makeText(getActivity(), "Route 7 called", Toast.LENGTH_SHORT).show();
+                                    style.addLayer(route7);
+                                    addLayer7Flag = 1;
+                                }
+                            }
+
                         }
-                        if(commonRoute==2)
-                        {
-                            style.addLayer(route2);
-                        }
-                        if(commonRoute==3)
-                        {
-                            style.addLayer(route3);
-                        }
-                        if(commonRoute==4)
-                        {
-                            style.addLayer(route4);
-                        }
-                        if(commonRoute==5)
-                        {
-                            style.addLayer(route5);
-                        }
-                        if(commonRoute==7)
-                        {
-                            style.addLayer(route7);
-                        }
+
                     }
-
-
-//                    style.addLayer(route3);
-//                    style.addLayer(route4);
-//                    style.addLayer(route5);
-//                    style.addLayer(route7);
-
-
-
-                    //                        symbolManager.setIconAllowOverlap(true);
-                    //                        symbolManager.setTextAllowOverlap(true);
-                    //                        symbolManager.setIconIgnorePlacement(true);
-                    //                        symbolManager.setTextIgnorePlacement(true);
-                    // Toast instructing user to tap on the map
-
 
                     CameraPosition position = new CameraPosition.Builder()
                             .target(new LatLng(sourceLat, sourceLng
@@ -335,6 +347,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
 
                     map.animateCamera(CameraUpdateFactory.newCameraPosition(position), 7000);
+
 
 
                     Symbol x = symbolManager.create(new SymbolOptions().withIconImage("X").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng(Double.valueOf(sourceLat), Double.valueOf(sourceLng))).withTextField("Source"));
@@ -428,14 +441,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             }
                         }
                     }
-//
+
+
+
                     for (Symbol symbol : symbolArrayList) {
 
                         symbolManager.update(symbol);
                     }
 
 //                    for(int route:commonRoutes) {
-                        getRoutes(route1Points,route2Points,route3Points,route4Points,route5Points,route6Points,route7Points);
+                      //  getRoutes(route1Points,route2Points,route3Points,route4Points,route5Points,route6Points,route7Points);
 
 //                    }
 
@@ -448,249 +463,250 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     }
 
-    private void getRoutes(ArrayList<Point> route1Points, ArrayList<Point> route2Points, ArrayList<Point> route3Points, ArrayList<Point> route4Points, ArrayList<Point> route5Points, ArrayList<Point> route6Points, ArrayList<Point> route7Points) {
-        List<Point> wayPoints = points;
-        List<Point> route1Point = route1Points;
-        List<Point> route2Point = route2Points;
-        List<Point> route3Point =  route3Points;
-        List<Point> route4Point = route4Points;
-        List<Point> route5Point = route5Points;
-        List<Point> route6Point = route6Points;
-        List<Point> route7Point = route7Points;
 
-
-
-            navigationMapRoute = new NavigationMapRoute(null, mapView, map);
-
-//            if(!route1Point.isEmpty()) {
-//                Toast.makeText(getActivity(), "Route 1 Called", Toast.LENGTH_SHORT).show();
+//    private void getRoutes(ArrayList<Point> route1Points, ArrayList<Point> route2Points, ArrayList<Point> route3Points, ArrayList<Point> route4Points, ArrayList<Point> route5Points, ArrayList<Point> route6Points, ArrayList<Point> route7Points) {
+//        List<Point> wayPoints = points;
+//        List<Point> route1Point = route1Points;
+//        List<Point> route2Point = route2Points;
+//        List<Point> route3Point =  route3Points;
+//        List<Point> route4Point = route4Points;
+//        List<Point> route5Point = route5Points;
+//        List<Point> route6Point = route6Points;
+//        List<Point> route7Point = route7Points;
 //
 //
-//                NavigationRoute.Builder testC;
-//                NavigationRoute test2= (testC = NavigationRoute.builder(getActivity()))
-//                        .accessToken(Mapbox.getAccessToken())
-//                        .origin(route1Point.get(0))
-//                        .destination(route1Point.get(route1Point.size() - 1))
-//                        .routeOptions(RouteOptions.builder().steps(true).coordinates(route1Point).profile(DirectionsCriteria.PROFILE_WALKING).baseUrl(BASE_API_URL).user(DirectionsCriteria.PROFILE_DEFAULT_USER).geometries(DirectionsCriteria.GEOMETRY_POLYLINE).accessToken(getString(R.string.access_token)).requestUuid("mapboxzero").build()).profile(DirectionsCriteria.PROFILE_DRIVING)
-//                        .alternatives(false)
-//                        .build();
-//                Log.i(TAG, "onStyleLoaded: " + test2);
 //
-//                test2.getRoute(new Callback<DirectionsResponse>() {
-//                    @Override
-//                    public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
-//                        if (response.body() != null) {
-//                            Log.i(TAG, "onResponse: " + response.body().routes().size());
-//                            for (DirectionsRoute x :
-//                                    response.body().routes()) {
-//                                navigationMapRoute.addRoute(x);
-//                            }
-//                        } else Log.i(TAG, "onResponse: " + response);
-//                    }
+//            navigationMapRoute = new NavigationMapRoute(null, mapView, map);
 //
-//                    @Override
-//                    public void onFailure(Call<DirectionsResponse> call, Throwable t) {
+////            if(!route1Point.isEmpty()) {
+////                Toast.makeText(getActivity(), "Route 1 Called", Toast.LENGTH_SHORT).show();
+////
+////
+////                NavigationRoute.Builder testC;
+////                NavigationRoute test2= (testC = NavigationRoute.builder(getActivity()))
+////                        .accessToken(Mapbox.getAccessToken())
+////                        .origin(route1Point.get(0))
+////                        .destination(route1Point.get(route1Point.size() - 1))
+////                        .routeOptions(RouteOptions.builder().steps(true).coordinates(route1Point).profile(DirectionsCriteria.PROFILE_WALKING).baseUrl(BASE_API_URL).user(DirectionsCriteria.PROFILE_DEFAULT_USER).geometries(DirectionsCriteria.GEOMETRY_POLYLINE).accessToken(getString(R.string.access_token)).requestUuid("mapboxzero").build()).profile(DirectionsCriteria.PROFILE_DRIVING)
+////                        .alternatives(false)
+////                        .build();
+////                Log.i(TAG, "onStyleLoaded: " + test2);
+////
+////                test2.getRoute(new Callback<DirectionsResponse>() {
+////                    @Override
+////                    public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
+////                        if (response.body() != null) {
+////                            Log.i(TAG, "onResponse: " + response.body().routes().size());
+////                            for (DirectionsRoute x :
+////                                    response.body().routes()) {
+////                                navigationMapRoute.addRoute(x);
+////                            }
+////                        } else Log.i(TAG, "onResponse: " + response);
+////                    }
+////
+////                    @Override
+////                    public void onFailure(Call<DirectionsResponse> call, Throwable t) {
+////
+////                    }
+////                });
+////            }
+////            if(!route2Point.isEmpty()) {
+////            Toast.makeText(getActivity(), "Route 7 Called", Toast.LENGTH_SHORT).show();
+////
+////            NavigationRoute.Builder testF;
+////            NavigationRoute test3= (testF= NavigationRoute.builder(getActivity()))
+////                    .accessToken(Mapbox.getAccessToken())
+////                    .origin(route2Point.get(0))
+////                    .destination(route2Point.get(route2Point.size() - 1))
+////                    .routeOptions(RouteOptions.builder().steps(true).coordinates(route2Point).profile(DirectionsCriteria.PROFILE_DRIVING).baseUrl(BASE_API_URL).user(DirectionsCriteria.PROFILE_DEFAULT_USER).geometries(DirectionsCriteria.GEOMETRY_POLYLINE).accessToken(getString(R.string.access_token)).requestUuid("mapboxzero").build()).profile(DirectionsCriteria.PROFILE_DRIVING)
+////                    .alternatives(false).build();
+////
+////            Log.i(TAG, "onStyleLoaded: " + test3);
+////
+////            test3.getRoute(new Callback<DirectionsResponse>() {
+////                @Override
+////                public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
+////                    if (response.body() != null) {
+////                        Log.i(TAG, "onResponse: " + response.body().routes().size());
+////                        for (DirectionsRoute x :
+////                                response.body().routes()) {
+////                            navigationMapRoute.addRoute(x);
+////                        }
+////                    } else Log.i(TAG, "onResponse: " + response);
+////                }
+////
+////                @Override
+////                public void onFailure(Call<DirectionsResponse> call, Throwable t) {
+////
+////                }
+////            });
+////        }
+////            if(!route3Point.isEmpty()) {
+////            Toast.makeText(getActivity(), "Route 7 Called", Toast.LENGTH_SHORT).show();
+////
+////            NavigationRoute.Builder testE;
+////            NavigationRoute test3= (testE= NavigationRoute.builder(getActivity()))
+////                    .accessToken(Mapbox.getAccessToken())
+////                    .origin(route3Point.get(0))
+////                    .destination(route3Point.get(route3Point.size() - 1))
+////                    .routeOptions(RouteOptions.builder().steps(true).coordinates(route3Point).profile(DirectionsCriteria.PROFILE_DRIVING).baseUrl(BASE_API_URL).user(DirectionsCriteria.PROFILE_DEFAULT_USER).geometries(DirectionsCriteria.GEOMETRY_POLYLINE).accessToken(getString(R.string.access_token)).requestUuid("mapboxzero").build()).profile(DirectionsCriteria.PROFILE_DRIVING)
+////                    .alternatives(false)
+////                    .build();
+////            Log.i(TAG, "onStyleLoaded: " + test3);
+////
+////            test3.getRoute(new Callback<DirectionsResponse>() {
+////                @Override
+////                public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
+////                    if (response.body() != null) {
+////                        Log.i(TAG, "onResponse: " + response.body().routes().size());
+////                        for (DirectionsRoute x :
+////                                response.body().routes()) {
+////                            navigationMapRoute.addRoute(x);
+////                        }
+////                    } else Log.i(TAG, "onResponse: " + response);
+////                }
+////
+////                @Override
+////                public void onFailure(Call<DirectionsResponse> call, Throwable t) {
+////
+////                }
+////            });
+////        }
+////            if(!route4Point.isEmpty()) {
+////            Toast.makeText(getActivity(), "Route 7 Called", Toast.LENGTH_SHORT).show();
+////
+////            NavigationRoute.Builder testE;
+////            NavigationRoute test3= (testE= NavigationRoute.builder(getActivity()))
+////                    .accessToken(Mapbox.getAccessToken())
+////                    .origin(route4Point.get(0))
+////                    .destination(route4Point.get(route4Point.size() - 1))
+////                    .routeOptions(RouteOptions.builder().steps(true).coordinates(route4Point).profile(DirectionsCriteria.PROFILE_DRIVING).baseUrl(BASE_API_URL).user(DirectionsCriteria.PROFILE_DEFAULT_USER).geometries(DirectionsCriteria.GEOMETRY_POLYLINE).accessToken(getString(R.string.access_token)).requestUuid("mapboxzero").build()).profile(DirectionsCriteria.PROFILE_DRIVING)
+////                    .alternatives(false)
+////                    .build();
+////            Log.i(TAG, "onStyleLoaded: " + test3);
+////
+////            test3.getRoute(new Callback<DirectionsResponse>() {
+////                @Override
+////                public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
+////                    if (response.body() != null) {
+////                        Log.i(TAG, "onResponse: " + response.body().routes().size());
+////                        for (DirectionsRoute x :
+////                                response.body().routes()) {
+////                            navigationMapRoute.addRoute(x);
+////                        }
+////                    } else Log.i(TAG, "onResponse: " + response);
+////                }
+////
+////                @Override
+////                public void onFailure(Call<DirectionsResponse> call, Throwable t) {
+////
+////                }
+////            });
+////        }
+////            if(!route5Point.isEmpty()) {
+////            Toast.makeText(getActivity(), "Route 7 Called", Toast.LENGTH_SHORT).show();
+////
+////            NavigationRoute.Builder testE;
+////            NavigationRoute test3= (testE= NavigationRoute.builder(getActivity()))
+////                    .accessToken(Mapbox.getAccessToken())
+////                    .origin(route5Point.get(0))
+////                    .destination(route5Point.get(route5Point.size() - 1))
+////                    .routeOptions(RouteOptions.builder().steps(true).coordinates(route5Point).profile(DirectionsCriteria.PROFILE_DRIVING).baseUrl(BASE_API_URL).user(DirectionsCriteria.PROFILE_DEFAULT_USER).geometries(DirectionsCriteria.GEOMETRY_POLYLINE).accessToken(getString(R.string.access_token)).requestUuid("mapboxzero").build()).profile(DirectionsCriteria.PROFILE_DRIVING)
+////                    .alternatives(false)
+////                    .build();
+////            Log.i(TAG, "onStyleLoaded: " + test3);
+////
+////            test3.getRoute(new Callback<DirectionsResponse>() {
+////                @Override
+////                public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
+////                    if (response.body() != null) {
+////                        Log.i(TAG, "onResponse: " + response.body().routes().size());
+////                        for (DirectionsRoute x :
+////                                response.body().routes()) {
+////                            navigationMapRoute.addRoute(x);
+////                        }
+////                    } else Log.i(TAG, "onResponse: " + response);
+////                }
+////
+////                @Override
+////                public void onFailure(Call<DirectionsResponse> call, Throwable t) {
+////
+////                }
+////            });
+////        }
+////            if(!route6Point.isEmpty()) {
+////            Toast.makeText(getActivity(), "Route 7 Called", Toast.LENGTH_SHORT).show();
+////
+////            NavigationRoute.Builder testE;
+////            NavigationRoute test3= (testE= NavigationRoute.builder(getActivity()))
+////                    .accessToken(Mapbox.getAccessToken())
+////                    .origin(route6Point.get(0))
+////                    .destination(route6Point.get(route6Point.size() - 1))
+////                    .routeOptions(RouteOptions.builder().steps(true).coordinates(route6Point).profile(DirectionsCriteria.PROFILE_DRIVING).baseUrl(BASE_API_URL).user(DirectionsCriteria.PROFILE_DEFAULT_USER).geometries(DirectionsCriteria.GEOMETRY_POLYLINE).accessToken(getString(R.string.access_token)).requestUuid("mapboxzero").build()).profile(DirectionsCriteria.PROFILE_DRIVING)
+////                    .alternatives(false)
+////                    .build();
+////            Log.i(TAG, "onStyleLoaded: " + test3);
+////
+////            test3.getRoute(new Callback<DirectionsResponse>() {
+////                @Override
+////                public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
+////                    if (response.body() != null) {
+////                        Log.i(TAG, "onResponse: " + response.body().routes().size());
+////                        for (DirectionsRoute x :
+////                                response.body().routes()) {
+////                            navigationMapRoute.addRoute(x);
+////                        }
+////                    } else Log.i(TAG, "onResponse: " + response);
+////                }
+////
+////                @Override
+////                public void onFailure(Call<DirectionsResponse> call, Throwable t) {
+////
+////                }
+////            });
+////        }
+////            if(!route7Point.isEmpty()) {
+////            Toast.makeText(getActivity(), "Route 7 Called", Toast.LENGTH_SHORT).show();
+////
+////            NavigationRoute.Builder testD;
+////            NavigationRoute test3= (testD = NavigationRoute.builder(getActivity()))
+////                    .accessToken(Mapbox.getAccessToken())
+////                    .origin(route7Point.get(0))
+////                    .destination(route7Point.get(route7Point.size() - 1))
+////                    .routeOptions(RouteOptions.builder().steps(true).coordinates(route7Point).profile(DirectionsCriteria.PROFILE_WALKING).baseUrl(BASE_API_URL).user(DirectionsCriteria.PROFILE_DEFAULT_USER).geometries(DirectionsCriteria.GEOMETRY_POLYLINE).accessToken(getString(R.string.access_token)).requestUuid("mapboxzero").build()).profile(DirectionsCriteria.PROFILE_DRIVING)
+////                    .alternatives(false)
+////                    .build();
+////            Log.i(TAG, "onStyleLoaded: " + test3);
+////
+////            test3.getRoute(new Callback<DirectionsResponse>() {
+////                @Override
+////                public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
+////                    if (response.body() != null) {
+////                        Log.i(TAG, "onResponse: " + response.body().routes().size());
+////                        for (DirectionsRoute x :
+////                                response.body().routes()) {
+////                            navigationMapRoute.addRoute(x);
+////                        }
+////                    } else Log.i(TAG, "onResponse: " + response);
+////                }
+////
+////                @Override
+////                public void onFailure(Call<DirectionsResponse> call, Throwable t) {
+////
+////                }
+////            });
+////        }
+////        map.easeCamera(newLatLngBounds(new LatLngBounds.Builder()
+////                .include()
+////                .include(route7Point.get(route7Point.size() - 1))
+////                .build(), 75), 2000);
 //
-//                    }
-//                });
-//            }
-//            if(!route2Point.isEmpty()) {
-//            Toast.makeText(getActivity(), "Route 7 Called", Toast.LENGTH_SHORT).show();
+//        navigationMapRoute.updateRouteArrowVisibilityTo(true);
 //
-//            NavigationRoute.Builder testF;
-//            NavigationRoute test3= (testF= NavigationRoute.builder(getActivity()))
-//                    .accessToken(Mapbox.getAccessToken())
-//                    .origin(route2Point.get(0))
-//                    .destination(route2Point.get(route2Point.size() - 1))
-//                    .routeOptions(RouteOptions.builder().steps(true).coordinates(route2Point).profile(DirectionsCriteria.PROFILE_DRIVING).baseUrl(BASE_API_URL).user(DirectionsCriteria.PROFILE_DEFAULT_USER).geometries(DirectionsCriteria.GEOMETRY_POLYLINE).accessToken(getString(R.string.access_token)).requestUuid("mapboxzero").build()).profile(DirectionsCriteria.PROFILE_DRIVING)
-//                    .alternatives(false).build();
 //
-//            Log.i(TAG, "onStyleLoaded: " + test3);
 //
-//            test3.getRoute(new Callback<DirectionsResponse>() {
-//                @Override
-//                public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
-//                    if (response.body() != null) {
-//                        Log.i(TAG, "onResponse: " + response.body().routes().size());
-//                        for (DirectionsRoute x :
-//                                response.body().routes()) {
-//                            navigationMapRoute.addRoute(x);
-//                        }
-//                    } else Log.i(TAG, "onResponse: " + response);
-//                }
 //
-//                @Override
-//                public void onFailure(Call<DirectionsResponse> call, Throwable t) {
-//
-//                }
-//            });
 //        }
-//            if(!route3Point.isEmpty()) {
-//            Toast.makeText(getActivity(), "Route 7 Called", Toast.LENGTH_SHORT).show();
-//
-//            NavigationRoute.Builder testE;
-//            NavigationRoute test3= (testE= NavigationRoute.builder(getActivity()))
-//                    .accessToken(Mapbox.getAccessToken())
-//                    .origin(route3Point.get(0))
-//                    .destination(route3Point.get(route3Point.size() - 1))
-//                    .routeOptions(RouteOptions.builder().steps(true).coordinates(route3Point).profile(DirectionsCriteria.PROFILE_DRIVING).baseUrl(BASE_API_URL).user(DirectionsCriteria.PROFILE_DEFAULT_USER).geometries(DirectionsCriteria.GEOMETRY_POLYLINE).accessToken(getString(R.string.access_token)).requestUuid("mapboxzero").build()).profile(DirectionsCriteria.PROFILE_DRIVING)
-//                    .alternatives(false)
-//                    .build();
-//            Log.i(TAG, "onStyleLoaded: " + test3);
-//
-//            test3.getRoute(new Callback<DirectionsResponse>() {
-//                @Override
-//                public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
-//                    if (response.body() != null) {
-//                        Log.i(TAG, "onResponse: " + response.body().routes().size());
-//                        for (DirectionsRoute x :
-//                                response.body().routes()) {
-//                            navigationMapRoute.addRoute(x);
-//                        }
-//                    } else Log.i(TAG, "onResponse: " + response);
-//                }
-//
-//                @Override
-//                public void onFailure(Call<DirectionsResponse> call, Throwable t) {
-//
-//                }
-//            });
-//        }
-//            if(!route4Point.isEmpty()) {
-//            Toast.makeText(getActivity(), "Route 7 Called", Toast.LENGTH_SHORT).show();
-//
-//            NavigationRoute.Builder testE;
-//            NavigationRoute test3= (testE= NavigationRoute.builder(getActivity()))
-//                    .accessToken(Mapbox.getAccessToken())
-//                    .origin(route4Point.get(0))
-//                    .destination(route4Point.get(route4Point.size() - 1))
-//                    .routeOptions(RouteOptions.builder().steps(true).coordinates(route4Point).profile(DirectionsCriteria.PROFILE_DRIVING).baseUrl(BASE_API_URL).user(DirectionsCriteria.PROFILE_DEFAULT_USER).geometries(DirectionsCriteria.GEOMETRY_POLYLINE).accessToken(getString(R.string.access_token)).requestUuid("mapboxzero").build()).profile(DirectionsCriteria.PROFILE_DRIVING)
-//                    .alternatives(false)
-//                    .build();
-//            Log.i(TAG, "onStyleLoaded: " + test3);
-//
-//            test3.getRoute(new Callback<DirectionsResponse>() {
-//                @Override
-//                public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
-//                    if (response.body() != null) {
-//                        Log.i(TAG, "onResponse: " + response.body().routes().size());
-//                        for (DirectionsRoute x :
-//                                response.body().routes()) {
-//                            navigationMapRoute.addRoute(x);
-//                        }
-//                    } else Log.i(TAG, "onResponse: " + response);
-//                }
-//
-//                @Override
-//                public void onFailure(Call<DirectionsResponse> call, Throwable t) {
-//
-//                }
-//            });
-//        }
-//            if(!route5Point.isEmpty()) {
-//            Toast.makeText(getActivity(), "Route 7 Called", Toast.LENGTH_SHORT).show();
-//
-//            NavigationRoute.Builder testE;
-//            NavigationRoute test3= (testE= NavigationRoute.builder(getActivity()))
-//                    .accessToken(Mapbox.getAccessToken())
-//                    .origin(route5Point.get(0))
-//                    .destination(route5Point.get(route5Point.size() - 1))
-//                    .routeOptions(RouteOptions.builder().steps(true).coordinates(route5Point).profile(DirectionsCriteria.PROFILE_DRIVING).baseUrl(BASE_API_URL).user(DirectionsCriteria.PROFILE_DEFAULT_USER).geometries(DirectionsCriteria.GEOMETRY_POLYLINE).accessToken(getString(R.string.access_token)).requestUuid("mapboxzero").build()).profile(DirectionsCriteria.PROFILE_DRIVING)
-//                    .alternatives(false)
-//                    .build();
-//            Log.i(TAG, "onStyleLoaded: " + test3);
-//
-//            test3.getRoute(new Callback<DirectionsResponse>() {
-//                @Override
-//                public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
-//                    if (response.body() != null) {
-//                        Log.i(TAG, "onResponse: " + response.body().routes().size());
-//                        for (DirectionsRoute x :
-//                                response.body().routes()) {
-//                            navigationMapRoute.addRoute(x);
-//                        }
-//                    } else Log.i(TAG, "onResponse: " + response);
-//                }
-//
-//                @Override
-//                public void onFailure(Call<DirectionsResponse> call, Throwable t) {
-//
-//                }
-//            });
-//        }
-//            if(!route6Point.isEmpty()) {
-//            Toast.makeText(getActivity(), "Route 7 Called", Toast.LENGTH_SHORT).show();
-//
-//            NavigationRoute.Builder testE;
-//            NavigationRoute test3= (testE= NavigationRoute.builder(getActivity()))
-//                    .accessToken(Mapbox.getAccessToken())
-//                    .origin(route6Point.get(0))
-//                    .destination(route6Point.get(route6Point.size() - 1))
-//                    .routeOptions(RouteOptions.builder().steps(true).coordinates(route6Point).profile(DirectionsCriteria.PROFILE_DRIVING).baseUrl(BASE_API_URL).user(DirectionsCriteria.PROFILE_DEFAULT_USER).geometries(DirectionsCriteria.GEOMETRY_POLYLINE).accessToken(getString(R.string.access_token)).requestUuid("mapboxzero").build()).profile(DirectionsCriteria.PROFILE_DRIVING)
-//                    .alternatives(false)
-//                    .build();
-//            Log.i(TAG, "onStyleLoaded: " + test3);
-//
-//            test3.getRoute(new Callback<DirectionsResponse>() {
-//                @Override
-//                public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
-//                    if (response.body() != null) {
-//                        Log.i(TAG, "onResponse: " + response.body().routes().size());
-//                        for (DirectionsRoute x :
-//                                response.body().routes()) {
-//                            navigationMapRoute.addRoute(x);
-//                        }
-//                    } else Log.i(TAG, "onResponse: " + response);
-//                }
-//
-//                @Override
-//                public void onFailure(Call<DirectionsResponse> call, Throwable t) {
-//
-//                }
-//            });
-//        }
-//            if(!route7Point.isEmpty()) {
-//            Toast.makeText(getActivity(), "Route 7 Called", Toast.LENGTH_SHORT).show();
-//
-//            NavigationRoute.Builder testD;
-//            NavigationRoute test3= (testD = NavigationRoute.builder(getActivity()))
-//                    .accessToken(Mapbox.getAccessToken())
-//                    .origin(route7Point.get(0))
-//                    .destination(route7Point.get(route7Point.size() - 1))
-//                    .routeOptions(RouteOptions.builder().steps(true).coordinates(route7Point).profile(DirectionsCriteria.PROFILE_WALKING).baseUrl(BASE_API_URL).user(DirectionsCriteria.PROFILE_DEFAULT_USER).geometries(DirectionsCriteria.GEOMETRY_POLYLINE).accessToken(getString(R.string.access_token)).requestUuid("mapboxzero").build()).profile(DirectionsCriteria.PROFILE_DRIVING)
-//                    .alternatives(false)
-//                    .build();
-//            Log.i(TAG, "onStyleLoaded: " + test3);
-//
-//            test3.getRoute(new Callback<DirectionsResponse>() {
-//                @Override
-//                public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
-//                    if (response.body() != null) {
-//                        Log.i(TAG, "onResponse: " + response.body().routes().size());
-//                        for (DirectionsRoute x :
-//                                response.body().routes()) {
-//                            navigationMapRoute.addRoute(x);
-//                        }
-//                    } else Log.i(TAG, "onResponse: " + response);
-//                }
-//
-//                @Override
-//                public void onFailure(Call<DirectionsResponse> call, Throwable t) {
-//
-//                }
-//            });
-//        }
-//        map.easeCamera(newLatLngBounds(new LatLngBounds.Builder()
-//                .include()
-//                .include(route7Point.get(route7Point.size() - 1))
-//                .build(), 75), 2000);
-
-        navigationMapRoute.updateRouteArrowVisibilityTo(true);
-
-
-
-
-        }
 
 
 

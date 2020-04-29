@@ -10,4 +10,11 @@ public class GlobalVariables {
     public static ArrayList<Stops> stops=new ArrayList<>();
     public static int sourceS_no;
     public static int destinationS_no;
+    public static String sourceName;
+    public static String destinationName;
+    public static Double sourceLat;
+    public static Double sourceLng;
+    public static Double destinationLat;
+    public static Double destinationLng;
+
 }
