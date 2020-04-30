@@ -128,9 +128,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         Toast.makeText(getActivity(), destination, Toast.LENGTH_SHORT).show();
 
 
-        readLocations();
-        getCommonRoutes();
 
+        getCommonRoutes();
+//        readLocations();
         return fragmentMapBinding.getRoot();
 
     }
@@ -424,15 +424,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
 
         });
-
+        readLocations();
     }
 
     private void readLocations() {
 
 
-        /*locationPointer = symbolManager.create(new SymbolOptions().withIconImage("LocationPointer").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000")
-                .withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng(Double.valueOf(23.65743), Double.valueOf(90.2332))).withTextField("License Plate"));*/
+//        locationPointer = symbolManager.create(new SymbolOptions().withIconImage("LocationPointer").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000")
+//                .withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng(Double.valueOf(23.778628), Double.valueOf(90.365235))).withTextField("License Plate"));
+//        symbolManager.update(locationPointer);
         final Location[] current_location = {new Location()};
+        final boolean[] firstRun = {true};
         root.child("locations").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -442,17 +444,38 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     Toast.makeText(getActivity(), "Lat: " + current_location[0].getLat() + " Lng: " + current_location[0].getLng() +
                             " License Plate: " + current_location[0].getLicensePlate(), Toast.LENGTH_SHORT).show();
 
-                    locationPointer.setLatLng(new LatLng(current_location[0].getLat(), current_location[0].getLng()));
-                    symbolManager.update(locationPointer);
+//                    if(locationPointer==null) {
+                        Log.d("map","called");
+                        if(firstRun[0] ==true) {
+                            locationPointer = symbolManager.create(new SymbolOptions().withIconImage("LocationPointer").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000")
+                                    .withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng(Double.valueOf(current_location[0].getLat()), Double.valueOf(current_location[0].getLng()))).withTextField(current_location[0].getLicensePlate()));
+                            symbolArrayList.add(locationPointer);
+                            firstRun[0] = false;
+                        }
+                        else{
+                            for(Symbol symbol:symbolArrayList)
+                            {
+                                if(symbol.getTextField().equals(current_location[0].getLicensePlate()))
+                                {
+                                    symbol.setLatLng(new LatLng(current_location[0].getLat(),current_location[0].getLng()));
+                                    symbolManager.update(symbol);
+                                }
+                            }
+                        }
+
+                       // symbolManager.update(locationPointer);
+//                    }
+
+                        //locationPointer.setLatLng(new LatLng(current_location[0].getLat(), current_location[0].getLng()));
+                       // symbolManager.update(locationPointer);
+
+
+                }
+                for(Symbol symbol:symbolArrayList)
+                {
+                    symbolManager.update(symbol);
                 }
 
-
-                symbolManager.addClickListener(new OnSymbolClickListener() {
-                    @Override
-                    public void onAnnotationClick(Symbol symbol) {
-                        symbol.setIconAnchor(current_location[0].getLicensePlate());
-                    }
-                });
 
             }
 
