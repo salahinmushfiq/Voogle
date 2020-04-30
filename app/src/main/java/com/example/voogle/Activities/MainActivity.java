@@ -38,7 +38,8 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String>stopNames;
     String stopName;
     private ArrayAdapter stopsAdapter;
-    private Double lat,lng,s_no;
+    private Double lat,lng;
+    int s_no;
     ArrayList<Integer>sourceRoute;
     ArrayList<Integer>destinationRoute;
     GlobalVariables gv;
@@ -113,31 +114,38 @@ public class MainActivity extends AppCompatActivity {
                       //     Toast.makeText(MainActivity.this,"Stop: "+stop, Toast.LENGTH_SHORT).show();
                             lat = Double.valueOf(data.child("lat").getValue().toString());
                             lng = Double.valueOf(data.child("lng").getValue().toString());
-                            s_no = Double.valueOf(data.child("s_no").getValue().toString());
+                            s_no = Integer.valueOf(data.child("s_no").getValue().toString());
+                            GlobalVariables.sourceLat=lat;
+                            GlobalVariables.sourceLng=lng;
+                            GlobalVariables.sourceS_no=s_no;
+
                             for (DataSnapshot routes : data.child("route").getChildren()) {
 
-                                Toast.makeText(MainActivity.this, "Source Route: "+routes.getValue().toString(), Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(MainActivity.this, "Source Route: "+routes.getValue().toString(), Toast.LENGTH_SHORT).show();
                                 sourceRoute.add(Integer.parseInt(routes.getValue().toString().trim()));
 
                             }
-                            goToHome.putExtra("sourceLat", lat);
-                            goToHome.putExtra("sourceLng", lng);
-                            goToHome.putExtra("sourceS_no", String.valueOf(s_no));
+//                            goToHome.putExtra("sourceLat", lat);
+//                            goToHome.putExtra("sourceLng", lng);
+//                            goToHome.putExtra("sourceS_no", String.valueOf(s_no));
 
                         }
                         if(data.child("name").getValue().toString().trim().equals(destination)) {
                             stopName = data.child("name").getValue().toString();
                             lat = Double.valueOf(data.child("lat").getValue().toString());
                             lng = Double.valueOf(data.child("lng").getValue().toString());
-                            s_no = Double.valueOf(data.child("s_no").getValue().toString());
+                            s_no = Integer.valueOf(data.child("s_no").getValue().toString());
+                            GlobalVariables.destinationLat=lat;
+                            GlobalVariables.destinationLng=lng;
+                            GlobalVariables.destinationS_no=s_no;
                             for (DataSnapshot routes : data.child("route").getChildren()) {
                                destinationRoute.add(Integer.valueOf(routes.getValue().toString()));
                             }
 
 
-                            goToHome.putExtra("destinationLat", lat);
-                            goToHome.putExtra("destinationLng", lng);
-                            goToHome.putExtra("destinationS_no", String.valueOf(s_no));
+//                            goToHome.putExtra("destinationLat", lat);
+//                            goToHome.putExtra("destinationLng", lng);
+//                            goToHome.putExtra("destinationS_no", String.valueOf(s_no));
 
                         }
                         stopNames.add(stopName);
@@ -151,15 +159,15 @@ public class MainActivity extends AppCompatActivity {
 
                     }
 
-                    goToHome.putExtra("source", source);
-                    goToHome.putExtra("destination", destination);
+//                    goToHome.putExtra("source", source);
+//                    goToHome.putExtra("destination", destination);
 
-                    Bundle source = new Bundle();
-                    source.putSerializable("ARRAYLISTSOURCE",(Serializable)sourceRoute);
-                    goToHome.putExtra("sourceRoute",source);
-                    Bundle destination = new Bundle();
-                    destination.putSerializable("ARRAYLISTDESTINATION",(Serializable)destinationRoute);
-                    goToHome.putExtra("destinationRoute",destination);
+//                    Bundle source = new Bundle();
+//                    source.putSerializable("ARRAYLISTSOURCE",(Serializable)sourceRoute);
+//                    goToHome.putExtra("sourceRoute",source);
+//                    Bundle destination = new Bundle();
+//                    destination.putSerializable("ARRAYLISTDESTINATION",(Serializable)destinationRoute);
+//                    goToHome.putExtra("destinationRoute",destination);
                     GlobalVariables.sourceRoutes=sourceRoute;
                     GlobalVariables.destinationRoutes=destinationRoute;
              //       Toast.makeText(MainActivity.this, "Global Variable"+GlobalVariables.sourceRoutes.toString(), Toast.LENGTH_SHORT).show();

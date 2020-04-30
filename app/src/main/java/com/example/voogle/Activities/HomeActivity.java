@@ -34,26 +34,26 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityHomeBinding = DataBindingUtil.setContentView(this, R.layout.activity_home);
-
-        source = getIntent().getStringExtra("source");
-        destination = getIntent().getStringExtra("destination");
-        sourceLat = getIntent().getDoubleExtra("sourceLat", 23);
-        sourceS_no = getIntent().getStringExtra("sourceS_no");
-
-        destinationLat = getIntent().getDoubleExtra("destinationLat", 23);
-        destinationS_no = getIntent().getStringExtra("destinationS_no");
-        sourceLng = getIntent().getDoubleExtra("sourceLng", 90);
-
-
-        destinationLng = getIntent().getDoubleExtra("destinationLng", 90);
-        sourceS_no = getIntent().getStringExtra("sourceS_no");
-        Bundle bundle = new Bundle();
-        bundle.putString("source", source);
-        bundle.putString("destination", destination);
-        bundle.putDouble("sourceLat", sourceLat);
-        bundle.putDouble("destinationLat", destinationLat);
-        bundle.putDouble("sourceLng", sourceLng);
-        bundle.putDouble("destinationLng", destinationLng);
+        MapFragment mapFragment = new MapFragment();
+//        source = getIntent().getStringExtra("source");
+//        destination = getIntent().getStringExtra("destination");
+//        sourceLat = getIntent().getDoubleExtra("sourceLat", 23);
+//        sourceS_no = getIntent().getStringExtra("sourceS_no");
+//
+//        destinationLat = getIntent().getDoubleExtra("destinationLat", 23);
+//        destinationS_no = getIntent().getStringExtra("destinationS_no");
+//        sourceLng = getIntent().getDoubleExtra("sourceLng", 90);
+//
+//
+//        destinationLng = getIntent().getDoubleExtra("destinationLng", 90);
+//        sourceS_no = getIntent().getStringExtra("sourceS_no");
+//        Bundle bundle = new Bundle();
+//        bundle.putString("source", source);
+//        bundle.putString("destination", destination);
+//        bundle.putDouble("sourceLat", sourceLat);
+//        bundle.putDouble("destinationLat", destinationLat);
+//        bundle.putDouble("sourceLng", sourceLng);
+//        bundle.putDouble("destinationLng", destinationLng);
 
        // Toast.makeText(this, "Source" + source, Toast.LENGTH_SHORT).show();
         //  Toast.makeText(this, "Source Sl No.: "+sourceS_no, Toast.LENGTH_SHORT).show();
@@ -67,8 +67,8 @@ public class HomeActivity extends AppCompatActivity {
 //        Toast.makeText(this, "Destination Lat: "+destinationLat, Toast.LENGTH_SHORT).show();
 //        Toast.makeText(this, "Destination Lng: "+destinationLng, Toast.LENGTH_SHORT).show();
 
-        MapFragment mapFragment = new MapFragment();
-        mapFragment.setArguments(bundle);
+
+//        mapFragment.setArguments(bundle);
 
         // TODO : change if one needs pre-configured fragments
         BusFragmentPagerAdapter busFragmentPagerAdapter = new BusFragmentPagerAdapter(getSupportFragmentManager(), new BusFragment(), new TrainFragement(), mapFragment);
