@@ -1,82 +1,47 @@
-        package com.example.voogle.Fragments;
-        import android.annotation.SuppressLint;
-        import android.graphics.Color;
-        import android.location.Geocoder;
-        import android.os.AsyncTask;
-        import android.os.Bundle;
-        import android.util.Log;
-        import android.view.LayoutInflater;
-        import android.view.View;
-        import android.view.ViewGroup;
-        import android.widget.Toast;
+package com.example.voogle.Fragments;
 
-        import androidx.annotation.NonNull;
-        import androidx.annotation.Nullable;
-        import androidx.databinding.DataBindingUtil;
-        import androidx.fragment.app.Fragment;
+import android.graphics.Color;
+import android.location.Geocoder;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
+import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import com.example.voogle.GlobalVariables;
+import com.example.voogle.PojoClasses.Stops;
+import com.example.voogle.R;
+import com.example.voogle.databinding.FragmentMapBinding;
+import com.google.firebase.database.*;
+import com.mapbox.android.core.permissions.PermissionsManager;
+import com.mapbox.api.directions.v5.models.DirectionsRoute;
+import com.mapbox.geojson.FeatureCollection;
+import com.mapbox.geojson.Point;
+import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
+import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.location.LocationComponent;
+import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
+import com.mapbox.mapboxsdk.maps.*;
+import com.mapbox.mapboxsdk.plugins.annotation.Symbol;
+import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager;
+import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions;
+import com.mapbox.mapboxsdk.style.layers.LineLayer;
+import com.mapbox.mapboxsdk.style.layers.Property;
+import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
+import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
+import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
 
-        import com.example.voogle.Activities.HomeActivity;
-        import com.example.voogle.Activities.testActivity;
-        import com.example.voogle.GlobalVariables;
-        import com.example.voogle.PojoClasses.Stops;
-        import com.example.voogle.R;
-        import com.example.voogle.databinding.FragmentMapBinding;
-        import com.google.firebase.database.DataSnapshot;
-        import com.google.firebase.database.DatabaseError;
-        import com.google.firebase.database.DatabaseReference;
-        import com.google.firebase.database.FirebaseDatabase;
-        import com.google.firebase.database.ValueEventListener;
-        import com.mapbox.android.core.permissions.PermissionsManager;
-        import com.mapbox.api.directions.v5.DirectionsCriteria;
-        import com.mapbox.api.directions.v5.MapboxDirections;
-        import com.mapbox.api.directions.v5.models.DirectionsResponse;
-        import com.mapbox.api.directions.v5.models.DirectionsRoute;
-        import com.mapbox.api.directions.v5.models.RouteOptions;
-        import com.mapbox.geojson.Feature;
-        import com.mapbox.geojson.FeatureCollection;
-        import com.mapbox.geojson.LineString;
-        import com.mapbox.geojson.Point;
-        import com.mapbox.mapboxsdk.Mapbox;
-        import com.mapbox.mapboxsdk.camera.CameraPosition;
-        import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
-        import com.mapbox.mapboxsdk.geometry.LatLng;
-        import com.mapbox.mapboxsdk.geometry.LatLngBounds;
-        import com.mapbox.mapboxsdk.location.LocationComponent;
-        import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
-        import com.mapbox.mapboxsdk.maps.MapView;
-        import com.mapbox.mapboxsdk.maps.MapboxMap;
-        import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
-        import com.mapbox.mapboxsdk.maps.Style;
-        import com.mapbox.mapboxsdk.maps.UiSettings;
-        import com.mapbox.mapboxsdk.plugins.annotation.Symbol;
-        import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager;
-        import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions;
-        import com.mapbox.mapboxsdk.style.layers.LineLayer;
-        import com.mapbox.mapboxsdk.style.layers.Property;
-        import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
-        import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
-        import com.mapbox.services.android.navigation.ui.v5.OnNavigationReadyCallback;
-        import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
-        import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
-        import java.io.InputStream;
-        import java.lang.ref.WeakReference;
-        import java.net.URI;
-        import java.net.URISyntaxException;
-        import java.util.ArrayList;
-        import java.util.List;
-        import java.util.Scanner;
-
-        import retrofit2.Call;
-        import retrofit2.Callback;
-        import retrofit2.Response;
-        import timber.log.Timber;
-
-        import static com.mapbox.core.constants.Constants.BASE_API_URL;
-        import static com.mapbox.core.constants.Constants.PRECISION_6;
-        import static com.mapbox.mapboxsdk.camera.CameraUpdateFactory.newLatLngBounds;
-
-        /**
+/**
  * A simple {@link Fragment} subclass.
  */
 public class MapFragment extends Fragment implements OnMapReadyCallback {
@@ -206,7 +171,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     uiSettings.setQuickZoomGesturesEnabled(true);
                     uiSettings.setCompassEnabled(true);
 
-                    GeoJsonSource geoJsonSource1=new GeoJsonSource("ROUTE1");
+                    GeoJsonSource geoJsonSource1 = new GeoJsonSource("ROUTE1");
                     try {
                         URI uri = new URI("asset://route1.geojson");
                         Log.i(TAG, "onStyleLoaded: " + uri);
@@ -216,7 +181,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         e.printStackTrace();
                     }
 
-                    GeoJsonSource geoJsonSource2=new GeoJsonSource("ROUTE2");
+                    GeoJsonSource geoJsonSource2 = new GeoJsonSource("ROUTE2");
                     try {
                         URI uri = new URI("asset://route2.geojson");
                         Log.i(TAG, "onStyleLoaded: " + uri);
@@ -225,7 +190,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     } catch (NullPointerException | URISyntaxException e) {
                         e.printStackTrace();
                     }
-                    GeoJsonSource geoJsonSource3=new GeoJsonSource("ROUTE3");
+                    GeoJsonSource geoJsonSource3 = new GeoJsonSource("ROUTE3");
                     try {
                         URI uri = new URI("asset://route3.geojson");
                         Log.i(TAG, "onStyleLoaded: " + uri);
@@ -234,7 +199,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     } catch (NullPointerException | URISyntaxException e) {
                         e.printStackTrace();
                     }
-                    GeoJsonSource geoJsonSource4=new GeoJsonSource("ROUTE4");
+                    GeoJsonSource geoJsonSource4 = new GeoJsonSource("ROUTE4");
                     try {
                         URI uri = new URI("asset://route4.geojson");
                         Log.i(TAG, "onStyleLoaded: " + uri);
@@ -243,7 +208,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     } catch (NullPointerException | URISyntaxException e) {
                         e.printStackTrace();
                     }
-                    GeoJsonSource geoJsonSource5=new GeoJsonSource("ROUTE5");
+                    GeoJsonSource geoJsonSource5 = new GeoJsonSource("ROUTE5");
                     try {
                         URI uri = new URI("asset://route5.geojson");
                         Log.i(TAG, "onStyleLoaded: " + uri);
@@ -252,7 +217,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     } catch (NullPointerException | URISyntaxException e) {
                         e.printStackTrace();
                     }
-                    GeoJsonSource geoJsonSource7=new GeoJsonSource("ROUTE7");
+                    GeoJsonSource geoJsonSource7 = new GeoJsonSource("ROUTE7");
                     try {
                         URI uri = new URI("asset://Route7.geojson");
                         Log.i(TAG, "onStyleLoaded: " + uri);
@@ -273,37 +238,30 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     LineLayer route5 = new LineLayer("ROUTE5L", "ROUTE5");
                     LineLayer route7 = new LineLayer("ROUTE7L", "ROUTE7");
 
-                    route1.setProperties(PropertyFactory.fillColor(Color.RED), PropertyFactory.fillOpacity(0.5f),PropertyFactory.lineWidth(6.23f),PropertyFactory.lineColor(Color.parseColor("#5eafe5")));
-                    route2.setProperties(PropertyFactory.fillColor(Color.RED), PropertyFactory.fillOpacity(0.5f),PropertyFactory.lineWidth(6.23f),PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-                    route3.setProperties(PropertyFactory.fillColor(Color.RED), PropertyFactory.fillOpacity(0.5f),PropertyFactory.lineWidth(6.23f),PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-                    route4.setProperties(PropertyFactory.fillColor(Color.RED), PropertyFactory.fillOpacity(0.5f),PropertyFactory.lineWidth(6.23f),PropertyFactory.lineColor(Color.parseColor("#e5e15e")));
-                    route5.setProperties(PropertyFactory.fillColor(Color.RED), PropertyFactory.fillOpacity(0.5f),PropertyFactory.lineWidth(6.23f),PropertyFactory.lineColor(Color.parseColor("#e55e5e")));
-                    route7.setProperties(PropertyFactory.fillColor(Color.RED), PropertyFactory.fillOpacity(0.5f),PropertyFactory.lineWidth(6.23f),PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
+                    route1.setProperties(PropertyFactory.fillColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#5eafe5")));
+                    route2.setProperties(PropertyFactory.fillColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
+                    route3.setProperties(PropertyFactory.fillColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
+                    route4.setProperties(PropertyFactory.fillColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5e15e")));
+                    route5.setProperties(PropertyFactory.fillColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e55e5e")));
+                    route7.setProperties(PropertyFactory.fillColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
 
-                    for(int commonRoute:commonRoutes)
-                    {
-                        if(commonRoute==1)
-                        {
+                    for (int commonRoute : commonRoutes) {
+                        if (commonRoute == 1) {
                             style.addLayer(route1);
                         }
-                        if(commonRoute==2)
-                        {
+                        if (commonRoute == 2) {
                             style.addLayer(route2);
                         }
-                        if(commonRoute==3)
-                        {
+                        if (commonRoute == 3) {
                             style.addLayer(route3);
                         }
-                        if(commonRoute==4)
-                        {
+                        if (commonRoute == 4) {
                             style.addLayer(route4);
                         }
-                        if(commonRoute==5)
-                        {
+                        if (commonRoute == 5) {
                             style.addLayer(route5);
                         }
-                        if(commonRoute==7)
-                        {
+                        if (commonRoute == 7) {
                             style.addLayer(route7);
                         }
                     }
@@ -313,7 +271,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 //                    style.addLayer(route4);
 //                    style.addLayer(route5);
 //                    style.addLayer(route7);
-
 
 
                     //                        symbolManager.setIconAllowOverlap(true);
@@ -343,9 +300,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     symbolArrayList.add(y);
 
 
-
-                    for(int commonRoute:commonRoutes)
-                    {
+                    for (int commonRoute : commonRoutes) {
                         int i;
                         for (Stops stop : stops) {
                             for (i = 0; i < stop.getRoutes().size(); i++) {
@@ -771,20 +726,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
 // The layer properties for our line. This is where we make the line dotted, set the
 // color, etc.
-                                style.addLayer(new LineLayer("linelayer", "line-source")
-                                        .withProperties(PropertyFactory.lineCap(Property.LINE_CAP_SQUARE),
-                                                PropertyFactory.lineJoin(Property.LINE_JOIN_MITER),
-                                                PropertyFactory.lineOpacity(.7f),
-                                                PropertyFactory.lineWidth(7f),
-                                                PropertyFactory.lineColor(Color.parseColor("#3bb2d0"))));
-                            }
-                        }
-                    });
+                        style.addLayer(new LineLayer("linelayer", "line-source")
+                                .withProperties(PropertyFactory.lineCap(Property.LINE_CAP_SQUARE),
+                                        PropertyFactory.lineJoin(Property.LINE_JOIN_MITER),
+                                        PropertyFactory.lineOpacity(.7f),
+                                        PropertyFactory.lineWidth(7f),
+                                        PropertyFactory.lineColor(Color.parseColor("#3bb2d0"))));
+                    }
                 }
-                else{
-                    Toast.makeText(getActivity(), "No maps loaded", Toast.LENGTH_SHORT).show();
-                }
-            }
+            });
+        } else {
+            Toast.makeText(getActivity(), "No maps loaded", Toast.LENGTH_SHORT).show();
+        }
+    }
 //            private static class LoadGeoJson extends AsyncTask<Void, Void, FeatureCollection> {
 //
 //                private WeakReference<MapFragment> weakReference;
