@@ -1,0 +1,47 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/Color_Black</item>
+        <item name="colorPrimaryDark">@color/Green_Emerald</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme3" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/Green_Emerald</item>
+        <item name="colorPrimaryDark">@color/Green_Emerald</item>
+        <item name="colorAccent">@color/Green_Emerald</item>
+    </style>
+
+
+    <style name="AppTheme3.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="myHintStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/outlinedboxwhite</item>
+        <item name="passwordToggleTint">@color/Color_White</item>
+        <item name="android:textColorPrimary">@color/Color_White</item>
+        <item name="android:textColorHint">@color/Color_LightGrey</item>
+    </style>
+    <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/Color_White</item>
+    </style>
+
+    <style name="myHintStyleGreen" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/Green_Emerald</item>
+        <item name="passwordToggleTint">@color/Green_Emerald</item>
+        <item name="android:textColorPrimary">@color/Green_Emerald</item>
+        <item name="errorTextColor">@color/Green_Emerald</item>
+        <item name="errorIconDrawable">@drawable/ic_error_red_16dp</item>
+        <!--        <item name="boxBackgroundColor">@color/boxwhiteash</item>-->
+        <!--        <item name="hintTextAppearance">@style/HintText2</item>-->
+        <!--        <item name="boxStrokeWidthFocused">3dp</item>-->
+        <!--        <item name="boxStrokeWidth">3dp</item>-->
+        <item name="android:textColorHint">@color/Green_Emerald</item>
+    </style>
+
+</resources>

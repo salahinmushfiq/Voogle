@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <corners android:radius="5dp" />
+
+    <size
+        android:height="60dp"
+        android:width="200dp" />
+
+    <gradient
+        android:centerColor="@color/Color_White"
+        android:angle="90"
+        android:endColor="@color/Color_FloralWhiteCustom"
+        android:startColor="@color/Color_FloralWhiteCustom" />
+
+</shape>

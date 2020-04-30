@@ -1,0 +1,14 @@
+<vector android:height="24dp" android:viewportHeight="512"
+    android:viewportWidth="512" android:width="24dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillColor="@color/hotel_theme_light" android:pathData="M352.98,407.888l0.02,-0.443V262h45.002c11.046,0 20,-8.954 20,-20s-8.954,-20 -20,-20h-284c-11.046,0 -20,8.954 -20,20s8.954,20 20,20H159v145l-0.005,0.764l0.069,0.829c0.698,9.15 -0.286,35.631 -13.046,48.107c-7.897,7.722 -8.04,20.385 -0.318,28.282c3.918,4.007 9.107,6.018 14.302,6.018c5.043,0 10.09,-1.896 13.981,-5.7c27.174,-26.569 25.59,-70.654 25.018,-79.043V262h37v162c0,11.046 8.954,20 20,20c11.046,0 20,-8.954 20,-20V262h37v144.597c-0.278,7.482 -0.951,55.229 25.582,79.234c3.828,3.463 8.627,5.169 13.412,5.169c5.455,0 10.889,-2.219 14.837,-6.582c7.411,-8.19 6.778,-20.838 -1.412,-28.249C354.945,446.693 352.517,419.519 352.98,407.888z"/>
+    <path android:fillColor="@color/hotel_theme_light" android:pathData="M256,493m-19,0a19,19 0,1 1,38 0a19,19 0,1 1,-38 0"/>
+    <path android:fillColor="@color/hotel_theme_light" android:pathData="M99,493m-19,0a19,19 0,1 1,38 0a19,19 0,1 1,-38 0"/>
+    <path android:fillColor="@color/hotel_theme_light" android:pathData="M19,410m-19,0a19,19 0,1 1,38 0a19,19 0,1 1,-38 0"/>
+    <path android:fillColor="@color/hotel_theme_light" android:pathData="M38,471m-19,0a19,19 0,1 1,38 0a19,19 0,1 1,-38 0"/>
+    <path android:fillColor="@color/hotel_theme_light" android:pathData="M492,232c-11.046,0 -20,8.954 -20,20c0,22.056 -17.944,40 -40,40h-19c-11.046,0 -20,8.954 -20,20c0,11.046 8.954,20 20,20h19c44.112,0 80,-35.888 80,-80C512,240.954 503.046,232 492,232z"/>
+    <path android:fillColor="@color/hotel_theme_light" android:pathData="M413,94m-19,0a19,19 0,1 1,38 0a19,19 0,1 1,-38 0"/>
+    <path android:fillColor="@color/hotel_theme_light" android:pathData="M432,0H80C35.888,0 0,35.888 0,80v172c0,44.112 35.888,80 80,80h19c11.046,0 20,-8.954 20,-20c0,-11.046 -8.954,-20 -20,-20H80c-22.056,0 -40,-17.944 -40,-40v-70h452c11.046,0 20,-8.954 20,-20V80C512,35.888 476.112,0 432,0zM472,142H40V80c0,-22.056 17.944,-40 40,-40h352c22.056,0 40,17.944 40,40V142z"/>
+    <path android:fillColor="@color/hotel_theme_light" android:pathData="M413,493m-19,0a19,19 0,1 1,38 0a19,19 0,1 1,-38 0"/>
+    <path android:fillColor="@color/hotel_theme_light" android:pathData="M493,410m-19,0a19,19 0,1 1,38 0a19,19 0,1 1,-38 0"/>
+    <path android:fillColor="@color/hotel_theme_light" android:pathData="M474,471m-19,0a19,19 0,1 1,38 0a19,19 0,1 1,-38 0"/>
+</vector>

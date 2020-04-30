@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Voogle</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="enter_password">Enter Password</string>
+    <string name="enter_email">Enter Email</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="update">Submit New Password</string>
+    <string name="update_password">Update Password</string>
+    <string name="verify_password">Verify Password</string>
+    <string name="enter_group_name">Enter Group Name</string>
+    <string name="confirmPassword">Enter Confirm Password</string>
+    <string name="enter_group_id">Enter Group Id</string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="don_t_have_an_account_sign_up">Do not have an account? Sign Up</string>
+    <string name="login">Login</string>
+    <string name="add_license_plate">Add License Plate</string>
+    <string name="add_phone_number">Add Phone Number</string>
+    <string name="enter_manager_id">Enter Manager Id</string>
+    <string name="enter_phone_no">Enter Phone No</string>
+    <string name="enter_license_plate">Enter License Plate</string>
+</resources>

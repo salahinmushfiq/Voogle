@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme3.NoActionBar">
+
+        <LinearLayout
+            android:id="@+id/holderLay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/Green_Emerald"
+            android:elevation="6dp"
+            android:orientation="vertical"
+            android:padding="30dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/myHintStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginStart="@dimen/starting_margin"
+                android:layout_marginEnd="@dimen/starting_margin"
+                android:hint="@string/enter_manager_id"
+                android:id="@+id/til_email"
+                app:errorTextColor="@color/Color_White"
+                app:boxStrokeErrorColor="@color/Color_DeepSkyBlue"
+                app:errorIconDrawable="@drawable/ic_error_white_16dp"
+                app:errorIconTint="@color/Color_White"
+                app:boxCornerRadiusBottomEnd="20dp"
+                app:boxCornerRadiusBottomStart="20dp"
+                app:boxCornerRadiusTopEnd="20dp"
+                app:boxCornerRadiusTopStart="20dp"
+                app:errorEnabled="true"
+                android:textColorHint="@color/Color_White">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/managerIdET"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:textSize="12sp"
+                    android:inputType="textEmailAddress"
+                    android:textColor="@color/Color_White" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_pw"
+                style="@style/myHintStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginStart="@dimen/starting_margin"
+                android:layout_marginEnd="@dimen/starting_margin"
+                android:hint="@string/enter_phone_no"
+                android:textColorHint="@color/Color_White"
+                app:errorTextColor="@color/Color_White"
+                app:boxStrokeErrorColor="@color/Color_DeepSkyBlue"
+                app:errorIconDrawable="@drawable/ic_error_white_16dp"
+                app:errorIconTint="@color/Color_White"
+                app:boxCornerRadiusBottomEnd="20dp"
+                app:boxCornerRadiusBottomStart="20dp"
+                app:boxCornerRadiusTopEnd="20dp"
+                app:boxCornerRadiusTopStart="20dp"
+                app:errorEnabled="true"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/phoneNoET"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:textSize="12sp"
+                    android:textColor="@color/Color_White" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/licensePlateLayout"
+                style="@style/myHintStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginStart="@dimen/starting_margin"
+                android:layout_marginEnd="@dimen/starting_margin"
+                android:hint="@string/enter_license_plate"
+                android:textColorHint="@color/Color_White"
+                app:errorTextColor="@color/Color_White"
+                app:boxStrokeErrorColor="@color/Color_DeepSkyBlue"
+                app:errorIconDrawable="@drawable/ic_error_white_16dp"
+                app:errorIconTint="@color/Color_White"
+                app:boxCornerRadiusBottomEnd="20dp"
+                app:boxCornerRadiusBottomStart="20dp"
+                app:boxCornerRadiusTopEnd="20dp"
+                app:boxCornerRadiusTopStart="20dp"
+                app:errorEnabled="true"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/licensePlateET"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:textSize="12sp"
+                    android:textColor="@color/Color_White" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+            <Button
+                android:id="@+id/btn_login"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:backgroundTint="@color/Color_White"
+                android:elevation="8dp"
+                android:onClick="logInAsDriverClick"
+                android:stateListAnimator="@null"
+                android:text="@string/login"
+                android:textSize="12sp"
+                />
+
+            <TextView
+                android:id="@+id/tv_goto_register"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rounded_rect_white_smol"
+                android:gravity="center"
+                android:onClick="signUpBtnClick"
+                android:padding="5dp"
+                android:textSize="12sp"
+                android:text="@string/don_t_have_an_account_sign_up"
+                android:textColor="@color/Color_White"
+                android:textStyle="bold"
+                android:visibility="visible" />
+
+
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

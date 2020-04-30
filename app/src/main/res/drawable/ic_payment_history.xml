@@ -1,0 +1,78 @@
+<vector android:height="24dp"
+    android:viewportHeight="480"
+    android:viewportWidth="480"
+    android:width="24dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <path
+        android:fillColor="@color/hotel_theme_light"
+        android:pathData="m456,256h-296c-13.25,0.016 -23.984,10.75 -24,24v176c0.016,13.25 10.75,23.984 24,24h296c13.25,-0.016 23.984,-10.75 24,-24v-176c-0.016,-13.25 -10.75,-23.984 -24,-24zM464,456c-0.004,4.418 -3.582,7.996 -8,8h-296c-4.418,-0.004 -7.996,-3.582 -8,-8v-176c0.004,-4.418 3.582,-7.996 8,-8h296c4.418,0.004 7.996,3.582 8,8zM464,456" />
+    <path
+        android:fillColor="@color/hotel_theme_light"
+        android:pathData="m88,240h328v-32c-0.016,-13.25 -10.75,-23.984 -24,-24h-296c-13.25,0.016 -23.984,10.75 -24,24v176c0.016,13.25 10.75,23.984 24,24h24v-16h-24c-4.418,-0.004 -7.996,-3.582 -8,-8v-72h32v-16h-32zM96,200h296c4.418,0.004 7.996,3.582 8,8v16h-312v-16c0.004,-4.418 3.582,-7.996 8,-8zM96,200" />
+    <path
+        android:fillColor="@color/hotel_theme_light"
+        android:pathData="m424,288h-48c-13.25,0.016 -23.984,10.75 -24,24v48c0.016,13.25 10.75,23.984 24,24h48c13.25,-0.016 23.984,-10.75 24,-24v-48c-0.016,-13.25 -10.75,-23.984 -24,-24zM368,360v-48c0.004,-4.418 3.582,-7.996 8,-8h8v16h16v-16h24c4.418,0.004 7.996,3.582 8,8v24h-32c-8.832,0.012 -15.988,7.168 -16,16v16h-8c-4.418,-0.004 -7.996,-3.582 -8,-8zM424,368h-24v-16h32v8c-0.004,4.418 -3.582,7.996 -8,8zM424,368" />
+    <path
+        android:fillColor="@color/hotel_theme_light"
+        android:pathData="m320,312h16v16h-16zM320,312" />
+    <path
+        android:fillColor="@color/hotel_theme_light"
+        android:pathData="m200,312h104v16h-104zM200,312" />
+    <path
+        android:fillColor="@color/hotel_theme_light"
+        android:pathData="m168,312h16v16h-16zM168,312" />
+    <path
+        android:fillColor="@color/hotel_theme_light"
+        android:pathData="m320,344h16v16h-16zM320,344" />
+    <path
+        android:fillColor="@color/hotel_theme_light"
+        android:pathData="m200,344h104v16h-104zM200,344" />
+    <path
+        android:fillColor="@color/hotel_theme_light"
+        android:pathData="m168,344h16v16h-16zM168,344" />
+    <path
+        android:fillColor="@color/hotel_theme_light"
+        android:pathData="m280,384h-24c-8.832,0.012 -15.988,7.168 -16,16v24c0.012,8.832 7.168,15.988 16,16h24c8.832,-0.012 15.988,-7.168 16,-16v-24c-0.012,-8.832 -7.168,-15.988 -16,-16zM280,424h-24v-24h24zM280,424" />
+    <path
+        android:fillColor="@color/hotel_theme_light"
+        android:pathData="m208,384h-24c-8.832,0.012 -15.988,7.168 -16,16v24c0.012,8.832 7.168,15.988 16,16h24c8.832,-0.012 15.988,-7.168 16,-16v-24c-0.012,-8.832 -7.168,-15.988 -16,-16zM208,424h-24v-24h24zM208,424" />
+    <path
+        android:fillColor="@color/hotel_theme_light"
+        android:pathData="m424,408h16v16h-16zM424,408" />
+    <path
+        android:fillColor="@color/hotel_theme_light"
+        android:pathData="m392,408h16v16h-16zM392,408" />
+    <path
+        android:fillColor="@color/hotel_theme_light"
+        android:pathData="m360,408h16v16h-16zM360,408" />
+    <path
+        android:fillColor="@color/hotel_theme_light"
+        android:pathData="m328,408h16v16h-16zM328,408" />
+    <path
+        android:fillColor="@color/hotel_theme_light"
+        android:pathData="m48,248v-80h64c13.25,-0.016 23.984,-10.75 24,-24v-48c-0.016,-13.25 -10.75,-23.984 -24,-24h-64v-48c0.004,-4.418 3.582,-7.996 8,-8h376c4.418,0.004 7.996,3.582 8,8v216h16v-216c-0.016,-13.25 -10.75,-23.984 -24,-24h-376c-13.25,0.016 -23.984,10.75 -24,24v48h-8c-13.25,0.016 -23.984,10.75 -24,24v80c0.016,13.25 10.75,23.984 24,24h8v48c0.016,13.25 10.75,23.984 24,24v-16c-4.418,-0.004 -7.996,-3.582 -8,-8zM16,96c0.004,-4.418 3.582,-7.996 8,-8h88c4.418,0.004 7.996,3.582 8,8v48c-0.004,4.418 -3.582,7.996 -8,8h-96zM24,184c-4.418,-0.004 -7.996,-3.582 -8,-8v-8h16v16zM24,184" />
+    <path
+        android:fillColor="@color/hotel_theme_light"
+        android:pathData="m104,120c0,8.836 -7.164,16 -16,16s-16,-7.164 -16,-16 7.164,-16 16,-16 16,7.164 16,16zM104,120" />
+    <path
+        android:fillColor="@color/hotel_theme_light"
+        android:pathData="m424,56h-16c-0.012,-8.832 -7.168,-15.988 -16,-16h-16c-8.832,0.012 -15.988,7.168 -16,16h-56c-0.012,-8.832 -7.168,-15.988 -16,-16h-16c-8.832,0.012 -15.988,7.168 -16,16v12.324l-45.918,39.355c-2.828,-2.363 -6.395,-3.664 -10.082,-3.68h-16c-8.832,0.012 -15.988,7.168 -16,16h-16v16h16c0.012,8.832 7.168,15.988 16,16h16c8.832,-0.012 15.988,-7.168 16,-16v-12.324l45.918,-39.355c2.828,2.363 6.395,3.664 10.082,3.68h16c8.832,-0.012 15.988,-7.168 16,-16h56c0.012,8.832 7.168,15.988 16,16h16c8.832,-0.012 15.988,-7.168 16,-16h16zM184,136v-16h16l0.012,16zM272,72v-16h16l0.012,16zM376,72v-16h16l0.012,16zM376,72" />
+    <path
+        android:fillColor="@color/hotel_theme_light"
+        android:pathData="m248,136h16v16h-16zM248,136" />
+    <path
+        android:fillColor="@color/hotel_theme_light"
+        android:pathData="m280,136h112v16h-112zM280,136" />
+    <path
+        android:fillColor="@color/hotel_theme_light"
+        android:pathData="m408,136h16v16h-16zM408,136" />
+    <path
+        android:fillColor="@color/hotel_theme_light"
+        android:pathData="m264,104h16v16h-16zM264,104" />
+    <path
+        android:fillColor="@color/hotel_theme_light"
+        android:pathData="m296,104h96v16h-96zM296,104" />
+    <path
+        android:fillColor="@color/hotel_theme_light"
+        android:pathData="m408,104h16v16h-16zM408,104" />
+</vector>
