@@ -1,80 +1,51 @@
-        package com.example.voogle.Fragments;
-        import android.annotation.SuppressLint;
-        import android.graphics.Color;
-        import android.location.Geocoder;
-        import android.os.AsyncTask;
-        import android.os.Bundle;
-        import android.util.Log;
-        import android.view.LayoutInflater;
-        import android.view.View;
-        import android.view.ViewGroup;
-        import android.widget.Toast;
+package com.example.voogle.Fragments;
 
-        import androidx.annotation.NonNull;
-        import androidx.annotation.Nullable;
-        import androidx.databinding.DataBindingUtil;
-        import androidx.fragment.app.Fragment;
+import android.annotation.SuppressLint;
+import android.graphics.Color;
+import android.location.Geocoder;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import com.example.voogle.GlobalVariables;
+import com.example.voogle.PojoClasses.Stops;
+import com.example.voogle.R;
+import com.example.voogle.databinding.FragmentMapBinding;
+import com.google.firebase.database.*;
+import com.mapbox.android.core.permissions.PermissionsManager;
+import com.mapbox.api.directions.v5.models.DirectionsRoute;
+import com.mapbox.geojson.FeatureCollection;
+import com.mapbox.geojson.Point;
+import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
+import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.location.LocationComponent;
+import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
+import com.mapbox.mapboxsdk.maps.*;
+import com.mapbox.mapboxsdk.plugins.annotation.Symbol;
+import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager;
+import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions;
+import com.mapbox.mapboxsdk.style.layers.LineLayer;
+import com.mapbox.mapboxsdk.style.layers.Property;
+import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
+import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
+import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
 
-        import com.example.voogle.Activities.HomeActivity;
-        import com.example.voogle.Activities.testActivity;
-        import com.example.voogle.GlobalVariables;
-        import com.example.voogle.PojoClasses.Stops;
-        import com.example.voogle.R;
-        import com.example.voogle.databinding.FragmentMapBinding;
-        import com.google.firebase.database.DataSnapshot;
-        import com.google.firebase.database.DatabaseError;
-        import com.google.firebase.database.DatabaseReference;
-        import com.google.firebase.database.FirebaseDatabase;
-        import com.google.firebase.database.ValueEventListener;
-        import com.mapbox.android.core.permissions.PermissionsManager;
-        import com.mapbox.api.directions.v5.DirectionsCriteria;
-        import com.mapbox.api.directions.v5.MapboxDirections;
-        import com.mapbox.api.directions.v5.models.DirectionsResponse;
-        import com.mapbox.api.directions.v5.models.DirectionsRoute;
-        import com.mapbox.api.directions.v5.models.RouteOptions;
-        import com.mapbox.geojson.Feature;
-        import com.mapbox.geojson.FeatureCollection;
-        import com.mapbox.geojson.LineString;
-        import com.mapbox.geojson.Point;
-        import com.mapbox.mapboxsdk.Mapbox;
-        import com.mapbox.mapboxsdk.camera.CameraPosition;
-        import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
-        import com.mapbox.mapboxsdk.geometry.LatLng;
-        import com.mapbox.mapboxsdk.geometry.LatLngBounds;
-        import com.mapbox.mapboxsdk.location.LocationComponent;
-        import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
-        import com.mapbox.mapboxsdk.maps.MapView;
-        import com.mapbox.mapboxsdk.maps.MapboxMap;
-        import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
-        import com.mapbox.mapboxsdk.maps.Style;
-        import com.mapbox.mapboxsdk.maps.UiSettings;
-        import com.mapbox.mapboxsdk.plugins.annotation.Symbol;
-        import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager;
-        import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions;
-        import com.mapbox.mapboxsdk.style.layers.LineLayer;
-        import com.mapbox.mapboxsdk.style.layers.Property;
-        import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
-        import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
-        import com.mapbox.services.android.navigation.ui.v5.OnNavigationReadyCallback;
-        import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
-        import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
+import java.io.InputStream;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
-        import java.io.InputStream;
-        import java.lang.ref.WeakReference;
-        import java.util.ArrayList;
-        import java.util.List;
-        import java.util.Scanner;
-
-        import retrofit2.Call;
-        import retrofit2.Callback;
-        import retrofit2.Response;
-        import timber.log.Timber;
-
-        import static com.mapbox.core.constants.Constants.BASE_API_URL;
-        import static com.mapbox.core.constants.Constants.PRECISION_6;
-        import static com.mapbox.mapboxsdk.camera.CameraUpdateFactory.newLatLngBounds;
-
-        /**
+/**
  * A simple {@link Fragment} subclass.
  */
 public class MapFragment extends Fragment implements OnMapReadyCallback {
@@ -96,13 +67,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private MapView mapView;
     ArrayList<Integer> sourceRoutes, destinationRoutes;
     ArrayList<Point> points;
-    ArrayList<Point> route1Points=new ArrayList<>();
-    ArrayList<Point> route2Points=new ArrayList<>();
-    ArrayList<Point> route3Points=new ArrayList<>();
-    ArrayList<Point> route4Points=new ArrayList<>();
-    ArrayList<Point> route5Points=new ArrayList<>();
-    ArrayList<Point> route6Points=new ArrayList<>();
-    ArrayList<Point> route7Points=new ArrayList<>();
+    ArrayList<Point> route1Points = new ArrayList<>();
+    ArrayList<Point> route2Points = new ArrayList<>();
+    ArrayList<Point> route3Points = new ArrayList<>();
+    ArrayList<Point> route4Points = new ArrayList<>();
+    ArrayList<Point> route5Points = new ArrayList<>();
+    ArrayList<Point> route6Points = new ArrayList<>();
+    ArrayList<Point> route7Points = new ArrayList<>();
     ArrayList<Stops> stopss;
     private static final LatLng SYDNEY = new LatLng(-33.88, 151.21);
     private static final LatLng MOUNTAIN_VIEW = new LatLng(37.4, -122.1);
@@ -113,8 +84,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     LatLng sourceX, destinationX;
     private DirectionsRoute currentRoute;
     private NavigationMapRoute navigationMapRoute;
-    private String source = null, destination = null,name;
-    ArrayList<String>routes=new ArrayList<>();
+    private String source = null, destination = null, name;
+    ArrayList<String> routes = new ArrayList<>();
 
     private Bundle savedInstanceState;
     private static final String LINE_GEOJSON_SOURCE_ID = "LINE_GEOJSON_SOURCE_ID";
@@ -133,7 +104,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         sourceRoutes = new ArrayList<>();
         destinationRoutes = new ArrayList<>();
         points = new ArrayList<>();
-        stopss=new ArrayList<>();
+        stopss = new ArrayList<>();
 
         this.savedInstanceState = savedInstanceState;
 
@@ -230,12 +201,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     symbolArrayList.add(y);
 
 
-
                     for (Stops stop : stops) {
                         //Toast.makeText(getActivity(), "Stopssss: "+stop.getName(), Toast.LENGTH_SHORT).show();
                         //Toast.makeText(getActivity(), "Stopssss: "+stop.getRoutes(), Toast.LENGTH_SHORT).show();
                         int i;
-                        for(i=0;i<stop.getRoutes().size();i++) {
+                        for (i = 0; i < stop.getRoutes().size(); i++) {
                             // Toast.makeText(getActivity(), "Stopssss: " + route, Toast.LENGTH_SHORT).show();
 
 //                            try {
@@ -292,85 +262,83 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 //                            }
                         }
                     }
-                    for(int commonRoute:commonRoutes)
-                    {
+                    for (int commonRoute : commonRoutes) {
                         int i;
-                        for(Stops stop:stops)
-                        {
-                            for(i=0;i<stop.getRoutes().size();i++)
-                            {
-                                if(String.valueOf(stop.getRoutes().get(i)).equals(String.valueOf(commonRoute))){
+                        for (Stops stop : stops) {
+                            for (i = 0; i < stop.getRoutes().size(); i++) {
+                                if (String.valueOf(stop.getRoutes().get(i)).equals(String.valueOf(commonRoute))) {
                                     try {
                                         // Toast.makeText(getActivity(), "routessss"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                        if (String.valueOf(stop.getRoutes().get(i)).equals("1") ) {
+                                        if (String.valueOf(stop.getRoutes().get(i)).equals("1")) {
                                             Symbol Route1 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
-                                       //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                        //    Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
+                                            //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
+                                            //    Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
                                             symbolArrayList.add(Route1);
-                                         //   Toast.makeText(getActivity(), "routessss 1: "+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                            lat=stop.getLat();
-                                            lng=stop.getLng();
+                                            //   Toast.makeText(getActivity(), "routessss 1: "+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
+                                            lat = stop.getLat();
+                                            lng = stop.getLng();
                                             route1Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                                         }
-                                        if (String.valueOf(stop.getRoutes().get(i)).equals("2") ) {
+                                        if (String.valueOf(stop.getRoutes().get(i)).equals("2")) {
                                             Symbol Route2 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
                                             symbolArrayList.add(Route2);
-                                       //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                      //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                            Toast.makeText(getActivity(), "routessss"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                            lat=stop.getLat();
-                                            lng=stop.getLng();
+                                            //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
+                                            //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getActivity(), "routessss" + String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
+                                            lat = stop.getLat();
+                                            lng = stop.getLng();
                                             route2Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                                         }
-                                        if (String.valueOf(stop.getRoutes().get(i)).equals("3") ) {
+                                        if (String.valueOf(stop.getRoutes().get(i)).equals("3")) {
                                             Symbol Route3 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
                                             symbolArrayList.add(Route3);
-                                           // Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                          //  Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                            lat=stop.getLat();
-                                            lng=stop.getLng();
+                                            // Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
+                                            //  Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
+                                            lat = stop.getLat();
+                                            lng = stop.getLng();
                                             route3Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                                         }
-                                        if (String.valueOf(stop.getRoutes().get(i)).equals("4") ) {
+                                        if (String.valueOf(stop.getRoutes().get(i)).equals("4")) {
                                             Symbol Route4 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE4").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
                                             symbolArrayList.add(Route4);
-                                      //      Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                      //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                      //      Toast.makeText(getActivity(), "routessss4: "+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                            lat=stop.getLat();
-                                            lng=stop.getLng();
+                                            //      Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
+                                            //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
+                                            //      Toast.makeText(getActivity(), "routessss4: "+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
+                                            lat = stop.getLat();
+                                            lng = stop.getLng();
                                             route4Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                                        }if (String.valueOf(stop.getRoutes().get(i)).equals("5") ) {
+                                        }
+                                        if (String.valueOf(stop.getRoutes().get(i)).equals("5")) {
                                             Symbol Route5 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE5").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
                                             symbolArrayList.add(Route5);
-                                     //       Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                       //     Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                            lat=stop.getLat();
-                                            lng=stop.getLng();
+                                            //       Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
+                                            //     Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
+                                            lat = stop.getLat();
+                                            lng = stop.getLng();
                                             route5Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                                        }if (String.valueOf(stop.getRoutes().get(i)).equals("6") ) {
+                                        }
+                                        if (String.valueOf(stop.getRoutes().get(i)).equals("6")) {
                                             Symbol Route6 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE6").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
                                             symbolArrayList.add(Route6);
-                                        //    Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                         //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                            lat=stop.getLat();
-                                            lng=stop.getLng();
+                                            //    Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
+                                            //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
+                                            lat = stop.getLat();
+                                            lng = stop.getLng();
                                             route6Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                                        }if (String.valueOf(stop.getRoutes().get(i)).equals("7") ) {
+                                        }
+                                        if (String.valueOf(stop.getRoutes().get(i)).equals("7")) {
                                             Symbol Route7 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE7").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
                                             symbolArrayList.add(Route7);
-                                         //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                         //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                         //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                            lat=stop.getLat();
-                                            lng=stop.getLng();
+                                            //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
+                                            //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
+                                            //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
+                                            lat = stop.getLat();
+                                            lng = stop.getLng();
                                             route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
 
                                         }
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        Log.d(TAG,e.getMessage());
+                                    } catch (Exception e) {
+                                        Log.d(TAG, e.getMessage());
                                     }
                                 }
                             }
@@ -383,7 +351,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     }
 
 //                    for(int route:commonRoutes) {
-                        getRoutes(route1Points,route2Points,route3Points,route4Points,route5Points,route6Points,route7Points);
+                    getRoutes(route1Points, route2Points, route3Points, route4Points, route5Points, route6Points, route7Points);
 
 //                    }
 
@@ -400,15 +368,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         List<Point> wayPoints = points;
         List<Point> route1Point = route1Points;
         List<Point> route2Point = route2Points;
-        List<Point> route3Point =  route3Points;
+        List<Point> route3Point = route3Points;
         List<Point> route4Point = route4Points;
         List<Point> route5Point = route5Points;
         List<Point> route6Point = route6Points;
         List<Point> route7Point = route7Points;
 
 
-
-            navigationMapRoute = new NavigationMapRoute(null, mapView, map);
+        navigationMapRoute = new NavigationMapRoute(null, mapView, map);
 
 //            if(!route1Point.isEmpty()) {
 //                Toast.makeText(getActivity(), "Route 1 Called", Toast.LENGTH_SHORT).show();
@@ -636,12 +603,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         navigationMapRoute.updateRouteArrowVisibilityTo(true);
 
 
-
-
-        }
-
-
-
+    }
 
 
     private void getCommonRoutes() {
@@ -670,7 +632,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot stops : dataSnapshot.getChildren()) {
                         for (DataSnapshot route : stops.child("route").getChildren()) {
-                            int i=0;
+                            int i = 0;
                             for (int commonRoute : commonRoutes) {
                                 if (commonRoute == Integer.valueOf(route.getValue().toString())) {
                                     GlobalVariables.stops.add(stops.getValue(Stops.class));
@@ -682,7 +644,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                     name = stops.child("name").getValue(String.class);
                                     routes = (ArrayList<String>) stops.child("route").getValue();
                                     points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                                    stopss.add(new Stops(name,lat,lng,"front",routes));
+                                    stopss.add(new Stops(name, lat, lng, "front", routes));
                                     points.get(i).latitude();
                                     i++;
 
@@ -696,7 +658,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         // symbol.setIconImage("XRed");
                         symbolManager.update(symbol);
                     }
-                    initMap(savedInstanceState,stopss);
+                    initMap(savedInstanceState, stopss);
                 }
 
             }
@@ -716,74 +678,75 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-            private void drawLines(@NonNull FeatureCollection featureCollection) {
-                Toast.makeText(getActivity(), "Draw Lines called", Toast.LENGTH_SHORT).show();
-                if (map != null) {
-                    map.getStyle(style -> {
-                        if (featureCollection.features() != null) {
-                            if (featureCollection.features().size() > 0) {
-                                style.addSource(new GeoJsonSource("line-source", featureCollection));
+    private void drawLines(@NonNull FeatureCollection featureCollection) {
+        Toast.makeText(getActivity(), "Draw Lines called", Toast.LENGTH_SHORT).show();
+        if (map != null) {
+            map.getStyle(style -> {
+                if (featureCollection.features() != null) {
+                    if (featureCollection.features().size() > 0) {
+                        style.addSource(new GeoJsonSource("line-source", featureCollection));
 
 // The layer properties for our line. This is where we make the line dotted, set the
 // color, etc.
-                                style.addLayer(new LineLayer("linelayer", "line-source")
-                                        .withProperties(PropertyFactory.lineCap(Property.LINE_CAP_SQUARE),
-                                                PropertyFactory.lineJoin(Property.LINE_JOIN_MITER),
-                                                PropertyFactory.lineOpacity(.7f),
-                                                PropertyFactory.lineWidth(7f),
-                                                PropertyFactory.lineColor(Color.parseColor("#3bb2d0"))));
-                            }
-                        }
-                    });
-                }
-                else{
-                    Toast.makeText(getActivity(), "No maps loaded", Toast.LENGTH_SHORT).show();
-                }
-            }
-            private static class LoadGeoJson extends AsyncTask<Void, Void, FeatureCollection> {
-
-                private WeakReference<MapFragment> weakReference;
-
-                LoadGeoJson(MapFragment activity) {
-                    this.weakReference = new WeakReference<>(activity);
-                    Toast.makeText(activity.getActivity(), "Load GeoJson Called", Toast.LENGTH_SHORT).show();
-                }
-
-                @SuppressLint("LongLogTag")
-                @Override
-                protected FeatureCollection doInBackground(Void... voids) {
-
-                    
-                    try {
-                        MapFragment activity = weakReference.get();
-                        if (activity != null) {
-                            InputStream inputStream = activity.getActivity().getAssets().open("example.geojson");
-                            Log.d("TAG","input Stream opened");
-                            return FeatureCollection.fromJson(convertStreamToString(inputStream));
-                        }
-                    } catch (Exception exception) {
-                       Log.d("Exception Loading GeoJSON:" , exception.toString());
-
-
-                    }
-                    return null;
-                }
-
-                static String convertStreamToString(InputStream is) {
-                    Scanner scanner = new Scanner(is).useDelimiter("\\A");
-                    Log.d("TAG","Convert String is successful");
-                    return scanner.hasNext() ? scanner.next() : "";
-                }
-
-                @Override
-                protected void onPostExecute(@Nullable FeatureCollection featureCollection) {
-                    super.onPostExecute(featureCollection);
-                    MapFragment activity = weakReference.get();
-                    if (activity != null && featureCollection != null) {
-                        activity.drawLines(featureCollection);
+                        style.addLayer(new LineLayer("linelayer", "line-source")
+                                .withProperties(PropertyFactory.lineCap(Property.LINE_CAP_SQUARE),
+                                        PropertyFactory.lineJoin(Property.LINE_JOIN_MITER),
+                                        PropertyFactory.lineOpacity(.7f),
+                                        PropertyFactory.lineWidth(7f),
+                                        PropertyFactory.lineColor(Color.parseColor("#3bb2d0"))));
                     }
                 }
+            });
+        } else {
+            Toast.makeText(getActivity(), "No maps loaded", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private static class LoadGeoJson extends AsyncTask<Void, Void, FeatureCollection> {
+
+        private WeakReference<MapFragment> weakReference;
+
+        LoadGeoJson(MapFragment activity) {
+            this.weakReference = new WeakReference<>(activity);
+            Toast.makeText(activity.getActivity(), "Load GeoJson Called", Toast.LENGTH_SHORT).show();
+        }
+
+        @SuppressLint("LongLogTag")
+        @Override
+        protected FeatureCollection doInBackground(Void... voids) {
+
+
+            try {
+                MapFragment activity = weakReference.get();
+                if (activity != null) {
+                    InputStream inputStream = activity.getActivity().getAssets().open("example.geojson");
+                    Log.d("TAG", "input Stream opened");
+                    return FeatureCollection.fromJson(convertStreamToString(inputStream));
+                }
+            } catch (Exception exception) {
+                Log.d("Exception Loading GeoJSON:", exception.toString());
+
+
             }
+            return null;
+        }
+
+        static String convertStreamToString(InputStream is) {
+            Scanner scanner = new Scanner(is).useDelimiter("\\A");
+            Log.d("TAG", "Convert String is successful");
+            return scanner.hasNext() ? scanner.next() : "";
+        }
+
+        @Override
+        protected void onPostExecute(@Nullable FeatureCollection featureCollection) {
+            super.onPostExecute(featureCollection);
+            MapFragment activity = weakReference.get();
+            if (activity != null && featureCollection != null) {
+                activity.drawLines(featureCollection);
+            }
+        }
+    }
+
     @Override
     public void onStart() {
         super.onStart();
