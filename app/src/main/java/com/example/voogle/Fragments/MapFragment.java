@@ -11,6 +11,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.voogle.Adapters.RouteButtonAdapter;
+import com.example.voogle.Functions.MapClick;
 import com.example.voogle.GlobalVariables;
 import com.example.voogle.PojoClasses.Location;
 import com.example.voogle.PojoClasses.Stops;
@@ -43,7 +49,7 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MapFragment extends Fragment implements OnMapReadyCallback {
+public class MapFragment extends Fragment implements OnMapReadyCallback, MapClick {
     final int[] count = {0};
     FragmentMapBinding fragmentMapBinding;
 
@@ -71,9 +77,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     ArrayList<Point> route6Points = new ArrayList<>();
     ArrayList<Point> route7Points = new ArrayList<>();
     ArrayList<Stops> stopss;
+    RouteButtonAdapter routeButtonAdapter;
     private static final LatLng SYDNEY = new LatLng(-33.88, 151.21);
     private static final LatLng MOUNTAIN_VIEW = new LatLng(37.4, -122.1);
     Double lat, lng;
+
     public static final String TAG = "mapFrag";
     private ArrayList<Symbol> symbolArrayList = new ArrayList<>();
     ArrayList<Integer> commonRoutes = new ArrayList<>();
@@ -90,7 +98,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     LineLayer route1, route2, route3, route4, route5, route7;
     private boolean firstRun;
     private Location current_location;
-
+    String routeNo;
     public MapFragment() {
         // Required empty public constructor
     }
@@ -129,6 +137,41 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         Toast.makeText(getActivity(), destination, Toast.LENGTH_SHORT).show();
 
 
+        fragmentMapBinding.removeLayerBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(addLayer1Flag==1)
+                {
+                    map.getStyle().removeLayer(route1);
+                    addLayer1Flag=0;
+                }
+                if(addLayer2Flag==1)
+                {
+                    map.getStyle().removeLayer(route2);
+                    addLayer2Flag=0;
+                }
+                if(addLayer3Flag==1)
+                {
+                    map.getStyle().removeLayer(route3);
+                    addLayer3Flag=0;
+                }
+                if(addLayer4Flag==1)
+                {
+                    map.getStyle().removeLayer(route4);
+                    addLayer4Flag=0;
+                }
+                if(addLayer5Flag==1)
+                {
+                    map.getStyle().removeLayer(route5);
+                    addLayer5Flag=0;
+                }
+                if(addLayer7Flag==1)
+                {
+                    map.getStyle().removeLayer(route7);
+                    addLayer7Flag=0;
+                }
+            }
+        });
         getCommonRoutes();
 //        readLocations();
         return fragmentMapBinding.getRoot();
@@ -252,55 +295,59 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 addLayer7Flag = 0;
 
                 if (!commonRoutes.isEmpty()) {
-                    for (int commonRoute : commonRoutes) {
+                    routeButtonAdapter=new RouteButtonAdapter(getActivity(),commonRoutes,this);
+                    fragmentMapBinding.routeBtnRV.setAdapter(routeButtonAdapter);
+                    fragmentMapBinding.routeBtnRV.setLayoutManager(new GridLayoutManager(getActivity(),5));
+                    //routeNo = getArguments().getString("routeNo");
+//                    for (int commonRoute : commonRoutes) {
 
-                        if (addLayer1Flag == 0) {
-                            if (commonRoute == 1) {
-                                Toast.makeText(getActivity(), "Route 1 called", Toast.LENGTH_SHORT).show();
-                                style.addLayer(route1);
-                                addLayer1Flag = 1;
-                            }
-                        }
+//                        if (addLayer1Flag == 0) {
+//                            if (routeNo.equals(1)) {
+//                                Toast.makeText(getActivity(), "Route 1 called", Toast.LENGTH_SHORT).show();
+//                                style.addLayer(route1);
+//                                addLayer1Flag = 1;
+//                            }
+//                        }
+//
+//                        if (addLayer2Flag == 0) {
+//                            if (routeNo.equals(2)) {
+//                                Toast.makeText(getActivity(), "Route 2 called", Toast.LENGTH_SHORT).show();
+//                                style.addLayer(route2);
+//                                addLayer2Flag = 1;
+//                            }
+//                        }
+//
+//                        if (addLayer3Flag == 0) {
+//                            if (routeNo.equals(3)) {
+//                                Toast.makeText(getActivity(), "Route 3 called", Toast.LENGTH_SHORT).show();
+//                                style.addLayer(route3);
+//                                addLayer3Flag = 1;
+//                            }
+//                        }
+//                        if (addLayer4Flag == 0) {
+//                            if (routeNo.equals(4)) {
+//                                Toast.makeText(getActivity(), "Route 4 called", Toast.LENGTH_SHORT).show();
+//                                style.addLayer(route4);
+//                                addLayer4Flag = 1;
+//                            }
+//                        }
+//
+//                        if (addLayer5Flag == 0) {
+//                            if (routeNo.equals(5)) {
+//                                Toast.makeText(getActivity(), "Route 5 called", Toast.LENGTH_SHORT).show();
+//                                style.addLayer(route5);
+//                                addLayer5Flag = 1;
+//                            }
+//                        }
+//                        if (addLayer7Flag == 0) {
+//                            if (routeNo.equals(7)) {
+//                                Toast.makeText(getActivity(), "Route 7 called", Toast.LENGTH_SHORT).show();
+//                                style.addLayer(route7);
+//                                addLayer7Flag = 1;
+//                            }
+//                        }
 
-                        if (addLayer2Flag == 0) {
-                            if (commonRoute == 2) {
-                                Toast.makeText(getActivity(), "Route 2 called", Toast.LENGTH_SHORT).show();
-                                style.addLayer(route2);
-                                addLayer2Flag = 1;
-                            }
-                        }
-
-                        if (addLayer3Flag == 0) {
-                            if (commonRoute == 3) {
-                                Toast.makeText(getActivity(), "Route 3 called", Toast.LENGTH_SHORT).show();
-                                style.addLayer(route3);
-                                addLayer3Flag = 1;
-                            }
-                        }
-                        if (addLayer4Flag == 0) {
-                            if (commonRoute == 4) {
-                                Toast.makeText(getActivity(), "Route 4 called", Toast.LENGTH_SHORT).show();
-                                style.addLayer(route4);
-                                addLayer4Flag = 1;
-                            }
-                        }
-
-                        if (addLayer5Flag == 0) {
-                            if (commonRoute == 5) {
-                                Toast.makeText(getActivity(), "Route 5 called", Toast.LENGTH_SHORT).show();
-                                style.addLayer(route5);
-                                addLayer5Flag = 1;
-                            }
-                        }
-                        if (addLayer7Flag == 0) {
-                            if (commonRoute == 7) {
-                                Toast.makeText(getActivity(), "Route 7 called", Toast.LENGTH_SHORT).show();
-                                style.addLayer(route7);
-                                addLayer7Flag = 1;
-                            }
-                        }
-
-                    }
+//                    }
 
                 }
 
@@ -885,5 +932,72 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         map = mapboxMap;
 
+    }
+
+    @Override
+    public void onClick(String s) {
+
+        routeNo=s;
+        Toast.makeText(getActivity(), "Route No.: "+s, Toast.LENGTH_SHORT).show();
+        if (!commonRoutes.isEmpty()) {
+
+            //routeNo = getArguments().getString("routeNo");
+//                    for (int commonRoute : commonRoutes) {
+//            addLayer1Flag = 0;
+//            addLayer2Flag = 0;
+//            addLayer3Flag = 0;
+//            addLayer4Flag = 0;
+//            addLayer5Flag = 0;
+//            addLayer6Flag = 0;
+//            addLayer7Flag = 0;
+            if (addLayer1Flag == 0) {
+                if (routeNo.equals("1")) {
+                    Toast.makeText(getActivity(), "Route 1 called", Toast.LENGTH_SHORT).show();
+                    map.getStyle().addLayer(route1);
+                    addLayer1Flag = 1;
+                }
+            }
+
+            if (addLayer2Flag == 0) {
+                if (routeNo.equals("2")) {
+                    Toast.makeText(getActivity(), "Route 2 called", Toast.LENGTH_SHORT).show();
+                    map.getStyle().addLayer(route2);
+                    addLayer2Flag = 1;
+                }
+            }
+
+            if (addLayer3Flag == 0) {
+                if (routeNo.equals("3")) {
+                    Toast.makeText(getActivity(), "Route 3 called", Toast.LENGTH_SHORT).show();
+                    map.getStyle().addLayer(route3);
+                    addLayer3Flag = 1;
+                }
+            }
+            if (addLayer4Flag == 0) {
+                if (routeNo.equals("4")) {
+                    Toast.makeText(getActivity(), "Route 4 called", Toast.LENGTH_SHORT).show();
+                    map.getStyle().addLayer(route4);
+                    addLayer4Flag = 1;
+                }
+            }
+
+            if (addLayer5Flag == 0) {
+                if (routeNo.equals("5")) {
+                    Toast.makeText(getActivity(), "Route 5 called", Toast.LENGTH_SHORT).show();
+                    map.getStyle().addLayer(route5);
+                    addLayer5Flag = 1;
+                }
+            }
+            if (addLayer7Flag == 0) {
+                if (routeNo.equals("7")) {
+                    Toast.makeText(getActivity(), "Route 7 called", Toast.LENGTH_SHORT).show();
+                    map.getStyle().addLayer(route7);
+                    addLayer7Flag = 1;
+                }
+            }
+
+//                    }
+
+        }
     }
 }

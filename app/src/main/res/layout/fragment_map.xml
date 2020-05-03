@@ -13,6 +13,9 @@
             android:id="@+id/mapView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            mapbox:layout_constraintLeft_toLeftOf="parent"
+            mapbox:layout_constraintRight_toRightOf="parent"
+            mapbox:layout_constraintTop_toTopOf="parent"
             mapbox:mapbox_cameraBearing="34.33"
             mapbox:mapbox_cameraTargetLat="23.779328"
             mapbox:mapbox_cameraTargetLng="90.365191"
@@ -21,25 +24,29 @@
             mapbox:mapbox_cameraZoomMax="18.41"
             mapbox:mapbox_cameraZoomMin="8"
             mapbox:mapbox_uiRotateGestures="false"
-            mapbox:layout_constraintTop_toTopOf="parent"
-            mapbox:layout_constraintLeft_toLeftOf="parent"
-            mapbox:layout_constraintRight_toRightOf="parent"
             tools:ignore="MissingConstraints" />
 
-        <Button
-            android:id="@+id/startButton"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/routeBtnRV"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
             android:background="@color/grey_hex_0a"
             android:enabled="false"
             android:text="Start navigation"
             android:textColor="@color/grey_hex_b7"
             mapbox:layout_constraintStart_toStartOf="parent"
             mapbox:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/removeLayerBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:text="Remove"
+            mapbox:layout_constraintStart_toStartOf="parent"
+            mapbox:layout_constraintTop_toBottomOf="@+id/routeBtnRV" />
         <com.mapbox.services.android.navigation.ui.v5.NavigationView
             android:layout_width="386dp"
             android:id="@+id/navView"
