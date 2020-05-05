@@ -32,7 +32,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:background="@color/grey_hex_0a"
             android:enabled="false"
             android:text="Start navigation"
             android:textColor="@color/grey_hex_b7"
