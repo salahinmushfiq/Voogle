@@ -28,6 +28,7 @@ import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
 import com.mapbox.mapboxsdk.maps.*;
@@ -37,6 +38,7 @@ import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions;
 import com.mapbox.mapboxsdk.style.layers.LineLayer;
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
+import com.mapbox.services.android.navigation.ui.v5.camera.NavigationCamera;
 import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
 
 import java.net.URI;
@@ -56,6 +58,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
     DatabaseReference stopRef, busRef;
     PermissionsManager permissionsManager;
     SymbolManager symbolManager;
+    LatLngBounds bd;
     Symbol locationPointer;
     LocationComponent locationComponent;
     LocationComponentActivationOptions locationComponentActivationOptions;
@@ -143,6 +146,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
         sourceLng = GlobalVariables.sourceLng;
         destinationLat = GlobalVariables.destinationLat;
         destinationLng = GlobalVariables.destinationLng;
+
+
+
+
+// Set the camera to the greatest possible zoom level that includes the
+// bounds
 
         Log.i(TAG, "onCreateView: " + source + " and " + destination);
         Toast.makeText(getActivity(), source, Toast.LENGTH_SHORT).show();
@@ -587,8 +596,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                 uiSettings.setZoomGesturesEnabled(true);
                 uiSettings.setQuickZoomGesturesEnabled(true);
                 uiSettings.setCompassEnabled(true);
+
+
                 getCommonRoutes();
                 getBusList();
+
 
 
                 addLayer1Flag = 0;
@@ -604,12 +616,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
     }
 
     private void addStop(ArrayList<Stops> stops) {
+        Symbol source = symbolManager.create(new SymbolOptions().withIconImage("X").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng(Double.valueOf(sourceLat), Double.valueOf(sourceLng))).withTextField("Source"));
+        Symbol destination = symbolManager.create(new SymbolOptions().withIconImage("Y").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng(Double.valueOf(destinationLat), Double.valueOf(destinationLng))).withTextField("Destination"));
+        symbolArrayList.add(source);
+        symbolArrayList.add(destination);
+
+
+        for (Symbol symbol : symbolArrayList) {
+
+            symbolManager.update(symbol);
+        }
         for (int commonRoute : commonRoutes) {
             int i;
             for (Stops stop : stops) {
                 for (i = 0; i < stop.getRoutes().size(); i++) {
                     if (String.valueOf(stop.getRoutes().get(i)).equals(String.valueOf(commonRoute))) {
                         try {
+
+
                             // Toast.makeText(getActivity(), "routessss"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                             if (String.valueOf(stop.getRoutes().get(i)).equals("1")) {
                                 Symbol Route1 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
@@ -2718,30 +2742,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 fragmentMapBinding.routeBtnRV.setLayoutManager(new GridLayoutManager(getActivity(), 5));
                             }
 
-                            CameraPosition position = new CameraPosition.Builder()
-                                    .target(new LatLng(sourceLat, sourceLng
-                                    )) // Sets the new camera position
-                                    .zoom(14) // Sets the zoom
-                                    .tilt(30) // Set the camera tilt
-                                    .build(); // Creates a CameraPosition from the builder
+//                            CameraPosition position = new CameraPosition.Builder()
+//                                    .target(new LatLng(sourceLat, sourceLng
+//                                    )) // Sets the new camera position
+//                                    .zoom(14) // Sets the zoom
+//                                    .tilt(30) // Set the camera tilt
+//                                    .build(); // Creates a CameraPosition from the builder
                             locationComponent = map.getLocationComponent();
 
                             locationComponent.activateLocationComponent(locationComponentActivationOptions = LocationComponentActivationOptions.builder(getActivity(), style).build());
 
 
-                            map.animateCamera(CameraUpdateFactory.newCameraPosition(position), 7000);
+//                            map.animateCamera(CameraUpdateFactory.newCameraPosition(position), 7000);
 
+                            LatLngBounds latLngBounds = new LatLngBounds.Builder()
+                                    .include(new LatLng(sourceLat,sourceLng)) // Northeast
+                                    .include(new LatLng(destinationLat,destinationLng)) // Southwest
+                                    .build();
 
-                            Symbol x = symbolManager.create(new SymbolOptions().withIconImage("X").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng(Double.valueOf(sourceLat), Double.valueOf(sourceLng))).withTextField("Source"));
-                            Symbol y = symbolManager.create(new SymbolOptions().withIconImage("Y").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng(Double.valueOf(destinationLat), Double.valueOf(destinationLng))).withTextField("Destination"));
-                            symbolArrayList.add(x);
-                            symbolArrayList.add(y);
+                            map.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 50), 5000);
 
-
-                            for (Symbol symbol : symbolArrayList) {
-
-                                symbolManager.update(symbol);
-                            }
 
                             loadRoute(style);
                             Log.d("check", "OnStyle loaded");
