@@ -12,9 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.voogle.Adapters.RouteButtonAdapter;
 import com.example.voogle.Functions.MapClick;
 import com.example.voogle.GlobalVariables;
@@ -53,10 +50,10 @@ import java.util.ArrayList;
 public class MapFragment extends Fragment implements OnMapReadyCallback, MapClick {
     final int[] count = {0};
     FragmentMapBinding fragmentMapBinding;
-    ArrayList<Bus>busList=new ArrayList<>();
+    ArrayList<Bus> busList = new ArrayList<>();
     MapboxMap map;
     DatabaseReference root = FirebaseDatabase.getInstance().getReference("root");
-    DatabaseReference stopRef,busRef;
+    DatabaseReference stopRef, busRef;
     PermissionsManager permissionsManager;
     SymbolManager symbolManager;
     Symbol locationPointer;
@@ -103,16 +100,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
             addLayer50Flag, addLayer51Flag, addLayer52Flag, addLayer53Flag, addLayer54Flag, addLayer55Flag, addLayer56Flag,
             addLayer57Flag, addLayer58Flag, addLayer59Flag, addLayer60Flag, addLayer61Flag, addLayer62Flag, addLayer63Flag,
             addLayer64Flag, addLayer65Flag, addLayer66Flag, addLayer67Flag, addLayer68Flag, addLayer69Flag, addLayer70Flag,
-            addLayer71Flag, addLayer72Flag, addLayer73Flag, addLayer74Flag, addLayer75Flag,addLayer76Flag, addLayer77Flag,
+            addLayer71Flag, addLayer72Flag, addLayer73Flag, addLayer74Flag, addLayer75Flag, addLayer76Flag, addLayer77Flag,
             addLayer78Flag, addLayer79Flag, addLayer80Flag;
     private Bundle savedInstanceState;
     private static final String LINE_GEOJSON_SOURCE_ID = "LINE_GEOJSON_SOURCE_ID";
     private static final String CIRCLE_GEOJSON_SOURCE_ID = "CIRCLE_GEOJSON_SOURCE_ID";
-    LineLayer route1, route2, route3, route4, route5, route6,route7,route8, route9, route10, route11, route12, route13,route14, route15, route16, route17, route18, route19,route20, route21, route22, route23, route24, route25,route26, route27, route28, route29, route30, route31,route32, route33, route34, route35, route36, route37,route38, route39, route40, route41, route42, route43,route44, route45, route46, route47, route48, route49,route50, route51, route52, route53, route54, route55,route56, route57, route58, route59, route60, route61,route62, route63, route64, route65, route66, route67,route68, route69, route70, route71, route72, route73,route74, route75,route76, route77, route78, route79, route80;
+    LineLayer route1, route2, route3, route4, route5, route6, route7, route8, route9, route10, route11, route12, route13, route14, route15, route16, route17, route18, route19, route20, route21, route22, route23, route24, route25, route26, route27, route28, route29, route30, route31, route32, route33, route34, route35, route36, route37, route38, route39, route40, route41, route42, route43, route44, route45, route46, route47, route48, route49, route50, route51, route52, route53, route54, route55, route56, route57, route58, route59, route60, route61, route62, route63, route64, route65, route66, route67, route68, route69, route70, route71, route72, route73, route74, route75, route76, route77, route78, route79, route80;
     private boolean firstRun;
     private Location current_location;
     String routeNo;
     private int getCommonRoutesFlag;
+    private long time1st;
 
     public MapFragment() {
         // Required empty public constructor
@@ -157,353 +155,289 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
         fragmentMapBinding.removeLayerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(addLayer1Flag==1)
-                {
+                if (addLayer1Flag == 1) {
                     map.getStyle().removeLayer(route1);
-                    addLayer1Flag=0;
+                    addLayer1Flag = 0;
                 }
-                if(addLayer2Flag==1)
-                {
+                if (addLayer2Flag == 1) {
                     map.getStyle().removeLayer(route2);
-                    addLayer2Flag=0;
+                    addLayer2Flag = 0;
                 }
-                if(addLayer3Flag==1)
-                {
+                if (addLayer3Flag == 1) {
                     map.getStyle().removeLayer(route3);
-                    addLayer3Flag=0;
+                    addLayer3Flag = 0;
                 }
-                if(addLayer4Flag==1)
-                {
+                if (addLayer4Flag == 1) {
                     map.getStyle().removeLayer(route4);
-                    addLayer4Flag=0;
+                    addLayer4Flag = 0;
                 }
-                if(addLayer5Flag==1)
-                {
+                if (addLayer5Flag == 1) {
                     map.getStyle().removeLayer(route5);
-                    addLayer5Flag=0;
+                    addLayer5Flag = 0;
                 }
-                if(addLayer6Flag==1)
-                {
+                if (addLayer6Flag == 1) {
                     map.getStyle().removeLayer(route6);
-                    addLayer6Flag=0;
+                    addLayer6Flag = 0;
                 }
-                if(addLayer7Flag==1)
-                {
+                if (addLayer7Flag == 1) {
                     map.getStyle().removeLayer(route7);
-                    addLayer7Flag=0;
+                    addLayer7Flag = 0;
                 }
-                if(addLayer8Flag==1)
-                {
+                if (addLayer8Flag == 1) {
                     map.getStyle().removeLayer(route8);
-                    addLayer8Flag=0;
+                    addLayer8Flag = 0;
                 }
-                if(addLayer9Flag==1)
-                {
+                if (addLayer9Flag == 1) {
                     map.getStyle().removeLayer(route9);
-                    addLayer9Flag=0;
-                } if(addLayer10Flag==1)
-                {
-                    map.getStyle().removeLayer(route10);
-                    addLayer10Flag=0;
+                    addLayer9Flag = 0;
                 }
-                if(addLayer11Flag==1)
-                {
+                if (addLayer10Flag == 1) {
+                    map.getStyle().removeLayer(route10);
+                    addLayer10Flag = 0;
+                }
+                if (addLayer11Flag == 1) {
                     map.getStyle().removeLayer(route11);
-                    addLayer11Flag=0;
+                    addLayer11Flag = 0;
                 }
-                if(addLayer12Flag==1)
-                {
+                if (addLayer12Flag == 1) {
                     map.getStyle().removeLayer(route12);
-                    addLayer12Flag=0;
+                    addLayer12Flag = 0;
                 }
-                if(addLayer13Flag==1)
-                {
+                if (addLayer13Flag == 1) {
                     map.getStyle().removeLayer(route13);
-                    addLayer13Flag=0;
+                    addLayer13Flag = 0;
                 }
-                if(addLayer14Flag==1)
-                {
+                if (addLayer14Flag == 1) {
                     map.getStyle().removeLayer(route14);
-                    addLayer14Flag=0;
+                    addLayer14Flag = 0;
                 }
-                if(addLayer15Flag==1)
-                {
+                if (addLayer15Flag == 1) {
                     map.getStyle().removeLayer(route15);
-                    addLayer15Flag=0;
+                    addLayer15Flag = 0;
                 }
-                if(addLayer16Flag==1)
-                {
+                if (addLayer16Flag == 1) {
                     map.getStyle().removeLayer(route16);
-                    addLayer16Flag=0;
+                    addLayer16Flag = 0;
                 }
-                if(addLayer17Flag==1)
-                {
+                if (addLayer17Flag == 1) {
                     map.getStyle().removeLayer(route17);
-                    addLayer17Flag=0;
+                    addLayer17Flag = 0;
                 }
-                if(addLayer18Flag==1)
-                {
+                if (addLayer18Flag == 1) {
                     map.getStyle().removeLayer(route18);
-                    addLayer18Flag=0;
+                    addLayer18Flag = 0;
                 }
-                if(addLayer19Flag==1)
-                {
+                if (addLayer19Flag == 1) {
                     map.getStyle().removeLayer(route19);
-                    addLayer19Flag=0;
-                } if(addLayer20Flag==1)
-                {
+                    addLayer19Flag = 0;
+                }
+                if (addLayer20Flag == 1) {
                     map.getStyle().removeLayer(route20);
-                    addLayer20Flag=0;
+                    addLayer20Flag = 0;
                 }
-                if(addLayer21Flag==1)
-                {
+                if (addLayer21Flag == 1) {
                     map.getStyle().removeLayer(route21);
-                    addLayer21Flag=0;
+                    addLayer21Flag = 0;
                 }
-                if(addLayer22Flag==1)
-                {
+                if (addLayer22Flag == 1) {
                     map.getStyle().removeLayer(route22);
-                    addLayer22Flag=0;
+                    addLayer22Flag = 0;
                 }
-                if(addLayer23Flag==1)
-                {
+                if (addLayer23Flag == 1) {
                     map.getStyle().removeLayer(route23);
-                    addLayer23Flag=0;
+                    addLayer23Flag = 0;
                 }
-                if(addLayer24Flag==1)
-                {
+                if (addLayer24Flag == 1) {
                     map.getStyle().removeLayer(route24);
-                    addLayer24Flag=0;
+                    addLayer24Flag = 0;
                 }
-                if(addLayer25Flag==1)
-                {
+                if (addLayer25Flag == 1) {
                     map.getStyle().removeLayer(route25);
-                    addLayer25Flag=0;
+                    addLayer25Flag = 0;
                 }
-                if(addLayer26Flag==1)
-                {
+                if (addLayer26Flag == 1) {
                     map.getStyle().removeLayer(route26);
-                    addLayer26Flag=0;
+                    addLayer26Flag = 0;
                 }
-                if(addLayer27Flag==1)
-                {
+                if (addLayer27Flag == 1) {
                     map.getStyle().removeLayer(route27);
-                    addLayer27Flag=0;
+                    addLayer27Flag = 0;
                 }
-                if(addLayer28Flag==1)
-                {
+                if (addLayer28Flag == 1) {
                     map.getStyle().removeLayer(route28);
-                    addLayer28Flag=0;
+                    addLayer28Flag = 0;
                 }
-                if(addLayer29Flag==1)
-                {
+                if (addLayer29Flag == 1) {
                     map.getStyle().removeLayer(route29);
-                    addLayer29Flag=0;
-                } if(addLayer30Flag==1)
-                {
+                    addLayer29Flag = 0;
+                }
+                if (addLayer30Flag == 1) {
                     map.getStyle().removeLayer(route30);
-                    addLayer30Flag=0;
+                    addLayer30Flag = 0;
                 }
-                if(addLayer31Flag==1)
-                {
+                if (addLayer31Flag == 1) {
                     map.getStyle().removeLayer(route31);
-                    addLayer31Flag=0;
+                    addLayer31Flag = 0;
                 }
-                if(addLayer32Flag==1)
-                {
+                if (addLayer32Flag == 1) {
                     map.getStyle().removeLayer(route32);
-                    addLayer32Flag=0;
+                    addLayer32Flag = 0;
                 }
-                if(addLayer33Flag==1)
-                {
+                if (addLayer33Flag == 1) {
                     map.getStyle().removeLayer(route33);
-                    addLayer33Flag=0;
+                    addLayer33Flag = 0;
                 }
-                if(addLayer34Flag==1)
-                {
+                if (addLayer34Flag == 1) {
                     map.getStyle().removeLayer(route34);
-                    addLayer34Flag=0;
+                    addLayer34Flag = 0;
                 }
-                if(addLayer35Flag==1)
-                {
+                if (addLayer35Flag == 1) {
                     map.getStyle().removeLayer(route35);
-                    addLayer35Flag=0;
+                    addLayer35Flag = 0;
                 }
-                if(addLayer36Flag==1)
-                {
+                if (addLayer36Flag == 1) {
                     map.getStyle().removeLayer(route36);
-                    addLayer36Flag=0;
+                    addLayer36Flag = 0;
                 }
-                if(addLayer37Flag==1)
-                {
+                if (addLayer37Flag == 1) {
                     map.getStyle().removeLayer(route37);
-                    addLayer37Flag=0;
+                    addLayer37Flag = 0;
                 }
-                if(addLayer38Flag==1)
-                {
+                if (addLayer38Flag == 1) {
                     map.getStyle().removeLayer(route38);
-                    addLayer38Flag=0;
+                    addLayer38Flag = 0;
                 }
-                if(addLayer39Flag==1)
-                {
+                if (addLayer39Flag == 1) {
                     map.getStyle().removeLayer(route39);
-                    addLayer39Flag=0;
-                } if(addLayer40Flag==1)
-                {
+                    addLayer39Flag = 0;
+                }
+                if (addLayer40Flag == 1) {
                     map.getStyle().removeLayer(route40);
-                    addLayer40Flag=0;
+                    addLayer40Flag = 0;
                 }
-                if(addLayer41Flag==1)
-                {
+                if (addLayer41Flag == 1) {
                     map.getStyle().removeLayer(route41);
-                    addLayer41Flag=0;
+                    addLayer41Flag = 0;
                 }
-                if(addLayer42Flag==1)
-                {
+                if (addLayer42Flag == 1) {
                     map.getStyle().removeLayer(route42);
-                    addLayer42Flag=0;
+                    addLayer42Flag = 0;
                 }
-                if(addLayer43Flag==1)
-                {
+                if (addLayer43Flag == 1) {
                     map.getStyle().removeLayer(route43);
-                    addLayer43Flag=0;
+                    addLayer43Flag = 0;
                 }
-                if(addLayer44Flag==1)
-                {
+                if (addLayer44Flag == 1) {
                     map.getStyle().removeLayer(route44);
-                    addLayer44Flag=0;
+                    addLayer44Flag = 0;
                 }
-                if(addLayer45Flag==1)
-                {
+                if (addLayer45Flag == 1) {
                     map.getStyle().removeLayer(route45);
-                    addLayer45Flag=0;
+                    addLayer45Flag = 0;
                 }
-                if(addLayer46Flag==1)
-                {
+                if (addLayer46Flag == 1) {
                     map.getStyle().removeLayer(route46);
-                    addLayer46Flag=0;
+                    addLayer46Flag = 0;
                 }
-                if(addLayer47Flag==1)
-                {
+                if (addLayer47Flag == 1) {
                     map.getStyle().removeLayer(route47);
-                    addLayer47Flag=0;
+                    addLayer47Flag = 0;
                 }
-                if(addLayer48Flag==1)
-                {
+                if (addLayer48Flag == 1) {
                     map.getStyle().removeLayer(route48);
-                    addLayer48Flag=0;
+                    addLayer48Flag = 0;
                 }
-                if(addLayer49Flag==1)
-                {
+                if (addLayer49Flag == 1) {
                     map.getStyle().removeLayer(route49);
-                    addLayer49Flag=0;
-                } if(addLayer50Flag==1)
-                {
+                    addLayer49Flag = 0;
+                }
+                if (addLayer50Flag == 1) {
                     map.getStyle().removeLayer(route50);
-                    addLayer50Flag=0;
+                    addLayer50Flag = 0;
                 }
-                if(addLayer51Flag==1)
-                {
+                if (addLayer51Flag == 1) {
                     map.getStyle().removeLayer(route51);
-                    addLayer51Flag=0;
+                    addLayer51Flag = 0;
                 }
-                if(addLayer52Flag==1)
-                {
+                if (addLayer52Flag == 1) {
                     map.getStyle().removeLayer(route52);
-                    addLayer52Flag=0;
+                    addLayer52Flag = 0;
                 }
-                if(addLayer53Flag==1)
-                {
+                if (addLayer53Flag == 1) {
                     map.getStyle().removeLayer(route53);
-                    addLayer53Flag=0;
+                    addLayer53Flag = 0;
                 }
-                if(addLayer54Flag==1)
-                {
+                if (addLayer54Flag == 1) {
                     map.getStyle().removeLayer(route54);
-                    addLayer54Flag=0;
+                    addLayer54Flag = 0;
                 }
-                if(addLayer55Flag==1)
-                {
+                if (addLayer55Flag == 1) {
                     map.getStyle().removeLayer(route55);
-                    addLayer55Flag=0;
+                    addLayer55Flag = 0;
                 }
-                if(addLayer56Flag==1)
-                {
+                if (addLayer56Flag == 1) {
                     map.getStyle().removeLayer(route56);
-                    addLayer56Flag=0;
+                    addLayer56Flag = 0;
                 }
-                if(addLayer57Flag==1)
-                {
+                if (addLayer57Flag == 1) {
                     map.getStyle().removeLayer(route57);
-                    addLayer57Flag=0;
+                    addLayer57Flag = 0;
                 }
-                if(addLayer58Flag==1)
-                {
+                if (addLayer58Flag == 1) {
                     map.getStyle().removeLayer(route58);
-                    addLayer58Flag=0;
+                    addLayer58Flag = 0;
                 }
-                if(addLayer59Flag==1)
-                {
+                if (addLayer59Flag == 1) {
                     map.getStyle().removeLayer(route59);
-                    addLayer9Flag=0;
-                } if(addLayer60Flag==1)
-                {
+                    addLayer9Flag = 0;
+                }
+                if (addLayer60Flag == 1) {
                     map.getStyle().removeLayer(route10);
-                    addLayer10Flag=0;
-                }if(addLayer61Flag==1)
-                {
+                    addLayer10Flag = 0;
+                }
+                if (addLayer61Flag == 1) {
                     map.getStyle().removeLayer(route61);
-                    addLayer61Flag=0;
+                    addLayer61Flag = 0;
                 }
-                if(addLayer62Flag==1)
-                {
+                if (addLayer62Flag == 1) {
                     map.getStyle().removeLayer(route62);
-                    addLayer62Flag=0;
+                    addLayer62Flag = 0;
                 }
-                if(addLayer63Flag==1)
-                {
+                if (addLayer63Flag == 1) {
                     map.getStyle().removeLayer(route63);
-                    addLayer63Flag=0;
+                    addLayer63Flag = 0;
                 }
-                if(addLayer64Flag==1)
-                {
+                if (addLayer64Flag == 1) {
                     map.getStyle().removeLayer(route64);
-                    addLayer64Flag=0;
+                    addLayer64Flag = 0;
                 }
-                if(addLayer65Flag==1)
-                {
+                if (addLayer65Flag == 1) {
                     map.getStyle().removeLayer(route65);
-                    addLayer65Flag=0;
+                    addLayer65Flag = 0;
                 }
-                if(addLayer66Flag==1)
-                {
+                if (addLayer66Flag == 1) {
                     map.getStyle().removeLayer(route66);
-                    addLayer66Flag=0;
+                    addLayer66Flag = 0;
                 }
-                if(addLayer67Flag==1)
-                {
+                if (addLayer67Flag == 1) {
                     map.getStyle().removeLayer(route67);
-                    addLayer67Flag=0;
+                    addLayer67Flag = 0;
                 }
-                if(addLayer68Flag==1)
-                {
+                if (addLayer68Flag == 1) {
                     map.getStyle().removeLayer(route68);
-                    addLayer68Flag=0;
+                    addLayer68Flag = 0;
                 }
-                if(addLayer69Flag==1)
-                {
+                if (addLayer69Flag == 1) {
                     map.getStyle().removeLayer(route69);
-                    addLayer69Flag=0;
-                } if(addLayer70Flag==1)
-                {
+                    addLayer69Flag = 0;
+                }
+                if (addLayer70Flag == 1) {
                     map.getStyle().removeLayer(route70);
-                    addLayer70Flag=0;
+                    addLayer70Flag = 0;
                 }
             }
         });
-        getCommonRoutesFlag=0;
-        getCommonRoutes();
-        getBusList();
+        getCommonRoutesFlag = 0;
 
 //        readLocations();
         return fragmentMapBinding.getRoot();
@@ -511,7 +445,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
     }
 
     private void getBusList() {
-        currentBus=new Bus();
+        currentBus = new Bus();
         busRef = FirebaseDatabase.getInstance().getReference().child("root").child("busList");
         busRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -520,21 +454,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                     for (DataSnapshot bus : dataSnapshot.getChildren()) {
 //                        for (DataSnapshot route : stops.child("route").getChildren()) {
 //
-                        currentBus =bus.getValue(Bus.class);
-                        for(int route:commonRoutes)
-                        {
-                            if(route==currentBus.getRoute_no())
-                            {
+                        currentBus = bus.getValue(Bus.class);
+                        for (int route : commonRoutes) {
+                            if (route == currentBus.getRoute_no()) {
                                 busList.add(currentBus);
                             }
                         }
 //                        }
-                       // Log.d("busLoad",bus.getValue().toString());
+                        // Log.d("busLoad",bus.getValue().toString());
                         //Toast.makeText(getActivity(), currentBus.getGroupName(), Toast.LENGTH_SHORT).show();
                     }
-                    for(Bus bus:busList)
-                    {
-                        Log.d("BusList",bus.getGroupName());
+                    for (Bus bus : busList) {
+                        Log.d("BusList", bus.getGroupName());
                     }
                 }
             }
@@ -551,7 +482,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 //        LatLng source = new LatLng(Double.valueOf(sourceLat), Double.valueOf(sourceLng)), destination = new LatLng(Double.valueOf(destinationLat), Double.valueOf(destinationLng));
         mapView = fragmentMapBinding.mapView;
 
-        Log.d("check","initMap");
+        time1st = System.currentTimeMillis();
+
+        Log.i(TAG, "initMap: " + time1st);
+
+        Log.d("check", "initMap");
         mapView.onCreate(savedInstanceState);
 
         geocoder = new Geocoder(getContext());
@@ -642,6 +577,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                     .withImage("ROUTE74", getActivity().getDrawable(R.drawable.ic_directions_bus_orange_24dp)), style -> {
 
 
+                Log.i(TAG, "initMap onLoaded: " + (System.currentTimeMillis() - time1st));
+
                 symbolManager = new SymbolManager(mapView, mapboxMap, style);
 
                 readLocations();
@@ -650,9 +587,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                 uiSettings.setZoomGesturesEnabled(true);
                 uiSettings.setQuickZoomGesturesEnabled(true);
                 uiSettings.setCompassEnabled(true);
-
-
-
+                getCommonRoutes();
+                getBusList();
 
 
                 addLayer1Flag = 0;
@@ -662,46 +598,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                 addLayer5Flag = 0;
                 addLayer6Flag = 0;
                 addLayer7Flag = 0;
-
-                if (!commonRoutes.isEmpty()) {
-                    routeButtonAdapter=new RouteButtonAdapter(getActivity(),commonRoutes,this);
-                    fragmentMapBinding.routeBtnRV.setAdapter(routeButtonAdapter);
-                    fragmentMapBinding.routeBtnRV.setLayoutManager(new GridLayoutManager(getActivity(),5));
-
-
-                }
-
-                CameraPosition position = new CameraPosition.Builder()
-                        .target(new LatLng(sourceLat, sourceLng
-                        )) // Sets the new camera position
-                        .zoom(14) // Sets the zoom
-                        .tilt(30) // Set the camera tilt
-                        .build(); // Creates a CameraPosition from the builder
-                locationComponent = mapboxMap.getLocationComponent();
-
-                locationComponent.activateLocationComponent(locationComponentActivationOptions = LocationComponentActivationOptions.builder(getActivity(), style).build());
-
-
-                map.animateCamera(CameraUpdateFactory.newCameraPosition(position), 7000);
-
-
-                Symbol x = symbolManager.create(new SymbolOptions().withIconImage("X").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng(Double.valueOf(sourceLat), Double.valueOf(sourceLng))).withTextField("Source"));
-                Symbol y = symbolManager.create(new SymbolOptions().withIconImage("Y").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng(Double.valueOf(destinationLat), Double.valueOf(destinationLng))).withTextField("Destination"));
-                symbolArrayList.add(x);
-                symbolArrayList.add(y);
-
-
-
-
-
-
-                for (Symbol symbol : symbolArrayList) {
-
-                    symbolManager.update(symbol);
-                }
-
-//
-
             });
 
         });
@@ -1435,7 +1331,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 lng = stop.getLng();
                                 //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
 
-                            }  if (String.valueOf(stop.getRoutes().get(i)).equals("71")) {
+                            }
+                            if (String.valueOf(stop.getRoutes().get(i)).equals("71")) {
                                 Symbol Route71 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE71").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
                                 //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //    Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
@@ -1557,7 +1454,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource2 = new GeoJsonSource("ROUTE2");
+        }
+        GeoJsonSource geoJsonSource2 = new GeoJsonSource("ROUTE2");
         try {
             URI uri = new URI("asset://route2.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
@@ -1565,7 +1463,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource3 = new GeoJsonSource("ROUTE3");
+        }
+        GeoJsonSource geoJsonSource3 = new GeoJsonSource("ROUTE3");
         try {
             URI uri = new URI("asset://route3.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
@@ -1573,7 +1472,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource4 = new GeoJsonSource("ROUTE4");
+        }
+        GeoJsonSource geoJsonSource4 = new GeoJsonSource("ROUTE4");
         try {
             URI uri = new URI("asset://route4.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
@@ -1581,7 +1481,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource5 = new GeoJsonSource("ROUTE5");
+        }
+        GeoJsonSource geoJsonSource5 = new GeoJsonSource("ROUTE5");
         try {
             URI uri = new URI("asset://route5.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
@@ -1589,7 +1490,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource6 = new GeoJsonSource("ROUTE6");
+        }
+        GeoJsonSource geoJsonSource6 = new GeoJsonSource("ROUTE6");
         try {
             URI uri = new URI("asset://route6.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
@@ -1597,7 +1499,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource7 = new GeoJsonSource("ROUTE7");
+        }
+        GeoJsonSource geoJsonSource7 = new GeoJsonSource("ROUTE7");
         try {
             URI uri = new URI("asset://route7.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
@@ -1605,7 +1508,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource8 = new GeoJsonSource("ROUTE8");
+        }
+        GeoJsonSource geoJsonSource8 = new GeoJsonSource("ROUTE8");
         try {
             URI uri = new URI("asset://route8.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
@@ -1613,7 +1517,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource9 = new GeoJsonSource("ROUTE9");
+        }
+        GeoJsonSource geoJsonSource9 = new GeoJsonSource("ROUTE9");
         try {
             URI uri = new URI("asset://route9.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
@@ -1621,7 +1526,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource10 = new GeoJsonSource("ROUTE10");
+        }
+        GeoJsonSource geoJsonSource10 = new GeoJsonSource("ROUTE10");
         try {
             URI uri = new URI("asset://route10.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
@@ -1629,7 +1535,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource11 = new GeoJsonSource("ROUTE11");
+        }
+        GeoJsonSource geoJsonSource11 = new GeoJsonSource("ROUTE11");
         try {
             URI uri = new URI("asset://route11.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
@@ -1637,15 +1544,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource12 = new GeoJsonSource("ROUTE12");
+        }
+        GeoJsonSource geoJsonSource12 = new GeoJsonSource("ROUTE12");
         try {
             URI uri = new URI("asset://route12.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource12= new GeoJsonSource("ROUTE12", uri));
+            style.addSource(geoJsonSource12 = new GeoJsonSource("ROUTE12", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource13 = new GeoJsonSource("ROUTE13");
+        }
+        GeoJsonSource geoJsonSource13 = new GeoJsonSource("ROUTE13");
         try {
             URI uri = new URI("asset://route13.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
@@ -1653,7 +1562,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource14 = new GeoJsonSource("ROUTE14");
+        }
+        GeoJsonSource geoJsonSource14 = new GeoJsonSource("ROUTE14");
         try {
             URI uri = new URI("asset://route14.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
@@ -1661,7 +1571,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource15 = new GeoJsonSource("ROUTE15");
+        }
+        GeoJsonSource geoJsonSource15 = new GeoJsonSource("ROUTE15");
         try {
             URI uri = new URI("asset://route15.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
@@ -1669,7 +1580,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource16 = new GeoJsonSource("ROUTE16");
+        }
+        GeoJsonSource geoJsonSource16 = new GeoJsonSource("ROUTE16");
         try {
             URI uri = new URI("asset://route16.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
@@ -1677,7 +1589,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource17 = new GeoJsonSource("ROUTE17");
+        }
+        GeoJsonSource geoJsonSource17 = new GeoJsonSource("ROUTE17");
         try {
             URI uri = new URI("asset://route17.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
@@ -1685,7 +1598,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource18 = new GeoJsonSource("ROUTE18");
+        }
+        GeoJsonSource geoJsonSource18 = new GeoJsonSource("ROUTE18");
         try {
             URI uri = new URI("asset://route18.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
@@ -1707,407 +1621,457 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
         try {
             URI uri = new URI("asset://route20.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource20= new GeoJsonSource("ROUTE20", uri));
+            style.addSource(geoJsonSource20 = new GeoJsonSource("ROUTE20", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource21 = new GeoJsonSource("ROUTE21");
+        }
+        GeoJsonSource geoJsonSource21 = new GeoJsonSource("ROUTE21");
         try {
             URI uri = new URI("asset://route21.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource21= new GeoJsonSource("ROUTE21", uri));
+            style.addSource(geoJsonSource21 = new GeoJsonSource("ROUTE21", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource22 = new GeoJsonSource("ROUTE22");
+        }
+        GeoJsonSource geoJsonSource22 = new GeoJsonSource("ROUTE22");
         try {
             URI uri = new URI("asset://route22.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource22= new GeoJsonSource("ROUTE22", uri));
+            style.addSource(geoJsonSource22 = new GeoJsonSource("ROUTE22", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource23 = new GeoJsonSource("ROUTE23");
+        }
+        GeoJsonSource geoJsonSource23 = new GeoJsonSource("ROUTE23");
         try {
             URI uri = new URI("asset://route23.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource23= new GeoJsonSource("ROUTE23", uri));
+            style.addSource(geoJsonSource23 = new GeoJsonSource("ROUTE23", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource24 = new GeoJsonSource("ROUTE24");
+        }
+        GeoJsonSource geoJsonSource24 = new GeoJsonSource("ROUTE24");
         try {
             URI uri = new URI("asset://route24.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource24= new GeoJsonSource("ROUTE24", uri));
+            style.addSource(geoJsonSource24 = new GeoJsonSource("ROUTE24", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource25 = new GeoJsonSource("ROUTE25");
+        }
+        GeoJsonSource geoJsonSource25 = new GeoJsonSource("ROUTE25");
         try {
             URI uri = new URI("asset://route25.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource25= new GeoJsonSource("ROUTE25", uri));
+            style.addSource(geoJsonSource25 = new GeoJsonSource("ROUTE25", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource26 = new GeoJsonSource("ROUTE26");
+        }
+        GeoJsonSource geoJsonSource26 = new GeoJsonSource("ROUTE26");
         try {
             URI uri = new URI("asset://route26.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource26= new GeoJsonSource("ROUTE26", uri));
+            style.addSource(geoJsonSource26 = new GeoJsonSource("ROUTE26", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource27 = new GeoJsonSource("ROUTE27");
+        }
+        GeoJsonSource geoJsonSource27 = new GeoJsonSource("ROUTE27");
         try {
             URI uri = new URI("asset://route27.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource27= new GeoJsonSource("ROUTE27", uri));
+            style.addSource(geoJsonSource27 = new GeoJsonSource("ROUTE27", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource28 = new GeoJsonSource("ROUTE28");
+        }
+        GeoJsonSource geoJsonSource28 = new GeoJsonSource("ROUTE28");
         try {
             URI uri = new URI("asset://route28.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource28= new GeoJsonSource("ROUTE28", uri));
+            style.addSource(geoJsonSource28 = new GeoJsonSource("ROUTE28", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource29 = new GeoJsonSource("ROUTE29");
+        }
+        GeoJsonSource geoJsonSource29 = new GeoJsonSource("ROUTE29");
         try {
             URI uri = new URI("asset://route29.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource29= new GeoJsonSource("ROUTE29", uri));
+            style.addSource(geoJsonSource29 = new GeoJsonSource("ROUTE29", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource30 = new GeoJsonSource("ROUTE30");
+        }
+        GeoJsonSource geoJsonSource30 = new GeoJsonSource("ROUTE30");
         try {
             URI uri = new URI("asset://route30.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource30= new GeoJsonSource("ROUTE30", uri));
+            style.addSource(geoJsonSource30 = new GeoJsonSource("ROUTE30", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource31 = new GeoJsonSource("ROUTE31");
+        }
+        GeoJsonSource geoJsonSource31 = new GeoJsonSource("ROUTE31");
         try {
             URI uri = new URI("asset://route31.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource31= new GeoJsonSource("ROUTE31", uri));
+            style.addSource(geoJsonSource31 = new GeoJsonSource("ROUTE31", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource32 = new GeoJsonSource("ROUTE32");
+        }
+        GeoJsonSource geoJsonSource32 = new GeoJsonSource("ROUTE32");
         try {
             URI uri = new URI("asset://route32.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource32= new GeoJsonSource("ROUTE32", uri));
+            style.addSource(geoJsonSource32 = new GeoJsonSource("ROUTE32", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource33 = new GeoJsonSource("ROUTE33");
+        }
+        GeoJsonSource geoJsonSource33 = new GeoJsonSource("ROUTE33");
         try {
             URI uri = new URI("asset://route33.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource33= new GeoJsonSource("ROUTE33", uri));
+            style.addSource(geoJsonSource33 = new GeoJsonSource("ROUTE33", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource34 = new GeoJsonSource("ROUTE34");
+        }
+        GeoJsonSource geoJsonSource34 = new GeoJsonSource("ROUTE34");
         try {
             URI uri = new URI("asset://route34.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource34= new GeoJsonSource("ROUTE34", uri));
+            style.addSource(geoJsonSource34 = new GeoJsonSource("ROUTE34", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource35 = new GeoJsonSource("ROUTE35");
+        }
+        GeoJsonSource geoJsonSource35 = new GeoJsonSource("ROUTE35");
         try {
             URI uri = new URI("asset://route35.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource35= new GeoJsonSource("ROUTE35", uri));
+            style.addSource(geoJsonSource35 = new GeoJsonSource("ROUTE35", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource36 = new GeoJsonSource("ROUTE36");
+        }
+        GeoJsonSource geoJsonSource36 = new GeoJsonSource("ROUTE36");
         try {
             URI uri = new URI("asset://route36.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource36= new GeoJsonSource("ROUTE36", uri));
+            style.addSource(geoJsonSource36 = new GeoJsonSource("ROUTE36", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource37 = new GeoJsonSource("ROUTE37");
+        }
+        GeoJsonSource geoJsonSource37 = new GeoJsonSource("ROUTE37");
         try {
             URI uri = new URI("asset://route37.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource37= new GeoJsonSource("ROUTE37", uri));
+            style.addSource(geoJsonSource37 = new GeoJsonSource("ROUTE37", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource38 = new GeoJsonSource("ROUTE38");
+        }
+        GeoJsonSource geoJsonSource38 = new GeoJsonSource("ROUTE38");
         try {
             URI uri = new URI("asset://route38.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource38= new GeoJsonSource("ROUTE38", uri));
+            style.addSource(geoJsonSource38 = new GeoJsonSource("ROUTE38", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource39 = new GeoJsonSource("ROUTE39");
+        }
+        GeoJsonSource geoJsonSource39 = new GeoJsonSource("ROUTE39");
         try {
             URI uri = new URI("asset://route39.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource39= new GeoJsonSource("ROUTE39", uri));
+            style.addSource(geoJsonSource39 = new GeoJsonSource("ROUTE39", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource40 = new GeoJsonSource("ROUTE40");
+        }
+        GeoJsonSource geoJsonSource40 = new GeoJsonSource("ROUTE40");
         try {
             URI uri = new URI("asset://route40.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource40= new GeoJsonSource("ROUTE40", uri));
+            style.addSource(geoJsonSource40 = new GeoJsonSource("ROUTE40", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource41 = new GeoJsonSource("ROUTE41");
+        }
+        GeoJsonSource geoJsonSource41 = new GeoJsonSource("ROUTE41");
         try {
             URI uri = new URI("asset://route41.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource41= new GeoJsonSource("ROUTE41", uri));
+            style.addSource(geoJsonSource41 = new GeoJsonSource("ROUTE41", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource42 = new GeoJsonSource("ROUTE42");
+        }
+        GeoJsonSource geoJsonSource42 = new GeoJsonSource("ROUTE42");
         try {
             URI uri = new URI("asset://route42.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource42= new GeoJsonSource("ROUTE42", uri));
+            style.addSource(geoJsonSource42 = new GeoJsonSource("ROUTE42", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource43 = new GeoJsonSource("ROUTE43");
+        }
+        GeoJsonSource geoJsonSource43 = new GeoJsonSource("ROUTE43");
         try {
             URI uri = new URI("asset://route43.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource43= new GeoJsonSource("ROUTE43", uri));
+            style.addSource(geoJsonSource43 = new GeoJsonSource("ROUTE43", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource44 = new GeoJsonSource("ROUTE44");
+        }
+        GeoJsonSource geoJsonSource44 = new GeoJsonSource("ROUTE44");
         try {
             URI uri = new URI("asset://route44.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource44= new GeoJsonSource("ROUTE44", uri));
+            style.addSource(geoJsonSource44 = new GeoJsonSource("ROUTE44", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource45 = new GeoJsonSource("ROUTE45");
+        }
+        GeoJsonSource geoJsonSource45 = new GeoJsonSource("ROUTE45");
         try {
             URI uri = new URI("asset://route45.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource45= new GeoJsonSource("ROUTE45", uri));
+            style.addSource(geoJsonSource45 = new GeoJsonSource("ROUTE45", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource46 = new GeoJsonSource("ROUTE46");
+        }
+        GeoJsonSource geoJsonSource46 = new GeoJsonSource("ROUTE46");
         try {
             URI uri = new URI("asset://route46.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource46= new GeoJsonSource("ROUTE46", uri));
+            style.addSource(geoJsonSource46 = new GeoJsonSource("ROUTE46", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource47 = new GeoJsonSource("ROUTE47");
+        }
+        GeoJsonSource geoJsonSource47 = new GeoJsonSource("ROUTE47");
         try {
             URI uri = new URI("asset://route47.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource47= new GeoJsonSource("ROUTE47", uri));
+            style.addSource(geoJsonSource47 = new GeoJsonSource("ROUTE47", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource48 = new GeoJsonSource("ROUTE48");
+        }
+        GeoJsonSource geoJsonSource48 = new GeoJsonSource("ROUTE48");
         try {
             URI uri = new URI("asset://route48.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource48= new GeoJsonSource("ROUTE48", uri));
+            style.addSource(geoJsonSource48 = new GeoJsonSource("ROUTE48", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource49 = new GeoJsonSource("ROUTE49");
+        }
+        GeoJsonSource geoJsonSource49 = new GeoJsonSource("ROUTE49");
         try {
             URI uri = new URI("asset://route49.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource49= new GeoJsonSource("ROUTE49", uri));
+            style.addSource(geoJsonSource49 = new GeoJsonSource("ROUTE49", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource50 = new GeoJsonSource("ROUTE50");
+        }
+        GeoJsonSource geoJsonSource50 = new GeoJsonSource("ROUTE50");
         try {
             URI uri = new URI("asset://route50.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource50= new GeoJsonSource("ROUTE50", uri));
+            style.addSource(geoJsonSource50 = new GeoJsonSource("ROUTE50", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource51 = new GeoJsonSource("ROUTE51");
+        }
+        GeoJsonSource geoJsonSource51 = new GeoJsonSource("ROUTE51");
         try {
             URI uri = new URI("asset://route51.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource51= new GeoJsonSource("ROUTE51", uri));
+            style.addSource(geoJsonSource51 = new GeoJsonSource("ROUTE51", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource52 = new GeoJsonSource("ROUTE52");
+        }
+        GeoJsonSource geoJsonSource52 = new GeoJsonSource("ROUTE52");
         try {
             URI uri = new URI("asset://route52.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource52= new GeoJsonSource("ROUTE52", uri));
+            style.addSource(geoJsonSource52 = new GeoJsonSource("ROUTE52", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource53 = new GeoJsonSource("ROUTE53");
+        }
+        GeoJsonSource geoJsonSource53 = new GeoJsonSource("ROUTE53");
         try {
             URI uri = new URI("asset://route53.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource53= new GeoJsonSource("ROUTE53", uri));
+            style.addSource(geoJsonSource53 = new GeoJsonSource("ROUTE53", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource54 = new GeoJsonSource("ROUTE54");
+        }
+        GeoJsonSource geoJsonSource54 = new GeoJsonSource("ROUTE54");
         try {
             URI uri = new URI("asset://route54.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource54= new GeoJsonSource("ROUTE54", uri));
+            style.addSource(geoJsonSource54 = new GeoJsonSource("ROUTE54", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource55 = new GeoJsonSource("ROUTE55");
+        }
+        GeoJsonSource geoJsonSource55 = new GeoJsonSource("ROUTE55");
         try {
             URI uri = new URI("asset://route55.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource55= new GeoJsonSource("ROUTE55", uri));
+            style.addSource(geoJsonSource55 = new GeoJsonSource("ROUTE55", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource56 = new GeoJsonSource("ROUTE56");
+        }
+        GeoJsonSource geoJsonSource56 = new GeoJsonSource("ROUTE56");
         try {
             URI uri = new URI("asset://route56.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource56= new GeoJsonSource("ROUTE56", uri));
+            style.addSource(geoJsonSource56 = new GeoJsonSource("ROUTE56", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource57 = new GeoJsonSource("ROUTE57");
+        }
+        GeoJsonSource geoJsonSource57 = new GeoJsonSource("ROUTE57");
         try {
             URI uri = new URI("asset://route57.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource57= new GeoJsonSource("ROUTE57", uri));
+            style.addSource(geoJsonSource57 = new GeoJsonSource("ROUTE57", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource58 = new GeoJsonSource("ROUTE58");
+        }
+        GeoJsonSource geoJsonSource58 = new GeoJsonSource("ROUTE58");
         try {
             URI uri = new URI("asset://route58.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource58= new GeoJsonSource("ROUTE58", uri));
+            style.addSource(geoJsonSource58 = new GeoJsonSource("ROUTE58", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource59 = new GeoJsonSource("ROUTE59");
+        }
+        GeoJsonSource geoJsonSource59 = new GeoJsonSource("ROUTE59");
         try {
             URI uri = new URI("asset://route59.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource59= new GeoJsonSource("ROUTE59", uri));
+            style.addSource(geoJsonSource59 = new GeoJsonSource("ROUTE59", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource60 = new GeoJsonSource("ROUTE60");
+        }
+        GeoJsonSource geoJsonSource60 = new GeoJsonSource("ROUTE60");
         try {
             URI uri = new URI("asset://route60.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource60= new GeoJsonSource("ROUTE60", uri));
+            style.addSource(geoJsonSource60 = new GeoJsonSource("ROUTE60", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource61 = new GeoJsonSource("ROUTE61");
+        }
+        GeoJsonSource geoJsonSource61 = new GeoJsonSource("ROUTE61");
         try {
             URI uri = new URI("asset://route61.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource61= new GeoJsonSource("ROUTE61", uri));
+            style.addSource(geoJsonSource61 = new GeoJsonSource("ROUTE61", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource62 = new GeoJsonSource("ROUTE62");
+        }
+        GeoJsonSource geoJsonSource62 = new GeoJsonSource("ROUTE62");
         try {
             URI uri = new URI("asset://route62.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource62= new GeoJsonSource("ROUTE62", uri));
+            style.addSource(geoJsonSource62 = new GeoJsonSource("ROUTE62", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource63 = new GeoJsonSource("ROUTE63");
+        }
+        GeoJsonSource geoJsonSource63 = new GeoJsonSource("ROUTE63");
         try {
             URI uri = new URI("asset://route63.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource63= new GeoJsonSource("ROUTE63", uri));
+            style.addSource(geoJsonSource63 = new GeoJsonSource("ROUTE63", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource64 = new GeoJsonSource("ROUTE64");
+        }
+        GeoJsonSource geoJsonSource64 = new GeoJsonSource("ROUTE64");
         try {
             URI uri = new URI("asset://route64.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource64= new GeoJsonSource("ROUTE64", uri));
+            style.addSource(geoJsonSource64 = new GeoJsonSource("ROUTE64", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource65 = new GeoJsonSource("ROUTE65");
+        }
+        GeoJsonSource geoJsonSource65 = new GeoJsonSource("ROUTE65");
         try {
             URI uri = new URI("asset://route65.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource65= new GeoJsonSource("ROUTE65", uri));
+            style.addSource(geoJsonSource65 = new GeoJsonSource("ROUTE65", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource66 = new GeoJsonSource("ROUTE66");
+        }
+        GeoJsonSource geoJsonSource66 = new GeoJsonSource("ROUTE66");
         try {
             URI uri = new URI("asset://route66.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource66= new GeoJsonSource("ROUTE66", uri));
+            style.addSource(geoJsonSource66 = new GeoJsonSource("ROUTE66", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource67 = new GeoJsonSource("ROUTE67");
+        }
+        GeoJsonSource geoJsonSource67 = new GeoJsonSource("ROUTE67");
         try {
             URI uri = new URI("asset://route67.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource67= new GeoJsonSource("ROUTE67", uri));
+            style.addSource(geoJsonSource67 = new GeoJsonSource("ROUTE67", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource68 = new GeoJsonSource("ROUTE68");
+        }
+        GeoJsonSource geoJsonSource68 = new GeoJsonSource("ROUTE68");
         try {
             URI uri = new URI("asset://route68.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource68= new GeoJsonSource("ROUTE68", uri));
+            style.addSource(geoJsonSource68 = new GeoJsonSource("ROUTE68", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource69 = new GeoJsonSource("ROUTE69");
+        }
+        GeoJsonSource geoJsonSource69 = new GeoJsonSource("ROUTE69");
         try {
             URI uri = new URI("asset://route69.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource69= new GeoJsonSource("ROUTE69", uri));
+            style.addSource(geoJsonSource69 = new GeoJsonSource("ROUTE69", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource70 = new GeoJsonSource("ROUTE70");
+        }
+        GeoJsonSource geoJsonSource70 = new GeoJsonSource("ROUTE70");
         try {
             URI uri = new URI("asset://route70.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource70= new GeoJsonSource("ROUTE70", uri));
+            style.addSource(geoJsonSource70 = new GeoJsonSource("ROUTE70", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
@@ -2116,55 +2080,61 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
         try {
             URI uri = new URI("asset://route71.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource71= new GeoJsonSource("ROUTE71", uri));
+            style.addSource(geoJsonSource71 = new GeoJsonSource("ROUTE71", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource72 = new GeoJsonSource("ROUTE72");
+        }
+        GeoJsonSource geoJsonSource72 = new GeoJsonSource("ROUTE72");
         try {
             URI uri = new URI("asset://route72.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource72= new GeoJsonSource("ROUTE72", uri));
+            style.addSource(geoJsonSource72 = new GeoJsonSource("ROUTE72", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource73 = new GeoJsonSource("ROUTE73");
+        }
+        GeoJsonSource geoJsonSource73 = new GeoJsonSource("ROUTE73");
         try {
             URI uri = new URI("asset://route73.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource73= new GeoJsonSource("ROUTE73", uri));
+            style.addSource(geoJsonSource73 = new GeoJsonSource("ROUTE73", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource74 = new GeoJsonSource("ROUTE74");
+        }
+        GeoJsonSource geoJsonSource74 = new GeoJsonSource("ROUTE74");
         try {
             URI uri = new URI("asset://route74.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource74= new GeoJsonSource("ROUTE74", uri));
+            style.addSource(geoJsonSource74 = new GeoJsonSource("ROUTE74", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource75 = new GeoJsonSource("ROUTE75");
+        }
+        GeoJsonSource geoJsonSource75 = new GeoJsonSource("ROUTE75");
         try {
             URI uri = new URI("asset://route75.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource75= new GeoJsonSource("ROUTE75", uri));
+            style.addSource(geoJsonSource75 = new GeoJsonSource("ROUTE75", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource76 = new GeoJsonSource("ROUTE76");
+        }
+        GeoJsonSource geoJsonSource76 = new GeoJsonSource("ROUTE76");
         try {
             URI uri = new URI("asset://route76.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource76= new GeoJsonSource("ROUTE76", uri));
+            style.addSource(geoJsonSource76 = new GeoJsonSource("ROUTE76", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource77 = new GeoJsonSource("ROUTE77");
+        }
+        GeoJsonSource geoJsonSource77 = new GeoJsonSource("ROUTE77");
         try {
             URI uri = new URI("asset://route77.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource77= new GeoJsonSource("ROUTE77", uri));
+            style.addSource(geoJsonSource77 = new GeoJsonSource("ROUTE77", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
@@ -2173,15 +2143,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
         try {
             URI uri = new URI("asset://route78.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource78= new GeoJsonSource("ROUTE78", uri));
+            style.addSource(geoJsonSource78 = new GeoJsonSource("ROUTE78", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
-        }GeoJsonSource geoJsonSource79 = new GeoJsonSource("ROUTE79");
+        }
+        GeoJsonSource geoJsonSource79 = new GeoJsonSource("ROUTE79");
         try {
             URI uri = new URI("asset://route79.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource79= new GeoJsonSource("ROUTE79", uri));
+            style.addSource(geoJsonSource79 = new GeoJsonSource("ROUTE79", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
@@ -2190,7 +2161,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
         try {
             URI uri = new URI("asset://route80.geojson");
             Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource80= new GeoJsonSource("ROUTE80", uri));
+            style.addSource(geoJsonSource80 = new GeoJsonSource("ROUTE80", uri));
             Log.i(TAG, "onStyleLoaded: " + style.getSources());
         } catch (NullPointerException | URISyntaxException e) {
             e.printStackTrace();
@@ -2678,15 +2649,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 //        }
 
 
-
     private void getCommonRoutes() {
-
-
+        sourceRoutes.clear();
+        commonRoutes.clear();
         for (Integer sourceRoute : GlobalVariables.sourceRoutes) {
             sourceRoutes.add(sourceRoute);
             for (Integer destinationRoute : GlobalVariables.destinationRoutes) {
                 if (sourceRoute.equals(destinationRoute)) {
-                    if(getCommonRoutesFlag==0) {
+                    if (getCommonRoutesFlag == 0) {
                         commonRoutes.add(sourceRoute);
                     }
 
@@ -2732,21 +2702,52 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 }
                             }
                         }
-                        Log.d("check","Datasnapshot");
+                        Log.d("check", "Datasnapshot");
                     }
                     /*for (Symbol symbol : symbolArrayList) {
                         symbolManager.update(symbol)
                     }*/
-                    getCommonRoutesFlag=1;
+                    getCommonRoutesFlag = 1;
                     addStop(stopss);
                     map.getStyle(new Style.OnStyleLoaded() {
                         @Override
                         public void onStyleLoaded(@NonNull Style style) {
+                            if (!commonRoutes.isEmpty()) {
+                                routeButtonAdapter = new RouteButtonAdapter(getActivity(), commonRoutes, MapFragment.this);
+                                fragmentMapBinding.routeBtnRV.setAdapter(routeButtonAdapter);
+                                fragmentMapBinding.routeBtnRV.setLayoutManager(new GridLayoutManager(getActivity(), 5));
+                            }
+
+                            CameraPosition position = new CameraPosition.Builder()
+                                    .target(new LatLng(sourceLat, sourceLng
+                                    )) // Sets the new camera position
+                                    .zoom(14) // Sets the zoom
+                                    .tilt(30) // Set the camera tilt
+                                    .build(); // Creates a CameraPosition from the builder
+                            locationComponent = map.getLocationComponent();
+
+                            locationComponent.activateLocationComponent(locationComponentActivationOptions = LocationComponentActivationOptions.builder(getActivity(), style).build());
+
+
+                            map.animateCamera(CameraUpdateFactory.newCameraPosition(position), 7000);
+
+
+                            Symbol x = symbolManager.create(new SymbolOptions().withIconImage("X").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng(Double.valueOf(sourceLat), Double.valueOf(sourceLng))).withTextField("Source"));
+                            Symbol y = symbolManager.create(new SymbolOptions().withIconImage("Y").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng(Double.valueOf(destinationLat), Double.valueOf(destinationLng))).withTextField("Destination"));
+                            symbolArrayList.add(x);
+                            symbolArrayList.add(y);
+
+
+                            for (Symbol symbol : symbolArrayList) {
+
+                                symbolManager.update(symbol);
+                            }
+
                             loadRoute(style);
-                            Log.d("check","OnStyle loaded");
+                            Log.d("check", "OnStyle loaded");
                         }
                     });
-                  //  initMap(savedInstanceState, stopss);
+                    //  initMap(savedInstanceState, stopss);
                 }
 
             }
@@ -2862,8 +2863,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
     @Override
     public void onClick(String s) {
 
-        routeNo=s;
-        Toast.makeText(getActivity(), "Route No.: "+s, Toast.LENGTH_SHORT).show();
+        routeNo = s;
+        Toast.makeText(getActivity(), "Route No.: " + s, Toast.LENGTH_SHORT).show();
         if (!commonRoutes.isEmpty()) {
 
             //routeNo = getArguments().getString("routeNo");
@@ -2947,7 +2948,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                     map.getStyle().addLayer(route10);
                     addLayer10Flag = 1;
                 }
-            } if (addLayer11Flag == 0) {
+            }
+            if (addLayer11Flag == 0) {
                 if (routeNo.equals("11")) {
                     Toast.makeText(getActivity(), "Route 11 called", Toast.LENGTH_SHORT).show();
                     map.getStyle().addLayer(route11);
@@ -3085,7 +3087,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                     map.getStyle().addLayer(route30);
                     addLayer30Flag = 1;
                 }
-            } if (addLayer31Flag == 0) {
+            }
+            if (addLayer31Flag == 0) {
                 if (routeNo.equals("31")) {
                     Toast.makeText(getActivity(), "Route 31 called", Toast.LENGTH_SHORT).show();
                     map.getStyle().addLayer(route31);

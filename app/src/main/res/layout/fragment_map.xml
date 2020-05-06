@@ -45,8 +45,10 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:text="Remove"
+            android:elevation="8dp"
+            mapbox:layout_constraintEnd_toEndOf="parent"
             mapbox:layout_constraintStart_toStartOf="parent"
-            mapbox:layout_constraintTop_toBottomOf="@+id/routeBtnRV" />
+            mapbox:layout_constraintBottom_toTopOf="@+id/routeBtnRV" />
         <com.mapbox.services.android.navigation.ui.v5.NavigationView
             android:layout_width="match_parent"
             android:id="@+id/navView"
