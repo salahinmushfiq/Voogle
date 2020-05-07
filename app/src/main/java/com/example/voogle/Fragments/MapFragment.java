@@ -52,6 +52,7 @@ import java.util.ArrayList;
 public class MapFragment extends Fragment implements OnMapReadyCallback, MapClick {
     final int[] count = {0};
     FragmentMapBinding fragmentMapBinding;
+    ArrayList<GeoJsonSource>geoJsonSources=new ArrayList<>();
     ArrayList<Bus> busList = new ArrayList<>();
     MapboxMap map;
     DatabaseReference root = FirebaseDatabase.getInstance().getReference("root");
@@ -70,13 +71,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
     private MapView mapView;
     ArrayList<Integer> sourceRoutes, destinationRoutes;
     ArrayList<Point> points;
-    ArrayList<Point> route1Points = new ArrayList<>();
-    ArrayList<Point> route2Points = new ArrayList<>();
-    ArrayList<Point> route3Points = new ArrayList<>();
-    ArrayList<Point> route4Points = new ArrayList<>();
-    ArrayList<Point> route5Points = new ArrayList<>();
-    ArrayList<Point> route6Points = new ArrayList<>();
-    ArrayList<Point> route7Points = new ArrayList<>();
+    ArrayList<String>routes;
     ArrayList<Stops> stopss;
     Bus currentBus;
     RouteButtonAdapter routeButtonAdapter;
@@ -91,7 +86,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
     private DirectionsRoute currentRoute;
     private NavigationMapRoute navigationMapRoute;
     private String source = null, destination = null, name;
-    ArrayList<String> routes = new ArrayList<>();
+    ArrayList<String> routeLayers = new ArrayList<>();
     ArrayList<Location> locations = new ArrayList<>();
     int addLayer1Flag, addLayer2Flag, addLayer3Flag, addLayer4Flag, addLayer5Flag, addLayer6Flag, addLayer7Flag,
             addLayer8Flag, addLayer9Flag, addLayer10Flag, addLayer11Flag, addLayer12Flag, addLayer13Flag, addLayer14Flag,
@@ -108,7 +103,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
     private Bundle savedInstanceState;
     private static final String LINE_GEOJSON_SOURCE_ID = "LINE_GEOJSON_SOURCE_ID";
     private static final String CIRCLE_GEOJSON_SOURCE_ID = "CIRCLE_GEOJSON_SOURCE_ID";
-    LineLayer route1, route2, route3, route4, route5, route6, route7, route8, route9, route10, route11, route12, route13, route14, route15, route16, route17, route18, route19, route20, route21, route22, route23, route24, route25, route26, route27, route28, route29, route30, route31, route32, route33, route34, route35, route36, route37, route38, route39, route40, route41, route42, route43, route44, route45, route46, route47, route48, route49, route50, route51, route52, route53, route54, route55, route56, route57, route58, route59, route60, route61, route62, route63, route64, route65, route66, route67, route68, route69, route70, route71, route72, route73, route74, route75, route76, route77, route78, route79, route80;
+    LineLayer route,route1, route2, route3, route4, route5, route6, route7, route8, route9, route10, route11, route12, route13, route14, route15, route16, route17, route18, route19, route20, route21, route22, route23, route24, route25, route26, route27, route28, route29, route30, route31, route32, route33, route34, route35, route36, route37, route38, route39, route40, route41, route42, route43, route44, route45, route46, route47, route48, route49, route50, route51, route52, route53, route54, route55, route56, route57, route58, route59, route60, route61, route62, route63, route64, route65, route66, route67, route68, route69, route70, route71, route72, route73, route74, route75, route76, route77, route78, route79, route80;
     private boolean firstRun;
     private Location current_location;
     String routeNo;
@@ -507,83 +502,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
         mapView.getMapAsync(mapboxMap -> {
             map = mapboxMap;
             fragmentMapBinding.navView.onMapReady(map);
-            map.setStyle(new Style.Builder().fromUri(/*"mapbox://styles/mapbox/cjf4m44iw0uza2spb3q0a7s41"*/ /*"mapbox://styles/mapbox/light-v10"*/ "mapbox://styles/mapbox/navigation-preview-day-v4")
+       //     map.setStyle(new Style.Builder().fromUri(/*"mapbox://styles/mapbox/cjf4m44iw0uza2spb3q0a7s41"*/ /*"mapbox://styles/mapbox/light-v10"*/ "mapbox://styles/mapbox/navigation-preview-day-v4")
+            map.setStyle(new Style.Builder().fromUri(/*"mapbox://styles/mapbox/cjf4m44iw0uza2spb3q0a7s41"*/ /*"mapbox://styles/mapbox/light-v10"*/ "mapbox://styles/mushfimaqverick/ck9woofn10nb91isalygf97sy")
                     .withImage("X", getActivity().getDrawable(R.drawable.ic_location_on_black_24dp))
                     .withImage("Y", getActivity().getDrawable(R.drawable.ic_location_on_red_24dp))
                     .withImage("LocationPointer", getActivity().getDrawable(R.drawable.ic_person_pin_circle_yellow_24dp))
                     .withImage("ROUTE1", getActivity().getDrawable(R.drawable.ic_directions_bus_yellow_24dp))
                     .withImage("ROUTE2", getActivity().getDrawable(R.drawable.ic_directions_bus_blue_24dp))
                     .withImage("ROUTE3", getActivity().getDrawable(R.drawable.ic_directions_bus_red_24dp))
-                    .withImage("ROUTE4", getActivity().getDrawable(R.drawable.ic_directions_bus_violet_24dp))
-                    .withImage("ROUTE5", getActivity().getDrawable(R.drawable.ic_directions_bus_white_24dp))
-                    .withImage("ROUTE6", getActivity().getDrawable(R.drawable.ic_directions_bus_green_24dp))
-                    .withImage("ROUTE7", getActivity().getDrawable(R.drawable.ic_directions_bus_orange_24dp))
-                    .withImage("ROUTE8", getActivity().getDrawable(R.drawable.ic_directions_bus_chartouse_24dp))
-                    .withImage("ROUTE9", getActivity().getDrawable(R.drawable.ic_directions_bus_blue_24dp))
-                    .withImage("ROUTE10", getActivity().getDrawable(R.drawable.ic_directions_bus_red_24dp))
-                    .withImage("ROUTE11", getActivity().getDrawable(R.drawable.ic_directions_bus_violet_24dp))
-                    .withImage("ROUTE12", getActivity().getDrawable(R.drawable.ic_directions_bus_white_24dp))
-                    .withImage("ROUTE13", getActivity().getDrawable(R.drawable.ic_directions_bus_green_24dp))
-                    .withImage("ROUTE14", getActivity().getDrawable(R.drawable.ic_directions_bus_orange_24dp))
-                    .withImage("ROUTE15", getActivity().getDrawable(R.drawable.ic_directions_bus_yellow_24dp))
-                    .withImage("ROUTE16", getActivity().getDrawable(R.drawable.ic_directions_bus_blue_24dp))
-                    .withImage("ROUTE17", getActivity().getDrawable(R.drawable.ic_directions_bus_red_24dp))
-                    .withImage("ROUTE18", getActivity().getDrawable(R.drawable.ic_directions_bus_violet_24dp))
-                    .withImage("ROUTE19", getActivity().getDrawable(R.drawable.ic_directions_bus_white_24dp))
-                    .withImage("ROUTE20", getActivity().getDrawable(R.drawable.ic_directions_bus_green_24dp))
-                    .withImage("ROUTE21", getActivity().getDrawable(R.drawable.ic_directions_bus_orange_24dp))
-                    .withImage("ROUTE22", getActivity().getDrawable(R.drawable.ic_directions_bus_chartouse_24dp))
-                    .withImage("ROUTE23", getActivity().getDrawable(R.drawable.ic_directions_bus_blue_24dp))
-                    .withImage("ROUTE24", getActivity().getDrawable(R.drawable.ic_directions_bus_red_24dp))
-                    .withImage("ROUTE25", getActivity().getDrawable(R.drawable.ic_directions_bus_violet_24dp))
-                    .withImage("ROUTE26", getActivity().getDrawable(R.drawable.ic_directions_bus_white_24dp))
-                    .withImage("ROUTE27", getActivity().getDrawable(R.drawable.ic_directions_bus_green_24dp))
-                    .withImage("ROUTE28", getActivity().getDrawable(R.drawable.ic_directions_bus_orange_24dp))
-                    .withImage("ROUTE29", getActivity().getDrawable(R.drawable.ic_directions_bus_yellow_24dp))
-                    .withImage("ROUTE30", getActivity().getDrawable(R.drawable.ic_directions_bus_blue_24dp))
-                    .withImage("ROUTE31", getActivity().getDrawable(R.drawable.ic_directions_bus_red_24dp))
-                    .withImage("ROUTE32", getActivity().getDrawable(R.drawable.ic_directions_bus_violet_24dp))
-                    .withImage("ROUTE33", getActivity().getDrawable(R.drawable.ic_directions_bus_white_24dp))
-                    .withImage("ROUTE34", getActivity().getDrawable(R.drawable.ic_directions_bus_green_24dp))
-                    .withImage("ROUTE35", getActivity().getDrawable(R.drawable.ic_directions_bus_orange_24dp))
-                    .withImage("ROUTE36", getActivity().getDrawable(R.drawable.ic_directions_bus_chartouse_24dp))
-                    .withImage("ROUTE37", getActivity().getDrawable(R.drawable.ic_directions_bus_blue_24dp))
-                    .withImage("ROUTE38", getActivity().getDrawable(R.drawable.ic_directions_bus_red_24dp))
-                    .withImage("ROUTE39", getActivity().getDrawable(R.drawable.ic_directions_bus_violet_24dp))
-                    .withImage("ROUTE40", getActivity().getDrawable(R.drawable.ic_directions_bus_white_24dp))
-                    .withImage("ROUTE41", getActivity().getDrawable(R.drawable.ic_directions_bus_green_24dp))
-                    .withImage("ROUTE42", getActivity().getDrawable(R.drawable.ic_directions_bus_orange_24dp))
-                    .withImage("ROUTE43", getActivity().getDrawable(R.drawable.ic_directions_bus_yellow_24dp))
-                    .withImage("ROUTE44", getActivity().getDrawable(R.drawable.ic_directions_bus_blue_24dp))
-                    .withImage("ROUTE45", getActivity().getDrawable(R.drawable.ic_directions_bus_red_24dp))
-                    .withImage("ROUTE46", getActivity().getDrawable(R.drawable.ic_directions_bus_violet_24dp))
-                    .withImage("ROUTE47", getActivity().getDrawable(R.drawable.ic_directions_bus_white_24dp))
-                    .withImage("ROUTE48", getActivity().getDrawable(R.drawable.ic_directions_bus_green_24dp))
-                    .withImage("ROUTE49", getActivity().getDrawable(R.drawable.ic_directions_bus_orange_24dp))
-                    .withImage("ROUTE50", getActivity().getDrawable(R.drawable.ic_directions_bus_chartouse_24dp))
-                    .withImage("ROUTE51", getActivity().getDrawable(R.drawable.ic_directions_bus_blue_24dp))
-                    .withImage("ROUTE52", getActivity().getDrawable(R.drawable.ic_directions_bus_red_24dp))
-                    .withImage("ROUTE53", getActivity().getDrawable(R.drawable.ic_directions_bus_violet_24dp))
-                    .withImage("ROUTE54", getActivity().getDrawable(R.drawable.ic_directions_bus_white_24dp))
-                    .withImage("ROUTE55", getActivity().getDrawable(R.drawable.ic_directions_bus_green_24dp))
-                    .withImage("ROUTE56", getActivity().getDrawable(R.drawable.ic_directions_bus_orange_24dp))
-                    .withImage("ROUTE58", getActivity().getDrawable(R.drawable.ic_directions_bus_yellow_24dp))
-                    .withImage("ROUTE59", getActivity().getDrawable(R.drawable.ic_directions_bus_blue_24dp))
-                    .withImage("ROUTE60", getActivity().getDrawable(R.drawable.ic_directions_bus_red_24dp))
-                    .withImage("ROUTE61", getActivity().getDrawable(R.drawable.ic_directions_bus_violet_24dp))
-                    .withImage("ROUTE62", getActivity().getDrawable(R.drawable.ic_directions_bus_white_24dp))
-                    .withImage("ROUTE63", getActivity().getDrawable(R.drawable.ic_directions_bus_green_24dp))
-                    .withImage("ROUTE64", getActivity().getDrawable(R.drawable.ic_directions_bus_orange_24dp))
-                    .withImage("ROUTE65", getActivity().getDrawable(R.drawable.ic_directions_bus_chartouse_24dp))
-                    .withImage("ROUTE66", getActivity().getDrawable(R.drawable.ic_directions_bus_blue_24dp))
-                    .withImage("ROUTE67", getActivity().getDrawable(R.drawable.ic_directions_bus_red_24dp))
-                    .withImage("ROUTE68", getActivity().getDrawable(R.drawable.ic_directions_bus_violet_24dp))
-                    .withImage("ROUTE69", getActivity().getDrawable(R.drawable.ic_directions_bus_white_24dp))
-                    .withImage("ROUTE70", getActivity().getDrawable(R.drawable.ic_directions_bus_green_24dp))
-                    .withImage("ROUTE71", getActivity().getDrawable(R.drawable.ic_directions_bus_orange_24dp))
-                    .withImage("ROUTE72", getActivity().getDrawable(R.drawable.ic_directions_bus_white_24dp))
-                    .withImage("ROUTE73", getActivity().getDrawable(R.drawable.ic_directions_bus_green_24dp))
-                    .withImage("ROUTE74", getActivity().getDrawable(R.drawable.ic_directions_bus_orange_24dp)), style -> {
+                , style -> {
 
 
                 Log.i(TAG, "initMap onLoaded: " + (System.currentTimeMillis() - time1st));
@@ -621,6 +548,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
         symbolArrayList.add(source);
         symbolArrayList.add(destination);
 
+        Log.i(TAG, "initMap onLoaded: " + (System.currentTimeMillis() - time1st));
 
         for (Symbol symbol : symbolArrayList) {
 
@@ -1470,727 +1398,751 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
     }
 
     private void loadRoute(Style style) {
-        GeoJsonSource geoJsonSource1 = new GeoJsonSource("ROUTE1");
-        try {
-            URI uri = new URI("asset://route1.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource1 = new GeoJsonSource("ROUTE1", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource2 = new GeoJsonSource("ROUTE2");
-        try {
-            URI uri = new URI("asset://route2.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource2 = new GeoJsonSource("ROUTE2", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource3 = new GeoJsonSource("ROUTE3");
-        try {
-            URI uri = new URI("asset://route3.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource3 = new GeoJsonSource("ROUTE3", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource4 = new GeoJsonSource("ROUTE4");
-        try {
-            URI uri = new URI("asset://route4.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource4 = new GeoJsonSource("ROUTE4", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource5 = new GeoJsonSource("ROUTE5");
-        try {
-            URI uri = new URI("asset://route5.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource5 = new GeoJsonSource("ROUTE5", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource6 = new GeoJsonSource("ROUTE6");
-        try {
-            URI uri = new URI("asset://route6.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource6 = new GeoJsonSource("ROUTE6", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource7 = new GeoJsonSource("ROUTE7");
-        try {
-            URI uri = new URI("asset://route7.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource7 = new GeoJsonSource("ROUTE7", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource8 = new GeoJsonSource("ROUTE8");
-        try {
-            URI uri = new URI("asset://route8.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource8 = new GeoJsonSource("ROUTE8", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource9 = new GeoJsonSource("ROUTE9");
-        try {
-            URI uri = new URI("asset://route9.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource9 = new GeoJsonSource("ROUTE9", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource10 = new GeoJsonSource("ROUTE10");
-        try {
-            URI uri = new URI("asset://route10.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource10 = new GeoJsonSource("ROUTE10", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource11 = new GeoJsonSource("ROUTE11");
-        try {
-            URI uri = new URI("asset://route11.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource11 = new GeoJsonSource("ROUTE11", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource12 = new GeoJsonSource("ROUTE12");
-        try {
-            URI uri = new URI("asset://route12.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource12 = new GeoJsonSource("ROUTE12", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource13 = new GeoJsonSource("ROUTE13");
-        try {
-            URI uri = new URI("asset://route13.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource13 = new GeoJsonSource("ROUTE13", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource14 = new GeoJsonSource("ROUTE14");
-        try {
-            URI uri = new URI("asset://route14.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource14 = new GeoJsonSource("ROUTE14", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource15 = new GeoJsonSource("ROUTE15");
-        try {
-            URI uri = new URI("asset://route15.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource15 = new GeoJsonSource("ROUTE15", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource16 = new GeoJsonSource("ROUTE16");
-        try {
-            URI uri = new URI("asset://route16.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource16 = new GeoJsonSource("ROUTE16", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource17 = new GeoJsonSource("ROUTE17");
-        try {
-            URI uri = new URI("asset://route17.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource17 = new GeoJsonSource("ROUTE17", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource18 = new GeoJsonSource("ROUTE18");
-        try {
-            URI uri = new URI("asset://route18.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource18 = new GeoJsonSource("ROUTE18", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource19 = new GeoJsonSource("ROUTE19");
-        try {
-            URI uri = new URI("asset://route19.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource19 = new GeoJsonSource("ROUTE19", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource20 = new GeoJsonSource("ROUTE20");
-        try {
-            URI uri = new URI("asset://route20.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource20 = new GeoJsonSource("ROUTE20", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource21 = new GeoJsonSource("ROUTE21");
-        try {
-            URI uri = new URI("asset://route21.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource21 = new GeoJsonSource("ROUTE21", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource22 = new GeoJsonSource("ROUTE22");
-        try {
-            URI uri = new URI("asset://route22.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource22 = new GeoJsonSource("ROUTE22", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource23 = new GeoJsonSource("ROUTE23");
-        try {
-            URI uri = new URI("asset://route23.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource23 = new GeoJsonSource("ROUTE23", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource24 = new GeoJsonSource("ROUTE24");
-        try {
-            URI uri = new URI("asset://route24.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource24 = new GeoJsonSource("ROUTE24", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource25 = new GeoJsonSource("ROUTE25");
-        try {
-            URI uri = new URI("asset://route25.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource25 = new GeoJsonSource("ROUTE25", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource26 = new GeoJsonSource("ROUTE26");
-        try {
-            URI uri = new URI("asset://route26.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource26 = new GeoJsonSource("ROUTE26", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource27 = new GeoJsonSource("ROUTE27");
-        try {
-            URI uri = new URI("asset://route27.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource27 = new GeoJsonSource("ROUTE27", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource28 = new GeoJsonSource("ROUTE28");
-        try {
-            URI uri = new URI("asset://route28.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource28 = new GeoJsonSource("ROUTE28", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource29 = new GeoJsonSource("ROUTE29");
-        try {
-            URI uri = new URI("asset://route29.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource29 = new GeoJsonSource("ROUTE29", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource30 = new GeoJsonSource("ROUTE30");
-        try {
-            URI uri = new URI("asset://route30.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource30 = new GeoJsonSource("ROUTE30", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource31 = new GeoJsonSource("ROUTE31");
-        try {
-            URI uri = new URI("asset://route31.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource31 = new GeoJsonSource("ROUTE31", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource32 = new GeoJsonSource("ROUTE32");
-        try {
-            URI uri = new URI("asset://route32.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource32 = new GeoJsonSource("ROUTE32", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource33 = new GeoJsonSource("ROUTE33");
-        try {
-            URI uri = new URI("asset://route33.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource33 = new GeoJsonSource("ROUTE33", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource34 = new GeoJsonSource("ROUTE34");
-        try {
-            URI uri = new URI("asset://route34.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource34 = new GeoJsonSource("ROUTE34", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource35 = new GeoJsonSource("ROUTE35");
-        try {
-            URI uri = new URI("asset://route35.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource35 = new GeoJsonSource("ROUTE35", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource36 = new GeoJsonSource("ROUTE36");
-        try {
-            URI uri = new URI("asset://route36.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource36 = new GeoJsonSource("ROUTE36", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource37 = new GeoJsonSource("ROUTE37");
-        try {
-            URI uri = new URI("asset://route37.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource37 = new GeoJsonSource("ROUTE37", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource38 = new GeoJsonSource("ROUTE38");
-        try {
-            URI uri = new URI("asset://route38.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource38 = new GeoJsonSource("ROUTE38", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource39 = new GeoJsonSource("ROUTE39");
-        try {
-            URI uri = new URI("asset://route39.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource39 = new GeoJsonSource("ROUTE39", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource40 = new GeoJsonSource("ROUTE40");
-        try {
-            URI uri = new URI("asset://route40.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource40 = new GeoJsonSource("ROUTE40", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource41 = new GeoJsonSource("ROUTE41");
-        try {
-            URI uri = new URI("asset://route41.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource41 = new GeoJsonSource("ROUTE41", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource42 = new GeoJsonSource("ROUTE42");
-        try {
-            URI uri = new URI("asset://route42.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource42 = new GeoJsonSource("ROUTE42", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource43 = new GeoJsonSource("ROUTE43");
-        try {
-            URI uri = new URI("asset://route43.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource43 = new GeoJsonSource("ROUTE43", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource44 = new GeoJsonSource("ROUTE44");
-        try {
-            URI uri = new URI("asset://route44.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource44 = new GeoJsonSource("ROUTE44", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource45 = new GeoJsonSource("ROUTE45");
-        try {
-            URI uri = new URI("asset://route45.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource45 = new GeoJsonSource("ROUTE45", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource46 = new GeoJsonSource("ROUTE46");
-        try {
-            URI uri = new URI("asset://route46.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource46 = new GeoJsonSource("ROUTE46", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource47 = new GeoJsonSource("ROUTE47");
-        try {
-            URI uri = new URI("asset://route47.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource47 = new GeoJsonSource("ROUTE47", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource48 = new GeoJsonSource("ROUTE48");
-        try {
-            URI uri = new URI("asset://route48.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource48 = new GeoJsonSource("ROUTE48", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource49 = new GeoJsonSource("ROUTE49");
-        try {
-            URI uri = new URI("asset://route49.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource49 = new GeoJsonSource("ROUTE49", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource50 = new GeoJsonSource("ROUTE50");
-        try {
-            URI uri = new URI("asset://route50.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource50 = new GeoJsonSource("ROUTE50", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource51 = new GeoJsonSource("ROUTE51");
-        try {
-            URI uri = new URI("asset://route51.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource51 = new GeoJsonSource("ROUTE51", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource52 = new GeoJsonSource("ROUTE52");
-        try {
-            URI uri = new URI("asset://route52.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource52 = new GeoJsonSource("ROUTE52", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource53 = new GeoJsonSource("ROUTE53");
-        try {
-            URI uri = new URI("asset://route53.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource53 = new GeoJsonSource("ROUTE53", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource54 = new GeoJsonSource("ROUTE54");
-        try {
-            URI uri = new URI("asset://route54.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource54 = new GeoJsonSource("ROUTE54", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource55 = new GeoJsonSource("ROUTE55");
-        try {
-            URI uri = new URI("asset://route55.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource55 = new GeoJsonSource("ROUTE55", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource56 = new GeoJsonSource("ROUTE56");
-        try {
-            URI uri = new URI("asset://route56.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource56 = new GeoJsonSource("ROUTE56", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource57 = new GeoJsonSource("ROUTE57");
-        try {
-            URI uri = new URI("asset://route57.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource57 = new GeoJsonSource("ROUTE57", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource58 = new GeoJsonSource("ROUTE58");
-        try {
-            URI uri = new URI("asset://route58.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource58 = new GeoJsonSource("ROUTE58", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource59 = new GeoJsonSource("ROUTE59");
-        try {
-            URI uri = new URI("asset://route59.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource59 = new GeoJsonSource("ROUTE59", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource60 = new GeoJsonSource("ROUTE60");
-        try {
-            URI uri = new URI("asset://route60.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource60 = new GeoJsonSource("ROUTE60", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource61 = new GeoJsonSource("ROUTE61");
-        try {
-            URI uri = new URI("asset://route61.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource61 = new GeoJsonSource("ROUTE61", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource62 = new GeoJsonSource("ROUTE62");
-        try {
-            URI uri = new URI("asset://route62.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource62 = new GeoJsonSource("ROUTE62", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource63 = new GeoJsonSource("ROUTE63");
-        try {
-            URI uri = new URI("asset://route63.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource63 = new GeoJsonSource("ROUTE63", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource64 = new GeoJsonSource("ROUTE64");
-        try {
-            URI uri = new URI("asset://route64.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource64 = new GeoJsonSource("ROUTE64", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource65 = new GeoJsonSource("ROUTE65");
-        try {
-            URI uri = new URI("asset://route65.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource65 = new GeoJsonSource("ROUTE65", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource66 = new GeoJsonSource("ROUTE66");
-        try {
-            URI uri = new URI("asset://route66.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource66 = new GeoJsonSource("ROUTE66", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource67 = new GeoJsonSource("ROUTE67");
-        try {
-            URI uri = new URI("asset://route67.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource67 = new GeoJsonSource("ROUTE67", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource68 = new GeoJsonSource("ROUTE68");
-        try {
-            URI uri = new URI("asset://route68.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource68 = new GeoJsonSource("ROUTE68", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource69 = new GeoJsonSource("ROUTE69");
-        try {
-            URI uri = new URI("asset://route69.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource69 = new GeoJsonSource("ROUTE69", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource70 = new GeoJsonSource("ROUTE70");
-        try {
-            URI uri = new URI("asset://route70.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource70 = new GeoJsonSource("ROUTE70", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource71 = new GeoJsonSource("ROUTE71");
-        try {
-            URI uri = new URI("asset://route71.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource71 = new GeoJsonSource("ROUTE71", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource72 = new GeoJsonSource("ROUTE72");
-        try {
-            URI uri = new URI("asset://route72.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource72 = new GeoJsonSource("ROUTE72", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource73 = new GeoJsonSource("ROUTE73");
-        try {
-            URI uri = new URI("asset://route73.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource73 = new GeoJsonSource("ROUTE73", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource74 = new GeoJsonSource("ROUTE74");
-        try {
-            URI uri = new URI("asset://route74.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource74 = new GeoJsonSource("ROUTE74", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource75 = new GeoJsonSource("ROUTE75");
-        try {
-            URI uri = new URI("asset://route75.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource75 = new GeoJsonSource("ROUTE75", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource76 = new GeoJsonSource("ROUTE76");
-        try {
-            URI uri = new URI("asset://route76.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource76 = new GeoJsonSource("ROUTE76", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource77 = new GeoJsonSource("ROUTE77");
-        try {
-            URI uri = new URI("asset://route77.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource77 = new GeoJsonSource("ROUTE77", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource78 = new GeoJsonSource("ROUTE78");
-        try {
-            URI uri = new URI("asset://route78.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource78 = new GeoJsonSource("ROUTE78", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource79 = new GeoJsonSource("ROUTE79");
-        try {
-            URI uri = new URI("asset://route79.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource79 = new GeoJsonSource("ROUTE79", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-        GeoJsonSource geoJsonSource80 = new GeoJsonSource("ROUTE80");
-        try {
-            URI uri = new URI("asset://route80.geojson");
-            Log.i(TAG, "onStyleLoaded: " + uri);
-            style.addSource(geoJsonSource80 = new GeoJsonSource("ROUTE80", uri));
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-        } catch (NullPointerException | URISyntaxException e) {
-            e.printStackTrace();
-        }
+//        GeoJsonSource geoJsonSource1 = new GeoJsonSource("ROUTE1");
+//        try {
+//            URI uri = new URI("asset://route1.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource1 = new GeoJsonSource("ROUTE1", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource2 = new GeoJsonSource("ROUTE2");
+//        try {
+//            URI uri = new URI("asset://route2.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource2 = new GeoJsonSource("ROUTE2", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource3 = new GeoJsonSource("ROUTE3");
+//        try {
+//            URI uri = new URI("asset://route3.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource3 = new GeoJsonSource("ROUTE3", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource4 = new GeoJsonSource("ROUTE4");
+//        try {
+//            URI uri = new URI("asset://route4.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource4 = new GeoJsonSource("ROUTE4", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource5 = new GeoJsonSource("ROUTE5");
+//        try {
+//            URI uri = new URI("asset://route5.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource5 = new GeoJsonSource("ROUTE5", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource6 = new GeoJsonSource("ROUTE6");
+//        try {
+//            URI uri = new URI("asset://route6.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource6 = new GeoJsonSource("ROUTE6", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource7 = new GeoJsonSource("ROUTE7");
+//        try {
+//            URI uri = new URI("asset://route7.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource7 = new GeoJsonSource("ROUTE7", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource8 = new GeoJsonSource("ROUTE8");
+//        try {
+//            URI uri = new URI("asset://route8.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource8 = new GeoJsonSource("ROUTE8", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource9 = new GeoJsonSource("ROUTE9");
+//        try {
+//            URI uri = new URI("asset://route9.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource9 = new GeoJsonSource("ROUTE9", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource10 = new GeoJsonSource("ROUTE10");
+//        try {
+//            URI uri = new URI("asset://route10.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource10 = new GeoJsonSource("ROUTE10", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource11 = new GeoJsonSource("ROUTE11");
+//        try {
+//            URI uri = new URI("asset://route11.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource11 = new GeoJsonSource("ROUTE11", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource12 = new GeoJsonSource("ROUTE12");
+//        try {
+//            URI uri = new URI("asset://route12.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource12 = new GeoJsonSource("ROUTE12", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource13 = new GeoJsonSource("ROUTE13");
+//        try {
+//            URI uri = new URI("asset://route13.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource13 = new GeoJsonSource("ROUTE13", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource14 = new GeoJsonSource("ROUTE14");
+//        try {
+//            URI uri = new URI("asset://route14.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource14 = new GeoJsonSource("ROUTE14", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource15 = new GeoJsonSource("ROUTE15");
+//        try {
+//            URI uri = new URI("asset://route15.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource15 = new GeoJsonSource("ROUTE15", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource16 = new GeoJsonSource("ROUTE16");
+//        try {
+//            URI uri = new URI("asset://route16.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource16 = new GeoJsonSource("ROUTE16", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource17 = new GeoJsonSource("ROUTE17");
+//        try {
+//            URI uri = new URI("asset://route17.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource17 = new GeoJsonSource("ROUTE17", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource18 = new GeoJsonSource("ROUTE18");
+//        try {
+//            URI uri = new URI("asset://route18.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource18 = new GeoJsonSource("ROUTE18", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource19 = new GeoJsonSource("ROUTE19");
+//        try {
+//            URI uri = new URI("asset://route19.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource19 = new GeoJsonSource("ROUTE19", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource20 = new GeoJsonSource("ROUTE20");
+//        try {
+//            URI uri = new URI("asset://route20.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource20 = new GeoJsonSource("ROUTE20", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource21 = new GeoJsonSource("ROUTE21");
+//        try {
+//            URI uri = new URI("asset://route21.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource21 = new GeoJsonSource("ROUTE21", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource22 = new GeoJsonSource("ROUTE22");
+//        try {
+//            URI uri = new URI("asset://route22.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource22 = new GeoJsonSource("ROUTE22", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource23 = new GeoJsonSource("ROUTE23");
+//        try {
+//            URI uri = new URI("asset://route23.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource23 = new GeoJsonSource("ROUTE23", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource24 = new GeoJsonSource("ROUTE24");
+//        try {
+//            URI uri = new URI("asset://route24.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource24 = new GeoJsonSource("ROUTE24", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource25 = new GeoJsonSource("ROUTE25");
+//        try {
+//            URI uri = new URI("asset://route25.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource25 = new GeoJsonSource("ROUTE25", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource26 = new GeoJsonSource("ROUTE26");
+//        try {
+//            URI uri = new URI("asset://route26.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource26 = new GeoJsonSource("ROUTE26", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource27 = new GeoJsonSource("ROUTE27");
+//        try {
+//            URI uri = new URI("asset://route27.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource27 = new GeoJsonSource("ROUTE27", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource28 = new GeoJsonSource("ROUTE28");
+//        try {
+//            URI uri = new URI("asset://route28.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource28 = new GeoJsonSource("ROUTE28", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource29 = new GeoJsonSource("ROUTE29");
+//        try {
+//            URI uri = new URI("asset://route29.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource29 = new GeoJsonSource("ROUTE29", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource30 = new GeoJsonSource("ROUTE30");
+//        try {
+//            URI uri = new URI("asset://route30.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource30 = new GeoJsonSource("ROUTE30", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource31 = new GeoJsonSource("ROUTE31");
+//        try {
+//            URI uri = new URI("asset://route31.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource31 = new GeoJsonSource("ROUTE31", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource32 = new GeoJsonSource("ROUTE32");
+//        try {
+//            URI uri = new URI("asset://route32.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource32 = new GeoJsonSource("ROUTE32", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource33 = new GeoJsonSource("ROUTE33");
+//        try {
+//            URI uri = new URI("asset://route33.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource33 = new GeoJsonSource("ROUTE33", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource34 = new GeoJsonSource("ROUTE34");
+//        try {
+//            URI uri = new URI("asset://route34.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource34 = new GeoJsonSource("ROUTE34", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource35 = new GeoJsonSource("ROUTE35");
+//        try {
+//            URI uri = new URI("asset://route35.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource35 = new GeoJsonSource("ROUTE35", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource36 = new GeoJsonSource("ROUTE36");
+//        try {
+//            URI uri = new URI("asset://route36.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource36 = new GeoJsonSource("ROUTE36", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource37 = new GeoJsonSource("ROUTE37");
+//        try {
+//            URI uri = new URI("asset://route37.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource37 = new GeoJsonSource("ROUTE37", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource38 = new GeoJsonSource("ROUTE38");
+//        try {
+//            URI uri = new URI("asset://route38.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource38 = new GeoJsonSource("ROUTE38", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource39 = new GeoJsonSource("ROUTE39");
+//        try {
+//            URI uri = new URI("asset://route39.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource39 = new GeoJsonSource("ROUTE39", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource40 = new GeoJsonSource("ROUTE40");
+//        try {
+//            URI uri = new URI("asset://route40.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource40 = new GeoJsonSource("ROUTE40", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource41 = new GeoJsonSource("ROUTE41");
+//        try {
+//            URI uri = new URI("asset://route41.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource41 = new GeoJsonSource("ROUTE41", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource42 = new GeoJsonSource("ROUTE42");
+//        try {
+//            URI uri = new URI("asset://route42.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource42 = new GeoJsonSource("ROUTE42", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource43 = new GeoJsonSource("ROUTE43");
+//        try {
+//            URI uri = new URI("asset://route43.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource43 = new GeoJsonSource("ROUTE43", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource44 = new GeoJsonSource("ROUTE44");
+//        try {
+//            URI uri = new URI("asset://route44.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource44 = new GeoJsonSource("ROUTE44", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource45 = new GeoJsonSource("ROUTE45");
+//        try {
+//            URI uri = new URI("asset://route45.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource45 = new GeoJsonSource("ROUTE45", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource46 = new GeoJsonSource("ROUTE46");
+//        try {
+//            URI uri = new URI("asset://route46.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource46 = new GeoJsonSource("ROUTE46", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource47 = new GeoJsonSource("ROUTE47");
+//        try {
+//            URI uri = new URI("asset://route47.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource47 = new GeoJsonSource("ROUTE47", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource48 = new GeoJsonSource("ROUTE48");
+//        try {
+//            URI uri = new URI("asset://route48.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource48 = new GeoJsonSource("ROUTE48", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource49 = new GeoJsonSource("ROUTE49");
+//        try {
+//            URI uri = new URI("asset://route49.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource49 = new GeoJsonSource("ROUTE49", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource50 = new GeoJsonSource("ROUTE50");
+//        try {
+//            URI uri = new URI("asset://route50.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource50 = new GeoJsonSource("ROUTE50", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource51 = new GeoJsonSource("ROUTE51");
+//        try {
+//            URI uri = new URI("asset://route51.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource51 = new GeoJsonSource("ROUTE51", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource52 = new GeoJsonSource("ROUTE52");
+//        try {
+//            URI uri = new URI("asset://route52.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource52 = new GeoJsonSource("ROUTE52", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource53 = new GeoJsonSource("ROUTE53");
+//        try {
+//            URI uri = new URI("asset://route53.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource53 = new GeoJsonSource("ROUTE53", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource54 = new GeoJsonSource("ROUTE54");
+//        try {
+//            URI uri = new URI("asset://route54.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource54 = new GeoJsonSource("ROUTE54", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource55 = new GeoJsonSource("ROUTE55");
+//        try {
+//            URI uri = new URI("asset://route55.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource55 = new GeoJsonSource("ROUTE55", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource56 = new GeoJsonSource("ROUTE56");
+//        try {
+//            URI uri = new URI("asset://route56.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource56 = new GeoJsonSource("ROUTE56", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource57 = new GeoJsonSource("ROUTE57");
+//        try {
+//            URI uri = new URI("asset://route57.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource57 = new GeoJsonSource("ROUTE57", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource58 = new GeoJsonSource("ROUTE58");
+//        try {
+//            URI uri = new URI("asset://route58.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource58 = new GeoJsonSource("ROUTE58", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource59 = new GeoJsonSource("ROUTE59");
+//        try {
+//            URI uri = new URI("asset://route59.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource59 = new GeoJsonSource("ROUTE59", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource60 = new GeoJsonSource("ROUTE60");
+//        try {
+//            URI uri = new URI("asset://route60.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource60 = new GeoJsonSource("ROUTE60", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource61 = new GeoJsonSource("ROUTE61");
+//        try {
+//            URI uri = new URI("asset://route61.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource61 = new GeoJsonSource("ROUTE61", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource62 = new GeoJsonSource("ROUTE62");
+//        try {
+//            URI uri = new URI("asset://route62.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource62 = new GeoJsonSource("ROUTE62", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource63 = new GeoJsonSource("ROUTE63");
+//        try {
+//            URI uri = new URI("asset://route63.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource63 = new GeoJsonSource("ROUTE63", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource64 = new GeoJsonSource("ROUTE64");
+//        try {
+//            URI uri = new URI("asset://route64.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource64 = new GeoJsonSource("ROUTE64", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource65 = new GeoJsonSource("ROUTE65");
+//        try {
+//            URI uri = new URI("asset://route65.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource65 = new GeoJsonSource("ROUTE65", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource66 = new GeoJsonSource("ROUTE66");
+//        try {
+//            URI uri = new URI("asset://route66.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource66 = new GeoJsonSource("ROUTE66", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource67 = new GeoJsonSource("ROUTE67");
+//        try {
+//            URI uri = new URI("asset://route67.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource67 = new GeoJsonSource("ROUTE67", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource68 = new GeoJsonSource("ROUTE68");
+//        try {
+//            URI uri = new URI("asset://route68.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource68 = new GeoJsonSource("ROUTE68", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource69 = new GeoJsonSource("ROUTE69");
+//        try {
+//            URI uri = new URI("asset://route69.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource69 = new GeoJsonSource("ROUTE69", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource70 = new GeoJsonSource("ROUTE70");
+//        try {
+//            URI uri = new URI("asset://route70.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource70 = new GeoJsonSource("ROUTE70", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource71 = new GeoJsonSource("ROUTE71");
+//        try {
+//            URI uri = new URI("asset://route71.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource71 = new GeoJsonSource("ROUTE71", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource72 = new GeoJsonSource("ROUTE72");
+//        try {
+//            URI uri = new URI("asset://route72.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource72 = new GeoJsonSource("ROUTE72", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource73 = new GeoJsonSource("ROUTE73");
+//        try {
+//            URI uri = new URI("asset://route73.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource73 = new GeoJsonSource("ROUTE73", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource74 = new GeoJsonSource("ROUTE74");
+//        try {
+//            URI uri = new URI("asset://route74.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource74 = new GeoJsonSource("ROUTE74", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource75 = new GeoJsonSource("ROUTE75");
+//        try {
+//            URI uri = new URI("asset://route75.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource75 = new GeoJsonSource("ROUTE75", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource76 = new GeoJsonSource("ROUTE76");
+//        try {
+//            URI uri = new URI("asset://route76.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource76 = new GeoJsonSource("ROUTE76", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource77 = new GeoJsonSource("ROUTE77");
+//        try {
+//            URI uri = new URI("asset://route77.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource77 = new GeoJsonSource("ROUTE77", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource78 = new GeoJsonSource("ROUTE78");
+//        try {
+//            URI uri = new URI("asset://route78.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource78 = new GeoJsonSource("ROUTE78", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource79 = new GeoJsonSource("ROUTE79");
+//        try {
+//            URI uri = new URI("asset://route79.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource79 = new GeoJsonSource("ROUTE79", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//        GeoJsonSource geoJsonSource80 = new GeoJsonSource("ROUTE80");
+//        try {
+//            URI uri = new URI("asset://route80.geojson");
+//            Log.i(TAG, "onStyleLoaded: " + uri);
+//            style.addSource(geoJsonSource80 = new GeoJsonSource("ROUTE80", uri));
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//        } catch (NullPointerException | URISyntaxException e) {
+//            e.printStackTrace();
+//        }
 
+        int i=0;
+        for(int commonRoute:commonRoutes)
+        {
+            //Toast.makeText(getActivity(), "Common Routessss: "+commonRoute, Toast.LENGTH_SHORT).show();
+            Log.d("route","Common Routessss: "+commonRoute);
+            GeoJsonSource geoJsonSource = new GeoJsonSource("ROUTE"+commonRoute);
+
+            try {
+                URI uri = new URI("asset://route"+commonRoute+".geojson");
+                Log.i(TAG, "onStyleLoaded: " + uri);
+                style.addSource(geoJsonSource = new GeoJsonSource("ROUTE"+commonRoute, uri));
+                Log.i(TAG, "onStyleLoaded: " + style.getSources());
+            } catch (NullPointerException | URISyntaxException e) {
+                e.printStackTrace();
+            }
+
+            geoJsonSources.add(geoJsonSource);
+            route = new LineLayer("ROUTE"+commonRoute+"L", "ROUTE"+commonRoute);
+            route.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#5eafe5")));
+
+            i++;
+
+
+        }
         route1 = new LineLayer("ROUTE1L", "ROUTE1");
         route2 = new LineLayer("ROUTE2L", "ROUTE2");
         route3 = new LineLayer("ROUTE3L", "ROUTE3");
@@ -2680,9 +2632,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
             sourceRoutes.add(sourceRoute);
             for (Integer destinationRoute : GlobalVariables.destinationRoutes) {
                 if (sourceRoute.equals(destinationRoute)) {
-                    if (getCommonRoutesFlag == 0) {
+
                         commonRoutes.add(sourceRoute);
-                    }
 
                 }
             }
@@ -2765,6 +2716,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             loadRoute(style);
                             Log.d("check", "OnStyle loaded");
+                            fragmentMapBinding.progressBar.setVisibility(View.INVISIBLE);
                         }
                     });
                     //  initMap(savedInstanceState, stopss);
@@ -2899,6 +2851,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
             if (addLayer1Flag == 0) {
                 if (routeNo.equals("1")) {
                     Toast.makeText(getActivity(), "Route 1 called", Toast.LENGTH_SHORT).show();
+
                     map.getStyle().addLayer(route1);
                     addLayer1Flag = 1;
                 }

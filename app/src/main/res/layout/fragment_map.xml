@@ -24,7 +24,9 @@
             mapbox:mapbox_cameraZoomMax="18.41"
             mapbox:mapbox_cameraZoomMin="8"
             mapbox:mapbox_uiRotateGestures="false"
-            tools:ignore="MissingConstraints" />
+            tools:ignore="MissingConstraints" >
+
+        </com.mapbox.mapboxsdk.maps.MapView>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/routeBtnRV"
@@ -55,6 +57,18 @@
             android:visibility="gone"
             android:layout_height="0dp"
             mapbox:layout_constraintTop_toTopOf="parent"
-            mapbox:layout_constraintBottom_toTopOf="@id/routeBtnRV"/>
+            mapbox:layout_constraintBottom_toTopOf="@id/routeBtnRV">
+
+        </com.mapbox.services.android.navigation.ui.v5.NavigationView>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            mapbox:layout_constraintBottom_toBottomOf="parent"
+            mapbox:layout_constraintEnd_toEndOf="@+id/mapView"
+            mapbox:layout_constraintStart_toStartOf="@+id/mapView"
+            mapbox:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
