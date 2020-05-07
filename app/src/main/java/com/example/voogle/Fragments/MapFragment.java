@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.example.voogle.Adapters.RouteButtonAdapter;
 import com.example.voogle.Functions.MapClick;
 import com.example.voogle.GlobalVariables;
@@ -468,9 +470,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                         // Log.d("busLoad",bus.getValue().toString());
                         //Toast.makeText(getActivity(), currentBus.getGroupName(), Toast.LENGTH_SHORT).show();
                     }
-                    for (Bus bus : busList) {
-                        Log.d("BusList", bus.getGroupName());
+                    if (!busList.isEmpty()) {
+                        routeButtonAdapter = new RouteButtonAdapter(getActivity(), busList, MapFragment.this);
+                        fragmentMapBinding.routeBtnRV.setAdapter(routeButtonAdapter);
+                        fragmentMapBinding.routeBtnRV.setLayoutManager(new LinearLayoutManager(getActivity()));
+                        for (Bus bus : busList) {
+                            Log.d("BusList", bus.getGroupName());
+                        }
                     }
+
                 }
             }
 
@@ -2687,11 +2695,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                     map.getStyle(new Style.OnStyleLoaded() {
                         @Override
                         public void onStyleLoaded(@NonNull Style style) {
-                            if (!commonRoutes.isEmpty()) {
-                                routeButtonAdapter = new RouteButtonAdapter(getActivity(), commonRoutes, MapFragment.this);
-                                fragmentMapBinding.routeBtnRV.setAdapter(routeButtonAdapter);
-                                fragmentMapBinding.routeBtnRV.setLayoutManager(new GridLayoutManager(getActivity(), 5));
-                            }
+
 
 //                            CameraPosition position = new CameraPosition.Builder()
 //                                    .target(new LatLng(sourceLat, sourceLng

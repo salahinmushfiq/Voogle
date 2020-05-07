@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.voogle.Fragments.MapFragment;
 import com.example.voogle.Functions.MapClick;
+import com.example.voogle.PojoClasses.Bus;
 import com.example.voogle.R;
 import com.example.voogle.databinding.RouteButtonItemLayoutBinding;
 
@@ -21,12 +22,12 @@ import java.util.ArrayList;
 public class RouteButtonAdapter extends RecyclerView.Adapter<RouteButtonAdapter.ViewHolder> {
 
     FragmentActivity context;
-    ArrayList<Integer>btnText;
+    ArrayList<Bus>busList;
     private MapClick mapClick;;
 
-    public RouteButtonAdapter(FragmentActivity context, ArrayList<Integer> btnText, MapClick mapClick) {
+    public RouteButtonAdapter(FragmentActivity context, ArrayList<Bus> busList, MapClick mapClick) {
         this.context = context;
-        this.btnText = btnText;
+        this.busList = busList;
         this.mapClick=mapClick;
     }
 
@@ -39,23 +40,25 @@ public class RouteButtonAdapter extends RecyclerView.Adapter<RouteButtonAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.routeButtonItemLayoutBinding.routeBtn.setText("Route No. "+btnText.get(position).toString());
-        holder.routeButtonItemLayoutBinding.routeBtn.setOnClickListener(new View.OnClickListener() {
+        holder.routeButtonItemLayoutBinding.routeBtn.setText("Route No. "+String.valueOf(busList.get(position).getRoute_no()));
+        holder.routeButtonItemLayoutBinding.busGroupNameTV.setText(busList.get(position).getGroupName());
+        holder.routeButtonItemLayoutBinding.routeBtn.setVisibility(View.GONE);
+        holder.routeButtonItemLayoutBinding.busGroupNameTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mapClick.onClick(btnText.get(position).toString());
+                mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()));
             }
         });
-        Bundle bundle=new Bundle();
-        bundle.putString("routeNo",btnText.get(position).toString());
-        MapFragment mapFragment=new MapFragment();
-        mapFragment.setArguments(bundle);
+//        Bundle bundle=new Bundle();
+//        bundle.putString("routeNo",btnText.get(position).toString());
+//        MapFragment mapFragment=new MapFragment();
+//        mapFragment.setArguments(bundle);
 
     }
 
     @Override
     public int getItemCount() {
-        return btnText.size();
+        return busList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
