@@ -515,7 +515,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                     .withImage("X", getActivity().getDrawable(R.drawable.ic_location_on_black_24dp))
                     .withImage("Y", getActivity().getDrawable(R.drawable.ic_location_on_red_24dp))
                     .withImage("LocationPointer", getActivity().getDrawable(R.drawable.ic_person_pin_circle_yellow_24dp))
-                    .withImage("ROUTE1", getActivity().getDrawable(R.drawable.ic_directions_bus_yellow_24dp))
+                    .withImage("ROUTE1", getActivity().getDrawable(R.drawable.ic_directions_bus_green_24dp))
                     .withImage("ROUTE2", getActivity().getDrawable(R.drawable.ic_directions_bus_blue_24dp))
                     .withImage("ROUTE3", getActivity().getDrawable(R.drawable.ic_directions_bus_red_24dp))
                 , style -> {
@@ -602,7 +602,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //  route3Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("4")) {
-                                Symbol Route4 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE4").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F")
+                                Symbol Route4 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F")
                                         .withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route4);
                                 //      Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -613,7 +613,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //   route4Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("5")) {
-                                Symbol Route5 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE5").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route5 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route5);
                                 //       Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //     Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
@@ -622,7 +622,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //   route5Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("6")) {
-                                Symbol Route6 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE6").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route6 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route6);
                                 //    Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
@@ -631,7 +631,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //     route6Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("7")) {
-                                Symbol Route7 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE7").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route7 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route7);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -642,7 +642,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("8")) {
-                                Symbol Route8 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE8").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route8 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route8);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -653,7 +653,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("9")) {
-                                Symbol Route9 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE9").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route9 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route9);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -664,7 +664,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("10")) {
-                                Symbol Route10 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE10").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route10 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route10);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -675,7 +675,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("11")) {
-                                Symbol Route11 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE11").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
+                                Symbol Route11 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
                                 //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //    Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
                                 symbolArrayList.add(Route11);
@@ -685,7 +685,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //route1Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("12")) {
-                                Symbol Route12 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE12").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
+                                Symbol Route12 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
                                 symbolArrayList.add(Route12);
                                 //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
@@ -695,7 +695,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 // route2Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("13")) {
-                                Symbol Route13 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE13").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
+                                Symbol Route13 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
 
                                 symbolArrayList.add(Route13);
                                 // Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -705,7 +705,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //  route3Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("14")) {
-                                Symbol Route14 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE14").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F")
+                                Symbol Route14 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F")
                                         .withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route14);
                                 //      Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -716,7 +716,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //   route4Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("15")) {
-                                Symbol Route15 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE15").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route15 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route15);
                                 //       Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //     Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
@@ -725,7 +725,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //   route5Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("16")) {
-                                Symbol Route16 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE16").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route16 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route16);
                                 //    Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
@@ -734,7 +734,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //     route6Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("17")) {
-                                Symbol Route17 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE17").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route17 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route17);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -745,7 +745,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("18")) {
-                                Symbol Route18 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE18").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route18 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route18);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -756,7 +756,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("19")) {
-                                Symbol Route19 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE19").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route19 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route19);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -767,7 +767,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("20")) {
-                                Symbol Route20 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE20").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route20 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route20);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -778,7 +778,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("21")) {
-                                Symbol Route21 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE21").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
+                                Symbol Route21 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
                                 //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //    Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
                                 symbolArrayList.add(Route21);
@@ -788,7 +788,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //route1Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("22")) {
-                                Symbol Route22 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE22").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
+                                Symbol Route22 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
                                 symbolArrayList.add(Route22);
                                 //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
@@ -798,7 +798,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 // route2Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("23")) {
-                                Symbol Route23 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE23").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
+                                Symbol Route23 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
 
                                 symbolArrayList.add(Route23);
                                 // Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -808,7 +808,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //  route3Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("24")) {
-                                Symbol Route24 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE24").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F")
+                                Symbol Route24 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F")
                                         .withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route24);
                                 //      Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -819,7 +819,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //   route4Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("25")) {
-                                Symbol Route25 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE25").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route25 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route25);
                                 //       Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //     Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
@@ -828,7 +828,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //   route5Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("26")) {
-                                Symbol Route26 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE26").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route26 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route26);
                                 //    Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
@@ -837,7 +837,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //     route6Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("27")) {
-                                Symbol Route27 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE27").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route27 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route27);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -848,7 +848,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("28")) {
-                                Symbol Route28 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE28").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route28 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route28);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -859,7 +859,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("29")) {
-                                Symbol Route29 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE29").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route29 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route29);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -870,7 +870,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("30")) {
-                                Symbol Route30 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE30").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route30 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route30);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -881,7 +881,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("31")) {
-                                Symbol Route31 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE31").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
+                                Symbol Route31 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
                                 //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //    Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
                                 symbolArrayList.add(Route31);
@@ -891,7 +891,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //route1Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("32")) {
-                                Symbol Route32 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE32").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
+                                Symbol Route32 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
                                 symbolArrayList.add(Route32);
                                 //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
@@ -901,7 +901,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 // route2Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("33")) {
-                                Symbol Route33 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE33").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
+                                Symbol Route33 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
 
                                 symbolArrayList.add(Route33);
                                 // Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -911,7 +911,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //  route3Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("34")) {
-                                Symbol Route34 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE34").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F")
+                                Symbol Route34 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F")
                                         .withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route34);
                                 //      Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -922,7 +922,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //   route4Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("35")) {
-                                Symbol Route35 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE35").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route35 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route35);
                                 //       Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //     Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
@@ -931,7 +931,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //   route5Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("36")) {
-                                Symbol Route36 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE36").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route36 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route36);
                                 //    Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
@@ -940,7 +940,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //     route6Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("37")) {
-                                Symbol Route37 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE37").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route37 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route37);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -951,7 +951,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("38")) {
-                                Symbol Route38 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE38").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route38 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route38);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -962,7 +962,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("39")) {
-                                Symbol Route39 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE39").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route39 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route39);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -973,7 +973,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("40")) {
-                                Symbol Route40 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE40").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route40 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route40);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -984,7 +984,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("41")) {
-                                Symbol Route41 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE41").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
+                                Symbol Route41 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
                                 //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //    Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
                                 symbolArrayList.add(Route41);
@@ -994,7 +994,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //route1Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("42")) {
-                                Symbol Route42 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE42").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
+                                Symbol Route42 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
                                 symbolArrayList.add(Route42);
                                 //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
@@ -1004,7 +1004,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 // route2Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("43")) {
-                                Symbol Route43 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE43").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
+                                Symbol Route43 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
 
                                 symbolArrayList.add(Route43);
                                 // Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -1014,7 +1014,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //  route3Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("44")) {
-                                Symbol Route44 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE44").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F")
+                                Symbol Route44 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F")
                                         .withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route44);
                                 //      Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -1025,7 +1025,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //   route4Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("45")) {
-                                Symbol Route45 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE45").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route45 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route45);
                                 //       Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //     Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
@@ -1034,7 +1034,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //   route5Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("46")) {
-                                Symbol Route46 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE46").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route46 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route46);
                                 //    Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
@@ -1043,7 +1043,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //     route6Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("47")) {
-                                Symbol Route47 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE47").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route47 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route47);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -1054,7 +1054,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("48")) {
-                                Symbol Route48 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE48").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route48 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route48);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -1065,7 +1065,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("49")) {
-                                Symbol Route49 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE49").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route49 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route49);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -1076,7 +1076,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("50")) {
-                                Symbol Route50 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE50").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route50 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route50);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -1087,7 +1087,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("51")) {
-                                Symbol Route51 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE51").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
+                                Symbol Route51 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
                                 //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //    Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
                                 symbolArrayList.add(Route51);
@@ -1097,7 +1097,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //route1Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("52")) {
-                                Symbol Route52 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE52").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
+                                Symbol Route52 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
                                 symbolArrayList.add(Route52);
                                 //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
@@ -1107,7 +1107,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 // route2Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("53")) {
-                                Symbol Route53 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE53").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
+                                Symbol Route53 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
 
                                 symbolArrayList.add(Route53);
                                 // Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -1117,7 +1117,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //  route3Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("54")) {
-                                Symbol Route54 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE54").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F")
+                                Symbol Route54 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F")
                                         .withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route54);
                                 //      Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -1128,7 +1128,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //   route4Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("55")) {
-                                Symbol Route55 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE55").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route55 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route55);
                                 //       Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //     Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
@@ -1137,7 +1137,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //   route5Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("56")) {
-                                Symbol Route56 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE56").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route56 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route56);
                                 //    Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
@@ -1146,7 +1146,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //     route6Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("57")) {
-                                Symbol Route57 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE57").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route57 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route57);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -1157,7 +1157,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("58")) {
-                                Symbol Route58 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE58").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route58 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route58);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -1168,7 +1168,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("59")) {
-                                Symbol Route59 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE59").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route59 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route59);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -1179,7 +1179,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("60")) {
-                                Symbol Route60 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE60").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route60 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route60);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -1190,7 +1190,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("61")) {
-                                Symbol Route61 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE61").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
+                                Symbol Route61 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
                                 //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //    Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
                                 symbolArrayList.add(Route61);
@@ -1200,7 +1200,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //route1Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("62")) {
-                                Symbol Route62 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE62").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
+                                Symbol Route62 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
                                 symbolArrayList.add(Route62);
                                 //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
@@ -1210,7 +1210,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 // route2Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("63")) {
-                                Symbol Route63 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE63").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
+                                Symbol Route63 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
 
                                 symbolArrayList.add(Route63);
                                 // Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -1220,7 +1220,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //  route3Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("64")) {
-                                Symbol Route64 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE64").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F")
+                                Symbol Route64 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F")
                                         .withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route64);
                                 //      Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -1231,7 +1231,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //   route4Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("65")) {
-                                Symbol Route65 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE65").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route65 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route65);
                                 //       Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //     Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
@@ -1240,7 +1240,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //   route5Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("66")) {
-                                Symbol Route66 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE66").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route66 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route66);
                                 //    Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
@@ -1249,7 +1249,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //     route6Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("67")) {
-                                Symbol Route67 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE67").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route67 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route67);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -1260,7 +1260,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("68")) {
-                                Symbol Route68 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE68").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route68 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route68);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -1271,7 +1271,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("69")) {
-                                Symbol Route69 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE69").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route69 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route69);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -1282,7 +1282,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("70")) {
-                                Symbol Route70 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE70").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route70 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route70);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -1293,7 +1293,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("71")) {
-                                Symbol Route71 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE71").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
+                                Symbol Route71 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
                                 //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //    Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
                                 symbolArrayList.add(Route71);
@@ -1303,7 +1303,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //route1Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("72")) {
-                                Symbol Route72 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE72").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
+                                Symbol Route72 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
                                 symbolArrayList.add(Route72);
                                 //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
@@ -1313,7 +1313,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 // route2Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("73")) {
-                                Symbol Route73 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE73").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
+                                Symbol Route73 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
 
                                 symbolArrayList.add(Route73);
                                 // Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -1323,7 +1323,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //  route3Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("74")) {
-                                Symbol Route74 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE74").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F")
+                                Symbol Route74 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F")
                                         .withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route74);
                                 //      Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -1334,7 +1334,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //   route4Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("75")) {
-                                Symbol Route75 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE75").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route75 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route75);
                                 //       Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //     Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
@@ -1343,7 +1343,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //   route5Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("76")) {
-                                Symbol Route76 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE76").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route76 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route76);
                                 //    Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
@@ -1352,7 +1352,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 //     route6Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("77")) {
-                                Symbol Route77 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE77").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route77 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route77);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -1363,7 +1363,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("78")) {
-                                Symbol Route78 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE78").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route78 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route78);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -1374,7 +1374,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("79")) {
-                                Symbol Route79 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE79").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route79 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route79);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -1385,7 +1385,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             }
                             if (String.valueOf(stop.getRoutes().get(i)).equals("80")) {
-                                Symbol Route80 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE80").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
+                                Symbol Route80 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
                                 symbolArrayList.add(Route80);
                                 //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
@@ -2145,8 +2145,33 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
             geoJsonSources.add(geoJsonSource);
             route = new LineLayer("ROUTE"+commonRoute+"L", "ROUTE"+commonRoute);
-            route.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#5eafe5")));
-
+//            if(i==0) {
+//                route.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
+//            }
+//            if(i==1)
+//            {
+//                route.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
+//            }
+//            if(i==2)
+//            {
+//                route.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#66CBC5")));
+//            }
+//            if(i==3)
+//            {
+//                route.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#66CBC5")));
+//            }
+//            if(i==4)
+//            {
+//                route.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#66CBC5")));
+//            }
+//            if(i==5)
+//            {
+//                route.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#66CBC5")));
+//            }
+//            if(i==6)
+//            {
+//                route.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#66CBC5")));
+//            }
             i++;
 
 
@@ -2232,102 +2257,102 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
         route79 = new LineLayer("ROUTE79L", "ROUTE79");
         route80 = new LineLayer("ROUTE80L", "ROUTE80");
 
-        route1.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#5eafe5")));
-        route2.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route3.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#5ee5b8")));
-        route4.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5e15e")));
+        route1.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#00A650")));
+        route2.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
+        route3.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#00A650")));
+        route4.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
         /* red color*/
-        route5.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e55e5e")));
-        route6.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e55e5e")));
-        route7.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route8.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route9.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#5eafe5")));
-        route10.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route11.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#5ee5b8")));
-        route12.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5e15e")));
+        route5.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
+        route6.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
+        route7.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
+        route8.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
+        route9.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#00A650")));
+        route10.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
+        route11.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#FF9400")));
+        route12.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
         /* red color*/
-        route13.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e55e5e")));
-        route14.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route15.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route16.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#5eafe5")));
-        route17.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route18.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#5ee5b8")));
-        route19.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5e15e")));
+        route13.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
+        route14.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
+        route15.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
+        route16.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#FF9400")));
+        route17.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
+        route18.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#00A650")));
+        route19.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
         /* red color*/
-        route20.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e55e5e")));
-        route21.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route22.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
+        route20.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
+        route21.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
+        route22.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
 
-        route23.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#5ee5b8")));
-        route24.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5e15e")));
+        route23.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#00A650")));
+        route24.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
         /* red color*/
-        route25.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e55e5e")));
-        route26.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route27.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route28.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#5eafe5")));
-        route29.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route30.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#5ee5b8")));
-        route31.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5e15e")));
+        route25.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
+        route26.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
+        route27.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
+        route28.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#00A650")));
+        route29.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
+        route30.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#FF9400")));
+        route31.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
         /* red color*/
-        route32.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e55e5e")));
-        route33.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route34.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route35.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#5eafe5")));
-        route36.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route37.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#5ee5b8")));
-        route38.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5e15e")));
+        route32.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
+        route33.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
+        route34.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
+        route35.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#00A650")));
+        route36.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
+        route37.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#5ee5b8")));
+        route38.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
         /* red color*/
-        route39.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e55e5e")));
-        route40.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route41.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
+        route39.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
+        route40.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
+        route41.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
         /* red color*/
-        route42.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e55e5e")));
-        route43.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route44.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route45.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#5eafe5")));
-        route46.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route47.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#5ee5b8")));
-        route48.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5e15e")));
+        route42.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
+        route43.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
+        route44.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
+        route45.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#FF9400")));
+        route46.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
+        route47.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#00A650")));
+        route48.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
         /* red color*/
-        route49.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e55e5e")));
-        route50.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
+        route49.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
+        route50.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
 
-        route51.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5e15e")));
+        route51.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
         /* red color*/
-        route52.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e55e5e")));
-        route53.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route54.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route55.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#5eafe5")));
-        route56.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route57.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#5ee5b8")));
-        route58.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5e15e")));
+        route52.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
+        route53.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
+        route54.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
+        route55.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#00A650")));
+        route56.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
+        route57.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#FF9400")));
+        route58.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5e15e")));
         /* red color*/
-        route59.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e55e5e")));
-        route60.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route61.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5e15e")));
+        route59.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e55e5e")));
+        route60.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
+        route61.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5e15e")));
         /* red color*/
-        route62.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e55e5e")));
-        route63.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route64.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route65.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#5eafe5")));
-        route66.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route67.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#5ee5b8")));
-        route68.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5e15e")));
+        route62.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e55e5e")));
+        route63.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
+        route64.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
+        route65.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#00A650")));
+        route66.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
+        route67.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#00A650")));
+        route68.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5e15e")));
         /* red color*/
-        route69.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e55e5e")));
-        route70.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route71.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5e15e")));
+        route69.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e55e5e")));
+        route70.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
+        route71.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5e15e")));
         /* red color*/
-        route72.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e55e5e")));
-        route73.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route74.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route75.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#5eafe5")));
-        route76.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route77.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#5ee5b8")));
-        route78.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5e15e")));
+        route72.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
+        route73.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
+        route74.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
+        route75.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#00A650")));
+        route76.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
+        route77.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#00A650")));
+        route78.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
         /* red color*/
-        route79.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e55e5e")));
-        route80.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
+        route79.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
+        route80.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
 
     }
 
@@ -3054,8 +3079,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
             if (addLayer29Flag == 0) {
                 if (routeNo.equals("29")) {
                     Toast.makeText(getActivity(), "Route 29 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route9);
-                    addLayer9Flag = 1;
+                    map.getStyle().addLayer(route29);
+                    addLayer29Flag = 1;
                 }
             }
             if (addLayer30Flag == 0) {
