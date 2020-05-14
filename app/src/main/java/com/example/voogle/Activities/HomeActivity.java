@@ -88,4 +88,9 @@ public class HomeActivity extends AppCompatActivity {
         Objects.requireNonNull(activityHomeBinding.vehicleTypeTL.getTabAt(1)).setCustomView(R.layout.sample_tab_but_train);
         Objects.requireNonNull(activityHomeBinding.vehicleTypeTL.getTabAt(2)).setCustomView(R.layout.sample_tab_but_bus);
     }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
 }
