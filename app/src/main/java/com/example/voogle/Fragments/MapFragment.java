@@ -11,9 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
 import com.example.voogle.Adapters.RouteButtonAdapter;
 import com.example.voogle.Functions.MapClick;
 import com.example.voogle.GlobalVariables;
@@ -27,7 +25,6 @@ import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.geometry.LatLngBounds;
@@ -38,14 +35,16 @@ import com.mapbox.mapboxsdk.plugins.annotation.Symbol;
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager;
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions;
 import com.mapbox.mapboxsdk.style.layers.LineLayer;
+import com.mapbox.mapboxsdk.style.layers.Property;
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
-import com.mapbox.services.android.navigation.ui.v5.camera.NavigationCamera;
+import com.mapbox.mapboxsdk.style.sources.Source;
 import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Random;
 
 
 /**
@@ -54,7 +53,7 @@ import java.util.ArrayList;
 public class MapFragment extends Fragment implements OnMapReadyCallback, MapClick {
     final int[] count = {0};
     FragmentMapBinding fragmentMapBinding;
-    ArrayList<GeoJsonSource>geoJsonSources=new ArrayList<>();
+    ArrayList<GeoJsonSource> geoJsonSources = new ArrayList<>();
     ArrayList<Bus> busList = new ArrayList<>();
     MapboxMap map;
     DatabaseReference root = FirebaseDatabase.getInstance().getReference("root");
@@ -73,7 +72,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
     private MapView mapView;
     ArrayList<Integer> sourceRoutes, destinationRoutes;
     ArrayList<Point> points;
-    ArrayList<String>routes;
+    ArrayList<String> routes;
     ArrayList<Stops> stopss;
     Bus currentBus;
     RouteButtonAdapter routeButtonAdapter;
@@ -90,27 +89,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
     private String source = null, destination = null, name;
     ArrayList<String> routeLayers = new ArrayList<>();
     ArrayList<Location> locations = new ArrayList<>();
-    int addLayer1Flag, addLayer2Flag, addLayer3Flag, addLayer4Flag, addLayer5Flag, addLayer6Flag, addLayer7Flag,
-            addLayer8Flag, addLayer9Flag, addLayer10Flag, addLayer11Flag, addLayer12Flag, addLayer13Flag, addLayer14Flag,
-            addLayer15Flag, addLayer16Flag, addLayer17Flag, addLayer18Flag, addLayer19Flag, addLayer20Flag, addLayer21Flag,
-            addLayer22Flag, addLayer23Flag, addLayer24Flag, addLayer25Flag, addLayer26Flag, addLayer27Flag, addLayer28Flag,
-            addLayer29Flag, addLayer30Flag, addLayer31Flag, addLayer32Flag, addLayer33Flag, addLayer34Flag, addLayer35Flag,
-            addLayer36Flag, addLayer37Flag, addLayer38Flag, addLayer39Flag, addLayer40Flag, addLayer41Flag, addLayer42Flag,
-            addLayer43Flag, addLayer44Flag, addLayer45Flag, addLayer46Flag, addLayer47Flag, addLayer48Flag, addLayer49Flag,
-            addLayer50Flag, addLayer51Flag, addLayer52Flag, addLayer53Flag, addLayer54Flag, addLayer55Flag, addLayer56Flag,
-            addLayer57Flag, addLayer58Flag, addLayer59Flag, addLayer60Flag, addLayer61Flag, addLayer62Flag, addLayer63Flag,
-            addLayer64Flag, addLayer65Flag, addLayer66Flag, addLayer67Flag, addLayer68Flag, addLayer69Flag, addLayer70Flag,
-            addLayer71Flag, addLayer72Flag, addLayer73Flag, addLayer74Flag, addLayer75Flag, addLayer76Flag, addLayer77Flag,
-            addLayer78Flag, addLayer79Flag, addLayer80Flag;
+
+    ArrayList<Integer> addLayerFlags = new ArrayList<>(80);
+
+    int[] colors = new int[]{
+            Color.parseColor("#0054A5"),
+            Color.parseColor("#FF9400"),
+            Color.parseColor("#e5e15e"),
+            Color.parseColor("#00A650")
+    };
     private Bundle savedInstanceState;
     private static final String LINE_GEOJSON_SOURCE_ID = "LINE_GEOJSON_SOURCE_ID";
     private static final String CIRCLE_GEOJSON_SOURCE_ID = "CIRCLE_GEOJSON_SOURCE_ID";
-    LineLayer route,route1, route2, route3, route4, route5, route6, route7, route8, route9, route10, route11, route12, route13, route14, route15, route16, route17, route18, route19, route20, route21, route22, route23, route24, route25, route26, route27, route28, route29, route30, route31, route32, route33, route34, route35, route36, route37, route38, route39, route40, route41, route42, route43, route44, route45, route46, route47, route48, route49, route50, route51, route52, route53, route54, route55, route56, route57, route58, route59, route60, route61, route62, route63, route64, route65, route66, route67, route68, route69, route70, route71, route72, route73, route74, route75, route76, route77, route78, route79, route80;
+    ArrayList<LineLayer> routeLineLayers;
     private boolean firstRun;
     private Location current_location;
     String routeNo;
     private int getCommonRoutesFlag;
-    private long time1st;
+    private long time1, time2;
 
     public MapFragment() {
         // Required empty public constructor
@@ -118,14 +114,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         // Write a message to the database
         sourceRoutes = new ArrayList<>();
         destinationRoutes = new ArrayList<>();
         points = new ArrayList<>();
         stopss = new ArrayList<>();
-
+        routeLineLayers = new ArrayList<>();
         this.savedInstanceState = savedInstanceState;
 
         Mapbox.getInstance(getActivity(), getString(R.string.access_token));
@@ -135,7 +132,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
         mapView = fragmentMapBinding.mapView;
 
-        mapView.onCreate(savedInstanceState);
 
         source = GlobalVariables.sourceName;
         destination = GlobalVariables.destinationName;
@@ -145,303 +141,103 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
         destinationLng = GlobalVariables.destinationLng;
 
 
-
-
 // Set the camera to the greatest possible zoom level that includes the
 // bounds
 
         Log.i(TAG, "onCreateView: " + source + " and " + destination);
-        Toast.makeText(getActivity(), ""+String.valueOf(sourceLat), Toast.LENGTH_SHORT).show();
-        Toast.makeText(getActivity(), ""+String.valueOf(destinationLat), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getActivity(), source, Toast.LENGTH_SHORT).show();
 
-        Toast.makeText(getActivity(), destination, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getActivity(), destination, Toast.LENGTH_SHORT).show();
 
+        routeLineLayers.clear();
+        routeLineLayers.add(new LineLayer("ROUTE1L", "ROUTE1"));
+        routeLineLayers.add(new LineLayer("ROUTE2L", "ROUTE2"));
+        routeLineLayers.add(new LineLayer("ROUTE3L", "ROUTE3"));
+        routeLineLayers.add(new LineLayer("ROUTE4L", "ROUTE4"));
+        routeLineLayers.add(new LineLayer("ROUTE5L", "ROUTE5"));
+        routeLineLayers.add(new LineLayer("ROUTE6L", "ROUTE6"));
+        routeLineLayers.add(new LineLayer("ROUTE7L", "ROUTE7"));
+        routeLineLayers.add(new LineLayer("ROUTE8L", "ROUTE8"));
+        routeLineLayers.add(new LineLayer("ROUTE9L", "ROUTE9"));
+        routeLineLayers.add(new LineLayer("ROUTE10L", "ROUTE10"));
+        routeLineLayers.add(new LineLayer("ROUTE11L", "ROUTE11"));
+        routeLineLayers.add(new LineLayer("ROUTE12L", "ROUTE12"));
+        routeLineLayers.add(new LineLayer("ROUTE13L", "ROUTE13"));
+        routeLineLayers.add(new LineLayer("ROUTE14L", "ROUTE14"));
+        routeLineLayers.add(new LineLayer("ROUTE15L", "ROUTE15"));
+        routeLineLayers.add(new LineLayer("ROUTE16L", "ROUTE16"));
+        routeLineLayers.add(new LineLayer("ROUTE17L", "ROUTE17"));
+        routeLineLayers.add(new LineLayer("ROUTE18L", "ROUTE18"));
+        routeLineLayers.add(new LineLayer("ROUTE19L", "ROUTE19"));
+        routeLineLayers.add(new LineLayer("ROUTE20L", "ROUTE20"));
+        routeLineLayers.add(new LineLayer("ROUTE21L", "ROUTE21"));
+        routeLineLayers.add(new LineLayer("ROUTE22L", "ROUTE22"));
+        routeLineLayers.add(new LineLayer("ROUTE23L", "ROUTE23"));
+        routeLineLayers.add(new LineLayer("ROUTE24L", "ROUTE24"));
+        routeLineLayers.add(new LineLayer("ROUTE25L", "ROUTE25"));
+        routeLineLayers.add(new LineLayer("ROUTE26L", "ROUTE26"));
+        routeLineLayers.add(new LineLayer("ROUTE27L", "ROUTE27"));
+        routeLineLayers.add(new LineLayer("ROUTE28L", "ROUTE28"));
+        routeLineLayers.add(new LineLayer("ROUTE29L", "ROUTE29"));
+        routeLineLayers.add(new LineLayer("ROUTE30L", "ROUTE30"));
+        routeLineLayers.add(new LineLayer("ROUTE31L", "ROUTE31"));
+        routeLineLayers.add(new LineLayer("ROUTE32L", "ROUTE32"));
+        routeLineLayers.add(new LineLayer("ROUTE33L", "ROUTE33"));
+        routeLineLayers.add(new LineLayer("ROUTE34L", "ROUTE34"));
+        routeLineLayers.add(new LineLayer("ROUTE35L", "ROUTE35"));
+        routeLineLayers.add(new LineLayer("ROUTE36L", "ROUTE36"));
+        routeLineLayers.add(new LineLayer("ROUTE37L", "ROUTE37"));
+        routeLineLayers.add(new LineLayer("ROUTE38L", "ROUTE38"));
+        routeLineLayers.add(new LineLayer("ROUTE39L", "ROUTE39"));
+        routeLineLayers.add(new LineLayer("ROUTE40L", "ROUTE40"));
+        routeLineLayers.add(new LineLayer("ROUTE41L", "ROUTE41"));
+        routeLineLayers.add(new LineLayer("ROUTE42L", "ROUTE42"));
+        routeLineLayers.add(new LineLayer("ROUTE43L", "ROUTE43"));
+        routeLineLayers.add(new LineLayer("ROUTE44L", "ROUTE44"));
+        routeLineLayers.add(new LineLayer("ROUTE45L", "ROUTE45"));
+        routeLineLayers.add(new LineLayer("ROUTE46L", "ROUTE46"));
+        routeLineLayers.add(new LineLayer("ROUTE47L", "ROUTE47"));
+        routeLineLayers.add(new LineLayer("ROUTE48L", "ROUTE48"));
+        routeLineLayers.add(new LineLayer("ROUTE49L", "ROUTE49"));
+        routeLineLayers.add(new LineLayer("ROUTE50L", "ROUTE50"));
+        routeLineLayers.add(new LineLayer("ROUTE51L", "ROUTE51"));
+        routeLineLayers.add(new LineLayer("ROUTE52L", "ROUTE52"));
+        routeLineLayers.add(new LineLayer("ROUTE53L", "ROUTE53"));
+        routeLineLayers.add(new LineLayer("ROUTE54L", "ROUTE54"));
+        routeLineLayers.add(new LineLayer("ROUTE55L", "ROUTE55"));
+        routeLineLayers.add(new LineLayer("ROUTE56L", "ROUTE56"));
+        routeLineLayers.add(new LineLayer("ROUTE57L", "ROUTE57"));
+        routeLineLayers.add(new LineLayer("ROUTE58L", "ROUTE58"));
+        routeLineLayers.add(new LineLayer("ROUTE59L", "ROUTE59"));
+        routeLineLayers.add(new LineLayer("ROUTE60L", "ROUTE60"));
+        routeLineLayers.add(new LineLayer("ROUTE61L", "ROUTE61"));
+        routeLineLayers.add(new LineLayer("ROUTE62L", "ROUTE62"));
+        routeLineLayers.add(new LineLayer("ROUTE63L", "ROUTE63"));
+        routeLineLayers.add(new LineLayer("ROUTE64L", "ROUTE64"));
+        routeLineLayers.add(new LineLayer("ROUTE65L", "ROUTE65"));
+        routeLineLayers.add(new LineLayer("ROUTE66L", "ROUTE66"));
+        routeLineLayers.add(new LineLayer("ROUTE67L", "ROUTE67"));
+        routeLineLayers.add(new LineLayer("ROUTE68L", "ROUTE68"));
+        routeLineLayers.add(new LineLayer("ROUTE69L", "ROUTE69"));
+        routeLineLayers.add(new LineLayer("ROUTE70L", "ROUTE70"));
+        routeLineLayers.add(new LineLayer("ROUTE71L", "ROUTE71"));
+        routeLineLayers.add(new LineLayer("ROUTE72L", "ROUTE72"));
+        routeLineLayers.add(new LineLayer("ROUTE73L", "ROUTE73"));
+        routeLineLayers.add(new LineLayer("ROUTE74L", "ROUTE74"));
+        routeLineLayers.add(new LineLayer("ROUTE75L", "ROUTE75"));
+        routeLineLayers.add(new LineLayer("ROUTE76L", "ROUTE76"));
+        routeLineLayers.add(new LineLayer("ROUTE77L", "ROUTE77"));
+        routeLineLayers.add(new LineLayer("ROUTE78L", "ROUTE78"));
+        routeLineLayers.add(new LineLayer("ROUTE79L", "ROUTE79"));
+        routeLineLayers.add(new LineLayer("ROUTE80L", "ROUTE80"));
 
+        time1 = System.currentTimeMillis();
         initMap(savedInstanceState);
 
         fragmentMapBinding.removeLayerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (addLayer1Flag == 1) {
-                    map.getStyle().removeLayer(route1);
-                    addLayer1Flag = 0;
-                }
-                if (addLayer2Flag == 1) {
-                    map.getStyle().removeLayer(route2);
-                    addLayer2Flag = 0;
-                }
-                if (addLayer3Flag == 1) {
-                    map.getStyle().removeLayer(route3);
-                    addLayer3Flag = 0;
-                }
-                if (addLayer4Flag == 1) {
-                    map.getStyle().removeLayer(route4);
-                    addLayer4Flag = 0;
-                }
-                if (addLayer5Flag == 1) {
-                    map.getStyle().removeLayer(route5);
-                    addLayer5Flag = 0;
-                }
-                if (addLayer6Flag == 1) {
-                    map.getStyle().removeLayer(route6);
-                    addLayer6Flag = 0;
-                }
-                if (addLayer7Flag == 1) {
-                    map.getStyle().removeLayer(route7);
-                    addLayer7Flag = 0;
-                }
-                if (addLayer8Flag == 1) {
-                    map.getStyle().removeLayer(route8);
-                    addLayer8Flag = 0;
-                }
-                if (addLayer9Flag == 1) {
-                    map.getStyle().removeLayer(route9);
-                    addLayer9Flag = 0;
-                }
-                if (addLayer10Flag == 1) {
-                    map.getStyle().removeLayer(route10);
-                    addLayer10Flag = 0;
-                }
-                if (addLayer11Flag == 1) {
-                    map.getStyle().removeLayer(route11);
-                    addLayer11Flag = 0;
-                }
-                if (addLayer12Flag == 1) {
-                    map.getStyle().removeLayer(route12);
-                    addLayer12Flag = 0;
-                }
-                if (addLayer13Flag == 1) {
-                    map.getStyle().removeLayer(route13);
-                    addLayer13Flag = 0;
-                }
-                if (addLayer14Flag == 1) {
-                    map.getStyle().removeLayer(route14);
-                    addLayer14Flag = 0;
-                }
-                if (addLayer15Flag == 1) {
-                    map.getStyle().removeLayer(route15);
-                    addLayer15Flag = 0;
-                }
-                if (addLayer16Flag == 1) {
-                    map.getStyle().removeLayer(route16);
-                    addLayer16Flag = 0;
-                }
-                if (addLayer17Flag == 1) {
-                    map.getStyle().removeLayer(route17);
-                    addLayer17Flag = 0;
-                }
-                if (addLayer18Flag == 1) {
-                    map.getStyle().removeLayer(route18);
-                    addLayer18Flag = 0;
-                }
-                if (addLayer19Flag == 1) {
-                    map.getStyle().removeLayer(route19);
-                    addLayer19Flag = 0;
-                }
-                if (addLayer20Flag == 1) {
-                    map.getStyle().removeLayer(route20);
-                    addLayer20Flag = 0;
-                }
-                if (addLayer21Flag == 1) {
-                    map.getStyle().removeLayer(route21);
-                    addLayer21Flag = 0;
-                }
-                if (addLayer22Flag == 1) {
-                    map.getStyle().removeLayer(route22);
-                    addLayer22Flag = 0;
-                }
-                if (addLayer23Flag == 1) {
-                    map.getStyle().removeLayer(route23);
-                    addLayer23Flag = 0;
-                }
-                if (addLayer24Flag == 1) {
-                    map.getStyle().removeLayer(route24);
-                    addLayer24Flag = 0;
-                }
-                if (addLayer25Flag == 1) {
-                    map.getStyle().removeLayer(route25);
-                    addLayer25Flag = 0;
-                }
-                if (addLayer26Flag == 1) {
-                    map.getStyle().removeLayer(route26);
-                    addLayer26Flag = 0;
-                }
-                if (addLayer27Flag == 1) {
-                    map.getStyle().removeLayer(route27);
-                    addLayer27Flag = 0;
-                }
-                if (addLayer28Flag == 1) {
-                    map.getStyle().removeLayer(route28);
-                    addLayer28Flag = 0;
-                }
-                if (addLayer29Flag == 1) {
-                    map.getStyle().removeLayer(route29);
-                    addLayer29Flag = 0;
-                }
-                if (addLayer30Flag == 1) {
-                    map.getStyle().removeLayer(route30);
-                    addLayer30Flag = 0;
-                }
-                if (addLayer31Flag == 1) {
-                    map.getStyle().removeLayer(route31);
-                    addLayer31Flag = 0;
-                }
-                if (addLayer32Flag == 1) {
-                    map.getStyle().removeLayer(route32);
-                    addLayer32Flag = 0;
-                }
-                if (addLayer33Flag == 1) {
-                    map.getStyle().removeLayer(route33);
-                    addLayer33Flag = 0;
-                }
-                if (addLayer34Flag == 1) {
-                    map.getStyle().removeLayer(route34);
-                    addLayer34Flag = 0;
-                }
-                if (addLayer35Flag == 1) {
-                    map.getStyle().removeLayer(route35);
-                    addLayer35Flag = 0;
-                }
-                if (addLayer36Flag == 1) {
-                    map.getStyle().removeLayer(route36);
-                    addLayer36Flag = 0;
-                }
-                if (addLayer37Flag == 1) {
-                    map.getStyle().removeLayer(route37);
-                    addLayer37Flag = 0;
-                }
-                if (addLayer38Flag == 1) {
-                    map.getStyle().removeLayer(route38);
-                    addLayer38Flag = 0;
-                }
-                if (addLayer39Flag == 1) {
-                    map.getStyle().removeLayer(route39);
-                    addLayer39Flag = 0;
-                }
-                if (addLayer40Flag == 1) {
-                    map.getStyle().removeLayer(route40);
-                    addLayer40Flag = 0;
-                }
-                if (addLayer41Flag == 1) {
-                    map.getStyle().removeLayer(route41);
-                    addLayer41Flag = 0;
-                }
-                if (addLayer42Flag == 1) {
-                    map.getStyle().removeLayer(route42);
-                    addLayer42Flag = 0;
-                }
-                if (addLayer43Flag == 1) {
-                    map.getStyle().removeLayer(route43);
-                    addLayer43Flag = 0;
-                }
-                if (addLayer44Flag == 1) {
-                    map.getStyle().removeLayer(route44);
-                    addLayer44Flag = 0;
-                }
-                if (addLayer45Flag == 1) {
-                    map.getStyle().removeLayer(route45);
-                    addLayer45Flag = 0;
-                }
-                if (addLayer46Flag == 1) {
-                    map.getStyle().removeLayer(route46);
-                    addLayer46Flag = 0;
-                }
-                if (addLayer47Flag == 1) {
-                    map.getStyle().removeLayer(route47);
-                    addLayer47Flag = 0;
-                }
-                if (addLayer48Flag == 1) {
-                    map.getStyle().removeLayer(route48);
-                    addLayer48Flag = 0;
-                }
-                if (addLayer49Flag == 1) {
-                    map.getStyle().removeLayer(route49);
-                    addLayer49Flag = 0;
-                }
-                if (addLayer50Flag == 1) {
-                    map.getStyle().removeLayer(route50);
-                    addLayer50Flag = 0;
-                }
-                if (addLayer51Flag == 1) {
-                    map.getStyle().removeLayer(route51);
-                    addLayer51Flag = 0;
-                }
-                if (addLayer52Flag == 1) {
-                    map.getStyle().removeLayer(route52);
-                    addLayer52Flag = 0;
-                }
-                if (addLayer53Flag == 1) {
-                    map.getStyle().removeLayer(route53);
-                    addLayer53Flag = 0;
-                }
-                if (addLayer54Flag == 1) {
-                    map.getStyle().removeLayer(route54);
-                    addLayer54Flag = 0;
-                }
-                if (addLayer55Flag == 1) {
-                    map.getStyle().removeLayer(route55);
-                    addLayer55Flag = 0;
-                }
-                if (addLayer56Flag == 1) {
-                    map.getStyle().removeLayer(route56);
-                    addLayer56Flag = 0;
-                }
-                if (addLayer57Flag == 1) {
-                    map.getStyle().removeLayer(route57);
-                    addLayer57Flag = 0;
-                }
-                if (addLayer58Flag == 1) {
-                    map.getStyle().removeLayer(route58);
-                    addLayer58Flag = 0;
-                }
-                if (addLayer59Flag == 1) {
-                    map.getStyle().removeLayer(route59);
-                    addLayer9Flag = 0;
-                }
-                if (addLayer60Flag == 1) {
-                    map.getStyle().removeLayer(route10);
-                    addLayer10Flag = 0;
-                }
-                if (addLayer61Flag == 1) {
-                    map.getStyle().removeLayer(route61);
-                    addLayer61Flag = 0;
-                }
-                if (addLayer62Flag == 1) {
-                    map.getStyle().removeLayer(route62);
-                    addLayer62Flag = 0;
-                }
-                if (addLayer63Flag == 1) {
-                    map.getStyle().removeLayer(route63);
-                    addLayer63Flag = 0;
-                }
-                if (addLayer64Flag == 1) {
-                    map.getStyle().removeLayer(route64);
-                    addLayer64Flag = 0;
-                }
-                if (addLayer65Flag == 1) {
-                    map.getStyle().removeLayer(route65);
-                    addLayer65Flag = 0;
-                }
-                if (addLayer66Flag == 1) {
-                    map.getStyle().removeLayer(route66);
-                    addLayer66Flag = 0;
-                }
-                if (addLayer67Flag == 1) {
-                    map.getStyle().removeLayer(route67);
-                    addLayer67Flag = 0;
-                }
-                if (addLayer68Flag == 1) {
-                    map.getStyle().removeLayer(route68);
-                    addLayer68Flag = 0;
-                }
-                if (addLayer69Flag == 1) {
-                    map.getStyle().removeLayer(route69);
-                    addLayer69Flag = 0;
-                }
-                if (addLayer70Flag == 1) {
-                    map.getStyle().removeLayer(route70);
-                    addLayer70Flag = 0;
-                }
+                hideLayers();
             }
         });
         getCommonRoutesFlag = 0;
@@ -495,10 +291,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 //        LatLng source = new LatLng(Double.valueOf(sourceLat), Double.valueOf(sourceLng)), destination = new LatLng(Double.valueOf(destinationLat), Double.valueOf(destinationLng));
         mapView = fragmentMapBinding.mapView;
 
-        time1st = System.currentTimeMillis();
-
-        Log.i(TAG, "initMap: " + time1st);
-
         Log.d("check", "initMap");
         mapView.onCreate(savedInstanceState);
 
@@ -511,42 +303,34 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
         mapView.getMapAsync(mapboxMap -> {
             map = mapboxMap;
             fragmentMapBinding.navView.onMapReady(map);
-       //     map.setStyle(new Style.Builder().fromUri(/*"mapbox://styles/mapbox/cjf4m44iw0uza2spb3q0a7s41"*/ /*"mapbox://styles/mapbox/light-v10"*/ "mapbox://styles/mapbox/navigation-preview-day-v4")
-            map.setStyle(new Style.Builder().fromUri(/*"mapbox://styles/mapbox/cjf4m44iw0uza2spb3q0a7s41"*/ /*"mapbox://styles/mapbox/light-v10"*/ "mapbox://styles/mushfimaqverick/ck9woofn10nb91isalygf97sy")
-                    .withImage("X", getActivity().getDrawable(R.drawable.ic_location_on_black_24dp))
-                    .withImage("Y", getActivity().getDrawable(R.drawable.ic_location_on_red_24dp))
-                    .withImage("LocationPointer", getActivity().getDrawable(R.drawable.ic_person_pin_circle_yellow_24dp))
-                    .withImage("ROUTE1", getActivity().getDrawable(R.drawable.ic_directions_bus_green_24dp))
-                    .withImage("ROUTE2", getActivity().getDrawable(R.drawable.ic_directions_bus_blue_24dp))
-                    .withImage("ROUTE3", getActivity().getDrawable(R.drawable.ic_directions_bus_red_24dp))
-                , style -> {
+            map.setStyle(new Style.Builder().fromUri(/*"mapbox://styles/mapbox/cjf4m44iw0uza2spb3q0a7s41"*/ /*"mapbox://styles/mapbox/light-v10"*/ "mapbox://styles/mapbox/navigation-preview-day-v4")
+//            map.setStyle(new Style.Builder().fromUri(/*"mapbox://styles/mapbox/cjf4m44iw0uza2spb3q0a7s41"*/ /*"mapbox://styles/mapbox/light-v10"*/ "mapbox://styles/mushfimaqverick/ck9woofn10nb91isalygf97sy")
+                            .withImage("X", getActivity().getDrawable(R.drawable.ic_location_on_black_24dp))
+                            .withImage("Y", getActivity().getDrawable(R.drawable.ic_location_on_red_24dp))
+                            .withImage("LocationPointer", getActivity().getDrawable(R.drawable.ic_person_pin_circle_yellow_24dp))
+                            .withImage("ROUTE1", getActivity().getDrawable(R.drawable.ic_directions_bus_green_24dp))
+                            .withImage("ROUTE2", getActivity().getDrawable(R.drawable.ic_directions_bus_blue_24dp))
+                            .withImage("ROUTE3", getActivity().getDrawable(R.drawable.ic_directions_bus_red_24dp))
+                    , style -> {
 
 
-                Log.i(TAG, "initMap onLoaded: " + (System.currentTimeMillis() - time1st));
+                        symbolManager = new SymbolManager(mapView, mapboxMap, style);
 
-                symbolManager = new SymbolManager(mapView, mapboxMap, style);
+                        for (LineLayer lineLayer :
+                                routeLineLayers) {
+                            style.addLayer(lineLayer);
+                        }
 
-                readLocations();
+                        readLocations();
 
-                UiSettings uiSettings = mapboxMap.getUiSettings();
-                uiSettings.setZoomGesturesEnabled(true);
-                uiSettings.setQuickZoomGesturesEnabled(true);
-                uiSettings.setCompassEnabled(true);
+                        UiSettings uiSettings = mapboxMap.getUiSettings();
+                        uiSettings.setZoomGesturesEnabled(true);
+                        uiSettings.setQuickZoomGesturesEnabled(true);
+                        uiSettings.setCompassEnabled(true);
 
-
-                getCommonRoutes();
-                getBusList();
-
-
-
-                addLayer1Flag = 0;
-                addLayer2Flag = 0;
-                addLayer3Flag = 0;
-                addLayer4Flag = 0;
-                addLayer5Flag = 0;
-                addLayer6Flag = 0;
-                addLayer7Flag = 0;
-            });
+                        getCommonRoutes();
+                        getBusList();
+                    });
 
         });
     }
@@ -556,8 +340,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
         Symbol destination = symbolManager.create(new SymbolOptions().withIconImage("Y").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng(Double.valueOf(destinationLat), Double.valueOf(destinationLng))).withTextField("Destination"));
         symbolArrayList.add(source);
         symbolArrayList.add(destination);
-
-        Log.i(TAG, "initMap onLoaded: " + (System.currentTimeMillis() - time1st));
 
         for (Symbol symbol : symbolArrayList) {
 
@@ -587,7 +369,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 symbolArrayList.add(Route2);
                                 //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                Toast.makeText(getActivity(), "routessss" + String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getActivity(), "routessss" + String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 lat = stop.getLat();
                                 lng = stop.getLng();
                                 // route2Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
@@ -690,7 +472,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 symbolArrayList.add(Route12);
                                 //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                Toast.makeText(getActivity(), "routessss" + String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getActivity(), "routessss" + String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 lat = stop.getLat();
                                 lng = stop.getLng();
                                 // route2Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
@@ -793,7 +575,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 symbolArrayList.add(Route22);
                                 //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                Toast.makeText(getActivity(), "routessss" + String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getActivity(), "routessss" + String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 lat = stop.getLat();
                                 lng = stop.getLng();
                                 // route2Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
@@ -896,7 +678,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 symbolArrayList.add(Route32);
                                 //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                Toast.makeText(getActivity(), "routessss" + String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getActivity(), "routessss" + String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 lat = stop.getLat();
                                 lng = stop.getLng();
                                 // route2Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
@@ -999,7 +781,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 symbolArrayList.add(Route42);
                                 //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                Toast.makeText(getActivity(), "routessss" + String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getActivity(), "routessss" + String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 lat = stop.getLat();
                                 lng = stop.getLng();
                                 // route2Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
@@ -1102,7 +884,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 symbolArrayList.add(Route52);
                                 //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                Toast.makeText(getActivity(), "routessss" + String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getActivity(), "routessss" + String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 lat = stop.getLat();
                                 lng = stop.getLng();
                                 // route2Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
@@ -1205,7 +987,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 symbolArrayList.add(Route62);
                                 //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                Toast.makeText(getActivity(), "routessss" + String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getActivity(), "routessss" + String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 lat = stop.getLat();
                                 lng = stop.getLng();
                                 // route2Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
@@ -1308,7 +1090,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 symbolArrayList.add(Route72);
                                 //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
                                 //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                Toast.makeText(getActivity(), "routessss" + String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getActivity(), "routessss" + String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
                                 lat = stop.getLat();
                                 lng = stop.getLng();
                                 // route2Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
@@ -1407,954 +1189,93 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
     }
 
     private void loadRoute(Style style) {
-//        GeoJsonSource geoJsonSource1 = new GeoJsonSource("ROUTE1");
-//        try {
-//            URI uri = new URI("asset://route1.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource1 = new GeoJsonSource("ROUTE1", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource2 = new GeoJsonSource("ROUTE2");
-//        try {
-//            URI uri = new URI("asset://route2.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource2 = new GeoJsonSource("ROUTE2", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource3 = new GeoJsonSource("ROUTE3");
-//        try {
-//            URI uri = new URI("asset://route3.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource3 = new GeoJsonSource("ROUTE3", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource4 = new GeoJsonSource("ROUTE4");
-//        try {
-//            URI uri = new URI("asset://route4.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource4 = new GeoJsonSource("ROUTE4", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource5 = new GeoJsonSource("ROUTE5");
-//        try {
-//            URI uri = new URI("asset://route5.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource5 = new GeoJsonSource("ROUTE5", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource6 = new GeoJsonSource("ROUTE6");
-//        try {
-//            URI uri = new URI("asset://route6.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource6 = new GeoJsonSource("ROUTE6", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource7 = new GeoJsonSource("ROUTE7");
-//        try {
-//            URI uri = new URI("asset://route7.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource7 = new GeoJsonSource("ROUTE7", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource8 = new GeoJsonSource("ROUTE8");
-//        try {
-//            URI uri = new URI("asset://route8.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource8 = new GeoJsonSource("ROUTE8", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource9 = new GeoJsonSource("ROUTE9");
-//        try {
-//            URI uri = new URI("asset://route9.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource9 = new GeoJsonSource("ROUTE9", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource10 = new GeoJsonSource("ROUTE10");
-//        try {
-//            URI uri = new URI("asset://route10.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource10 = new GeoJsonSource("ROUTE10", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource11 = new GeoJsonSource("ROUTE11");
-//        try {
-//            URI uri = new URI("asset://route11.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource11 = new GeoJsonSource("ROUTE11", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource12 = new GeoJsonSource("ROUTE12");
-//        try {
-//            URI uri = new URI("asset://route12.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource12 = new GeoJsonSource("ROUTE12", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource13 = new GeoJsonSource("ROUTE13");
-//        try {
-//            URI uri = new URI("asset://route13.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource13 = new GeoJsonSource("ROUTE13", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource14 = new GeoJsonSource("ROUTE14");
-//        try {
-//            URI uri = new URI("asset://route14.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource14 = new GeoJsonSource("ROUTE14", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource15 = new GeoJsonSource("ROUTE15");
-//        try {
-//            URI uri = new URI("asset://route15.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource15 = new GeoJsonSource("ROUTE15", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource16 = new GeoJsonSource("ROUTE16");
-//        try {
-//            URI uri = new URI("asset://route16.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource16 = new GeoJsonSource("ROUTE16", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource17 = new GeoJsonSource("ROUTE17");
-//        try {
-//            URI uri = new URI("asset://route17.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource17 = new GeoJsonSource("ROUTE17", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource18 = new GeoJsonSource("ROUTE18");
-//        try {
-//            URI uri = new URI("asset://route18.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource18 = new GeoJsonSource("ROUTE18", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource19 = new GeoJsonSource("ROUTE19");
-//        try {
-//            URI uri = new URI("asset://route19.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource19 = new GeoJsonSource("ROUTE19", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource20 = new GeoJsonSource("ROUTE20");
-//        try {
-//            URI uri = new URI("asset://route20.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource20 = new GeoJsonSource("ROUTE20", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource21 = new GeoJsonSource("ROUTE21");
-//        try {
-//            URI uri = new URI("asset://route21.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource21 = new GeoJsonSource("ROUTE21", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource22 = new GeoJsonSource("ROUTE22");
-//        try {
-//            URI uri = new URI("asset://route22.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource22 = new GeoJsonSource("ROUTE22", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource23 = new GeoJsonSource("ROUTE23");
-//        try {
-//            URI uri = new URI("asset://route23.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource23 = new GeoJsonSource("ROUTE23", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource24 = new GeoJsonSource("ROUTE24");
-//        try {
-//            URI uri = new URI("asset://route24.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource24 = new GeoJsonSource("ROUTE24", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource25 = new GeoJsonSource("ROUTE25");
-//        try {
-//            URI uri = new URI("asset://route25.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource25 = new GeoJsonSource("ROUTE25", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource26 = new GeoJsonSource("ROUTE26");
-//        try {
-//            URI uri = new URI("asset://route26.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource26 = new GeoJsonSource("ROUTE26", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource27 = new GeoJsonSource("ROUTE27");
-//        try {
-//            URI uri = new URI("asset://route27.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource27 = new GeoJsonSource("ROUTE27", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource28 = new GeoJsonSource("ROUTE28");
-//        try {
-//            URI uri = new URI("asset://route28.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource28 = new GeoJsonSource("ROUTE28", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource29 = new GeoJsonSource("ROUTE29");
-//        try {
-//            URI uri = new URI("asset://route29.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource29 = new GeoJsonSource("ROUTE29", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource30 = new GeoJsonSource("ROUTE30");
-//        try {
-//            URI uri = new URI("asset://route30.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource30 = new GeoJsonSource("ROUTE30", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource31 = new GeoJsonSource("ROUTE31");
-//        try {
-//            URI uri = new URI("asset://route31.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource31 = new GeoJsonSource("ROUTE31", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource32 = new GeoJsonSource("ROUTE32");
-//        try {
-//            URI uri = new URI("asset://route32.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource32 = new GeoJsonSource("ROUTE32", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource33 = new GeoJsonSource("ROUTE33");
-//        try {
-//            URI uri = new URI("asset://route33.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource33 = new GeoJsonSource("ROUTE33", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource34 = new GeoJsonSource("ROUTE34");
-//        try {
-//            URI uri = new URI("asset://route34.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource34 = new GeoJsonSource("ROUTE34", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource35 = new GeoJsonSource("ROUTE35");
-//        try {
-//            URI uri = new URI("asset://route35.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource35 = new GeoJsonSource("ROUTE35", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource36 = new GeoJsonSource("ROUTE36");
-//        try {
-//            URI uri = new URI("asset://route36.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource36 = new GeoJsonSource("ROUTE36", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource37 = new GeoJsonSource("ROUTE37");
-//        try {
-//            URI uri = new URI("asset://route37.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource37 = new GeoJsonSource("ROUTE37", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource38 = new GeoJsonSource("ROUTE38");
-//        try {
-//            URI uri = new URI("asset://route38.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource38 = new GeoJsonSource("ROUTE38", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource39 = new GeoJsonSource("ROUTE39");
-//        try {
-//            URI uri = new URI("asset://route39.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource39 = new GeoJsonSource("ROUTE39", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource40 = new GeoJsonSource("ROUTE40");
-//        try {
-//            URI uri = new URI("asset://route40.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource40 = new GeoJsonSource("ROUTE40", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource41 = new GeoJsonSource("ROUTE41");
-//        try {
-//            URI uri = new URI("asset://route41.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource41 = new GeoJsonSource("ROUTE41", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource42 = new GeoJsonSource("ROUTE42");
-//        try {
-//            URI uri = new URI("asset://route42.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource42 = new GeoJsonSource("ROUTE42", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource43 = new GeoJsonSource("ROUTE43");
-//        try {
-//            URI uri = new URI("asset://route43.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource43 = new GeoJsonSource("ROUTE43", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource44 = new GeoJsonSource("ROUTE44");
-//        try {
-//            URI uri = new URI("asset://route44.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource44 = new GeoJsonSource("ROUTE44", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource45 = new GeoJsonSource("ROUTE45");
-//        try {
-//            URI uri = new URI("asset://route45.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource45 = new GeoJsonSource("ROUTE45", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource46 = new GeoJsonSource("ROUTE46");
-//        try {
-//            URI uri = new URI("asset://route46.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource46 = new GeoJsonSource("ROUTE46", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource47 = new GeoJsonSource("ROUTE47");
-//        try {
-//            URI uri = new URI("asset://route47.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource47 = new GeoJsonSource("ROUTE47", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource48 = new GeoJsonSource("ROUTE48");
-//        try {
-//            URI uri = new URI("asset://route48.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource48 = new GeoJsonSource("ROUTE48", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource49 = new GeoJsonSource("ROUTE49");
-//        try {
-//            URI uri = new URI("asset://route49.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource49 = new GeoJsonSource("ROUTE49", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource50 = new GeoJsonSource("ROUTE50");
-//        try {
-//            URI uri = new URI("asset://route50.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource50 = new GeoJsonSource("ROUTE50", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource51 = new GeoJsonSource("ROUTE51");
-//        try {
-//            URI uri = new URI("asset://route51.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource51 = new GeoJsonSource("ROUTE51", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource52 = new GeoJsonSource("ROUTE52");
-//        try {
-//            URI uri = new URI("asset://route52.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource52 = new GeoJsonSource("ROUTE52", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource53 = new GeoJsonSource("ROUTE53");
-//        try {
-//            URI uri = new URI("asset://route53.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource53 = new GeoJsonSource("ROUTE53", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource54 = new GeoJsonSource("ROUTE54");
-//        try {
-//            URI uri = new URI("asset://route54.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource54 = new GeoJsonSource("ROUTE54", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource55 = new GeoJsonSource("ROUTE55");
-//        try {
-//            URI uri = new URI("asset://route55.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource55 = new GeoJsonSource("ROUTE55", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource56 = new GeoJsonSource("ROUTE56");
-//        try {
-//            URI uri = new URI("asset://route56.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource56 = new GeoJsonSource("ROUTE56", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource57 = new GeoJsonSource("ROUTE57");
-//        try {
-//            URI uri = new URI("asset://route57.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource57 = new GeoJsonSource("ROUTE57", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource58 = new GeoJsonSource("ROUTE58");
-//        try {
-//            URI uri = new URI("asset://route58.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource58 = new GeoJsonSource("ROUTE58", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource59 = new GeoJsonSource("ROUTE59");
-//        try {
-//            URI uri = new URI("asset://route59.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource59 = new GeoJsonSource("ROUTE59", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource60 = new GeoJsonSource("ROUTE60");
-//        try {
-//            URI uri = new URI("asset://route60.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource60 = new GeoJsonSource("ROUTE60", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource61 = new GeoJsonSource("ROUTE61");
-//        try {
-//            URI uri = new URI("asset://route61.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource61 = new GeoJsonSource("ROUTE61", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource62 = new GeoJsonSource("ROUTE62");
-//        try {
-//            URI uri = new URI("asset://route62.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource62 = new GeoJsonSource("ROUTE62", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource63 = new GeoJsonSource("ROUTE63");
-//        try {
-//            URI uri = new URI("asset://route63.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource63 = new GeoJsonSource("ROUTE63", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource64 = new GeoJsonSource("ROUTE64");
-//        try {
-//            URI uri = new URI("asset://route64.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource64 = new GeoJsonSource("ROUTE64", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource65 = new GeoJsonSource("ROUTE65");
-//        try {
-//            URI uri = new URI("asset://route65.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource65 = new GeoJsonSource("ROUTE65", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource66 = new GeoJsonSource("ROUTE66");
-//        try {
-//            URI uri = new URI("asset://route66.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource66 = new GeoJsonSource("ROUTE66", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource67 = new GeoJsonSource("ROUTE67");
-//        try {
-//            URI uri = new URI("asset://route67.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource67 = new GeoJsonSource("ROUTE67", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource68 = new GeoJsonSource("ROUTE68");
-//        try {
-//            URI uri = new URI("asset://route68.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource68 = new GeoJsonSource("ROUTE68", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource69 = new GeoJsonSource("ROUTE69");
-//        try {
-//            URI uri = new URI("asset://route69.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource69 = new GeoJsonSource("ROUTE69", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource70 = new GeoJsonSource("ROUTE70");
-//        try {
-//            URI uri = new URI("asset://route70.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource70 = new GeoJsonSource("ROUTE70", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource71 = new GeoJsonSource("ROUTE71");
-//        try {
-//            URI uri = new URI("asset://route71.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource71 = new GeoJsonSource("ROUTE71", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource72 = new GeoJsonSource("ROUTE72");
-//        try {
-//            URI uri = new URI("asset://route72.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource72 = new GeoJsonSource("ROUTE72", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource73 = new GeoJsonSource("ROUTE73");
-//        try {
-//            URI uri = new URI("asset://route73.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource73 = new GeoJsonSource("ROUTE73", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource74 = new GeoJsonSource("ROUTE74");
-//        try {
-//            URI uri = new URI("asset://route74.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource74 = new GeoJsonSource("ROUTE74", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource75 = new GeoJsonSource("ROUTE75");
-//        try {
-//            URI uri = new URI("asset://route75.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource75 = new GeoJsonSource("ROUTE75", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource76 = new GeoJsonSource("ROUTE76");
-//        try {
-//            URI uri = new URI("asset://route76.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource76 = new GeoJsonSource("ROUTE76", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource77 = new GeoJsonSource("ROUTE77");
-//        try {
-//            URI uri = new URI("asset://route77.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource77 = new GeoJsonSource("ROUTE77", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource78 = new GeoJsonSource("ROUTE78");
-//        try {
-//            URI uri = new URI("asset://route78.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource78 = new GeoJsonSource("ROUTE78", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource79 = new GeoJsonSource("ROUTE79");
-//        try {
-//            URI uri = new URI("asset://route79.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource79 = new GeoJsonSource("ROUTE79", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//        GeoJsonSource geoJsonSource80 = new GeoJsonSource("ROUTE80");
-//        try {
-//            URI uri = new URI("asset://route80.geojson");
-//            Log.i(TAG, "onStyleLoaded: " + uri);
-//            style.addSource(geoJsonSource80 = new GeoJsonSource("ROUTE80", uri));
-//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
-//        } catch (NullPointerException | URISyntaxException e) {
-//            e.printStackTrace();
-//        }
 
-        int i=0;
-        for(int commonRoute:commonRoutes)
-        {
+        int i = 0;
+        for (int commonRoute : commonRoutes) {
             //Toast.makeText(getActivity(), "Common Routessss: "+commonRoute, Toast.LENGTH_SHORT).show();
-            Log.d("route","Common Routessss: "+commonRoute);
-            GeoJsonSource geoJsonSource = new GeoJsonSource("ROUTE"+commonRoute);
+            Log.d("route", "Common Routessss: " + commonRoute);
+            GeoJsonSource geoJsonSource = new GeoJsonSource("ROUTE" + commonRoute);
 
             try {
-                URI uri = new URI("asset://route"+commonRoute+".geojson");
+                URI uri = new URI("asset://route" + commonRoute + ".geojson");
                 Log.i(TAG, "onStyleLoaded: " + uri);
-                style.addSource(geoJsonSource = new GeoJsonSource("ROUTE"+commonRoute, uri));
-                Log.i(TAG, "onStyleLoaded: " + style.getSources());
+                if (style.getSource("ROUTE" + commonRoute) == null)
+                    style.addSource(geoJsonSource = new GeoJsonSource("ROUTE" + commonRoute, uri));
+                else {
+                    if (style.removeSource("ROUTE" + commonRoute))
+                        style.addSource(geoJsonSource = new GeoJsonSource("ROUTE" + commonRoute, uri));
+
+                }
             } catch (NullPointerException | URISyntaxException e) {
                 e.printStackTrace();
             }
 
             geoJsonSources.add(geoJsonSource);
-
-//            if(i==0) {
-//                route.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
-//            }
-//            if(i==1)
-//            {
-//                route.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
-//            }
-//            if(i==2)
-//            {
-//                route.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#66CBC5")));
-//            }
-//            if(i==3)
-//            {
-//                route.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#66CBC5")));
-//            }
-//            if(i==4)
-//            {
-//                route.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#66CBC5")));
-//            }
-//            if(i==5)
-//            {
-//                route.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#66CBC5")));
-//            }
-//            if(i==6)
-//            {
-//                route.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#66CBC5")));
-//            }
+            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+            /*if(i==0) {
+                route.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
+            }
+            if(i==1)
+            {
+                route.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
+            }
+            if(i==2)
+            {
+                route.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#66CBC5")));
+            }
+            if(i==3)
+            {
+                route.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#66CBC5")));
+            }
+            if(i==4)
+            {
+                route.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#66CBC5")));
+            }
+            if(i==5)
+            {
+                route.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#66CBC5")));
+            }
+            if(i==6)
+            {
+                route.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#66CBC5")));
+            }*/
             i++;
 
 
         }
-        route1 = new LineLayer("ROUTE1L", "ROUTE1");
-        route2 = new LineLayer("ROUTE2L", "ROUTE2");
-        route3 = new LineLayer("ROUTE3L", "ROUTE3");
-        route4 = new LineLayer("ROUTE4L", "ROUTE4");
-        route5 = new LineLayer("ROUTE5L", "ROUTE5");
-        route6 = new LineLayer("ROUTE6L", "ROUTE6");
-        route7 = new LineLayer("ROUTE7L", "ROUTE7");
-        route8 = new LineLayer("ROUTE8L", "ROUTE8");
-        route9 = new LineLayer("ROUTE9L", "ROUTE9");
-        route10 = new LineLayer("ROUTE10L", "ROUTE10");
-        route11 = new LineLayer("ROUTE11L", "ROUTE11");
-        route12 = new LineLayer("ROUTE12L", "ROUTE12");
-        route13 = new LineLayer("ROUTE13L", "ROUTE13");
-        route14 = new LineLayer("ROUTE14L", "ROUTE14");
-        route15 = new LineLayer("ROUTE15L", "ROUTE15");
-        route16 = new LineLayer("ROUTE16L", "ROUTE16");
-        route17 = new LineLayer("ROUTE17L", "ROUTE17");
-        route18 = new LineLayer("ROUTE18L", "ROUTE18");
-        route19 = new LineLayer("ROUTE19L", "ROUTE19");
-        route20 = new LineLayer("ROUTE20L", "ROUTE20");
-        route21 = new LineLayer("ROUTE21L", "ROUTE21");
-        route22 = new LineLayer("ROUTE22L", "ROUTE22");
-        route23 = new LineLayer("ROUTE23L", "ROUTE23");
-        route24 = new LineLayer("ROUTE24L", "ROUTE24");
-        route25 = new LineLayer("ROUTE25L", "ROUTE25");
-        route26 = new LineLayer("ROUTE26L", "ROUTE26");
-        route27 = new LineLayer("ROUTE27L", "ROUTE27");
-        route28 = new LineLayer("ROUTE28L", "ROUTE28");
-        route29 = new LineLayer("ROUTE29L", "ROUTE29");
-        route30 = new LineLayer("ROUTE30L", "ROUTE30");
-        route31 = new LineLayer("ROUTE31L", "ROUTE31");
-        route32 = new LineLayer("ROUTE32L", "ROUTE32");
-        route33 = new LineLayer("ROUTE33L", "ROUTE33");
-        route34 = new LineLayer("ROUTE34L", "ROUTE34");
-        route35 = new LineLayer("ROUTE35L", "ROUTE35");
-        route36 = new LineLayer("ROUTE36L", "ROUTE36");
-        route37 = new LineLayer("ROUTE37L", "ROUTE37");
-        route38 = new LineLayer("ROUTE38L", "ROUTE38");
-        route39 = new LineLayer("ROUTE39L", "ROUTE39");
-        route40 = new LineLayer("ROUTE40L", "ROUTE40");
-        route41 = new LineLayer("ROUTE41L", "ROUTE41");
-        route42 = new LineLayer("ROUTE42L", "ROUTE42");
-        route43 = new LineLayer("ROUTE43L", "ROUTE43");
-        route44 = new LineLayer("ROUTE44L", "ROUTE44");
-        route45 = new LineLayer("ROUTE45L", "ROUTE45");
-        route46 = new LineLayer("ROUTE46L", "ROUTE46");
-        route47 = new LineLayer("ROUTE47L", "ROUTE47");
-        route48 = new LineLayer("ROUTE48L", "ROUTE48");
-        route49 = new LineLayer("ROUTE49L", "ROUTE49");
-        route50 = new LineLayer("ROUTE50L", "ROUTE50");
-        route51 = new LineLayer("ROUTE51L", "ROUTE51");
-        route52 = new LineLayer("ROUTE52L", "ROUTE52");
-        route53 = new LineLayer("ROUTE53L", "ROUTE53");
-        route54 = new LineLayer("ROUTE54L", "ROUTE54");
-        route55 = new LineLayer("ROUTE55L", "ROUTE55");
-        route56 = new LineLayer("ROUTE56L", "ROUTE56");
-        route57 = new LineLayer("ROUTE57L", "ROUTE57");
-        route58 = new LineLayer("ROUTE58L", "ROUTE58");
-        route59 = new LineLayer("ROUTE59L", "ROUTE59");
-        route60 = new LineLayer("ROUTE60L", "ROUTE60");
-        route61 = new LineLayer("ROUTE61L", "ROUTE61");
-        route62 = new LineLayer("ROUTE62L", "ROUTE62");
-        route63 = new LineLayer("ROUTE63L", "ROUTE63");
-        route64 = new LineLayer("ROUTE64L", "ROUTE64");
-        route65 = new LineLayer("ROUTE65L", "ROUTE65");
-        route66 = new LineLayer("ROUTE66L", "ROUTE66");
-        route67 = new LineLayer("ROUTE67L", "ROUTE67");
-        route68 = new LineLayer("ROUTE68L", "ROUTE68");
-        route69 = new LineLayer("ROUTE69L", "ROUTE69");
-        route70 = new LineLayer("ROUTE70L", "ROUTE70");
-        route71 = new LineLayer("ROUTE71L", "ROUTE71");
-        route72 = new LineLayer("ROUTE72L", "ROUTE72");
-        route73 = new LineLayer("ROUTE73L", "ROUTE73");
-        route74 = new LineLayer("ROUTE74L", "ROUTE74");
-        route75 = new LineLayer("ROUTE75L", "ROUTE75");
-        route76 = new LineLayer("ROUTE76L", "ROUTE76");
-        route77 = new LineLayer("ROUTE77L", "ROUTE77");
-        route78 = new LineLayer("ROUTE78L", "ROUTE78");
-        route79 = new LineLayer("ROUTE79L", "ROUTE79");
-        route80 = new LineLayer("ROUTE80L", "ROUTE80");
+        for (Source source :
+                style.getSources()) {
+            Log.i(TAG, "loadRoute: " + source.getId());
+        }
 
-        route1.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#00A650")));
-        route2.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route3.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#00A650")));
-        route4.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
-        /* red color*/
-        route5.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
-        route6.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
-        route7.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
-        route8.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
-        route9.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#00A650")));
-        route10.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
-        route11.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#FF9400")));
-        route12.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
-        /* red color*/
-        route13.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
-        route14.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
-        route15.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
-        route16.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#FF9400")));
-        route17.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
-        route18.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#00A650")));
-        route19.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
-        /* red color*/
-        route20.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
-        route21.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
-        route22.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
 
-        route23.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#00A650")));
-        route24.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
-        /* red color*/
-        route25.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
-        route26.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
-        route27.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
-        route28.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#00A650")));
-        route29.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
-        route30.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#FF9400")));
-        route31.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
-        /* red color*/
-        route32.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
-        route33.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
-        route34.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
-        route35.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#00A650")));
-        route36.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
-        route37.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#5ee5b8")));
-        route38.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#EE1D23")));
-        /* red color*/
-        route39.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
-        route40.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
-        route41.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
-        /* red color*/
-        route42.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
-        route43.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
-        route44.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
-        route45.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#FF9400")));
-        route46.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
-        route47.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#00A650")));
-        route48.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
-        /* red color*/
-        route49.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
-        route50.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
+        setProperties(commonRoutes);
+    }
 
-        route51.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
-        /* red color*/
-        route52.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
-        route53.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
-        route54.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route55.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#00A650")));
-        route56.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route57.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#FF9400")));
-        route58.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5e15e")));
-        /* red color*/
-        route59.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e55e5e")));
-        route60.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route61.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5e15e")));
-        /* red color*/
-        route62.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e55e5e")));
-        route63.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route64.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route65.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#00A650")));
-        route66.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route67.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#00A650")));
-        route68.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5e15e")));
-        /* red color*/
-        route69.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e55e5e")));
-        route70.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5a45e")));
-        route71.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#e5e15e")));
-        /* red color*/
-        route72.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
-        route73.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
-        route74.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
-        route75.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#00A650")));
-        route76.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
-        route77.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#00A650")));
-        route78.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
-        /* red color*/
-        route79.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
-        route80.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.7f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
+    private void setProperties(ArrayList<Integer> indexes) {
+        for (Integer x :
+                indexes) {
+            if (map.getStyle() != null)
+                if (map.getStyle().getLayer(routeLineLayers.get(x).getId()) != null)
+                    map.getStyle().getLayer(routeLineLayers.get(x).getId()).setProperties(
+                            PropertyFactory.visibility(Property.VISIBLE),
+                            PropertyFactory.fillOutlineColor(Color.RED),
+                            PropertyFactory.fillOpacity(0.7f),
+                            PropertyFactory.lineWidth(6.23f),
+                            PropertyFactory.lineColor(colors[new Random().nextInt(4)]));
+        }
+    }
 
+    private void setProperties(int index) {
+        if (map.getStyle() != null)
+            if (map.getStyle().getLayer(routeLineLayers.get(index).getId()) != null)
+                map.getStyle().getLayer(routeLineLayers.get(index).getId()).setProperties(
+                        PropertyFactory.visibility(Property.VISIBLE),
+                        PropertyFactory.fillOutlineColor(Color.RED),
+                        PropertyFactory.fillOpacity(0.7f),
+                        PropertyFactory.lineWidth(6.23f),
+                        PropertyFactory.lineColor(colors[new Random().nextInt(4)]));
+            else Toast.makeText(getContext(), "null routelayer at index " + index, Toast.LENGTH_SHORT).show();
     }
 
     private void readLocations() {
@@ -2371,8 +1292,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                 for (DataSnapshot location : dataSnapshot.getChildren()) {
                     locations.add(location.getValue(Location.class));
                     current_location = location.getValue(Location.class);
-                    Toast.makeText(getActivity(), "Lat: " + current_location.getLat() + " Lng: " + current_location.getLng() +
-                            " License Plate: " + current_location.getLicensePlate(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getActivity(), "Lat: " + current_location.getLat() + " Lng: " + current_location.getLng() +
+//                            " License Plate: " + current_location.getLicensePlate(), Toast.LENGTH_SHORT).show();
 
 //                    if(locationPointer==null) {
                     Log.d("map", "called");
@@ -2667,23 +1588,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
             for (Integer destinationRoute : GlobalVariables.destinationRoutes) {
                 if (sourceRoute.equals(destinationRoute)) {
 
-                        commonRoutes.add(sourceRoute);
+                    commonRoutes.add(sourceRoute);
 
                 }
             }
 
         }
 
-        Toast.makeText(getActivity(), "Source Route Map:" + sourceRoutes.toString(), Toast.LENGTH_SHORT).show();
-        for (Integer destinationRoute : GlobalVariables.destinationRoutes) {
-            destinationRoutes.add(destinationRoute);
-
-        }
-        Toast.makeText(getActivity(), "Destinaion Route Map:" + destinationRoutes.toString(), Toast.LENGTH_SHORT).show();
-        Toast.makeText(getActivity(), "Common Routes: " + commonRoutes.toString(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getActivity(), "Source Route Map:" + sourceRoutes.toString(), Toast.LENGTH_SHORT).show();
+        destinationRoutes.addAll(GlobalVariables.destinationRoutes);
+//        Toast.makeText(getActivity(), "Destination Route Map:" + destinationRoutes.toString(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getActivity(), "Common Routes: " + commonRoutes.toString(), Toast.LENGTH_SHORT).show();
 
         stopRef = FirebaseDatabase.getInstance().getReference().child("root").child("stops");
-        stopRef.addValueEventListener(new ValueEventListener() {
+        stopRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -2711,7 +1629,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 }
                             }
                         }
-                      Log.d("check", "Datasnapshot");
+                        Log.d("check", "Datasnapshot");
                     }
                     /*for (Symbol symbol : symbolArrayList) {
                         symbolManager.update(symbol)
@@ -2737,8 +1655,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 //                            map.animateCamera(CameraUpdateFactory.newCameraPosition(position), 7000);
 
                             LatLngBounds latLngBounds = new LatLngBounds.Builder()
-                                    .include(new LatLng(sourceLat,sourceLng)) // Northeast
-                                    .include(new LatLng(destinationLat,destinationLng)) // Southwest
+                                    .include(new LatLng(sourceLat, sourceLng)) // Northeast
+                                    .include(new LatLng(destinationLat, destinationLng)) // Southwest
                                     .build();
 
                             map.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 50), 5000);
@@ -2746,7 +1664,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                             loadRoute(style);
                             Log.d("check", "OnStyle loaded");
-                            fragmentMapBinding.progressBar.setVisibility(View.INVISIBLE);
+                            Toast.makeText(getContext(),
+                                    String.format("Time Taken %d seconds", (System.currentTimeMillis() - time1) / 1000),
+                                    Toast.LENGTH_LONG).show();
+                            fragmentMapBinding.progressBar.setVisibility(View.GONE);
                         }
                     });
                     //  initMap(savedInstanceState, stopss);
@@ -2862,604 +1783,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
     }
 
+    private void hideLayers() {
+        for (LineLayer layer :
+                routeLineLayers) {
+            if (map.getStyle() != null && map.getStyle().getLayer(layer.getId()) != null)
+                map.getStyle().getLayer(layer.getId()).setProperties(PropertyFactory.visibility(Property.NONE));
+        }
+    }
+
     @Override
     public void onClick(String s) {
-
         routeNo = s;
         Toast.makeText(getActivity(), "Route No.: " + s, Toast.LENGTH_SHORT).show();
         if (!commonRoutes.isEmpty()) {
-
-            //routeNo = getArguments().getString("routeNo");
-//                    for (int commonRoute : commonRoutes) {
-//            addLayer1Flag = 0;
-//            addLayer2Flag = 0;
-//            addLayer3Flag = 0;
-//            addLayer4Flag = 0;
-//            addLayer5Flag = 0;
-//            addLayer6Flag = 0;
-//            addLayer7Flag = 0;
-            if (addLayer1Flag == 0) {
-                if (routeNo.equals("1")) {
-                    Toast.makeText(getActivity(), "Route 1 called", Toast.LENGTH_SHORT).show();
-
-                    map.getStyle().addLayer(route1);
-                    addLayer1Flag = 1;
-                }
-            }
-
-            if (addLayer2Flag == 0) {
-                if (routeNo.equals("2")) {
-                    Toast.makeText(getActivity(), "Route 2 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route2);
-                    addLayer2Flag = 1;
-                }
-            }
-
-            if (addLayer3Flag == 0) {
-                if (routeNo.equals("3")) {
-                    Toast.makeText(getActivity(), "Route 3 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route3);
-                    addLayer3Flag = 1;
-                }
-            }
-            if (addLayer4Flag == 0) {
-                if (routeNo.equals("4")) {
-                    Toast.makeText(getActivity(), "Route 4 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route4);
-                    addLayer4Flag = 1;
-                }
-            }
-
-            if (addLayer5Flag == 0) {
-                if (routeNo.equals("5")) {
-                    Toast.makeText(getActivity(), "Route 5 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route5);
-                    addLayer5Flag = 1;
-                }
-            }
-            if (addLayer6Flag == 0) {
-                if (routeNo.equals("6")) {
-                    Toast.makeText(getActivity(), "Route 6 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route6);
-                    addLayer6Flag = 1;
-                }
-            }
-            if (addLayer7Flag == 0) {
-                if (routeNo.equals("7")) {
-                    Toast.makeText(getActivity(), "Route 7 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route7);
-                    addLayer7Flag = 1;
-                }
-            }
-            if (addLayer8Flag == 0) {
-                if (routeNo.equals("8")) {
-                    Toast.makeText(getActivity(), "Route 8 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route8);
-                    addLayer8Flag = 1;
-                }
-            }
-            if (addLayer9Flag == 0) {
-                if (routeNo.equals("9")) {
-                    Toast.makeText(getActivity(), "Route 9 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route9);
-                    addLayer9Flag = 1;
-                }
-            }
-            if (addLayer10Flag == 0) {
-                if (routeNo.equals("10")) {
-                    Toast.makeText(getActivity(), "Route 10 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route10);
-                    addLayer10Flag = 1;
-                }
-            }
-            if (addLayer11Flag == 0) {
-                if (routeNo.equals("11")) {
-                    Toast.makeText(getActivity(), "Route 11 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route11);
-                    addLayer11Flag = 1;
-                }
-            }
-
-            if (addLayer12Flag == 0) {
-                if (routeNo.equals("12")) {
-                    Toast.makeText(getActivity(), "Route 12 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route12);
-                    addLayer12Flag = 1;
-                }
-            }
-
-            if (addLayer13Flag == 0) {
-                if (routeNo.equals("13")) {
-                    Toast.makeText(getActivity(), "Route 13 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route13);
-                    addLayer13Flag = 1;
-                }
-            }
-            if (addLayer14Flag == 0) {
-                if (routeNo.equals("14")) {
-                    Toast.makeText(getActivity(), "Route 14 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route14);
-                    addLayer14Flag = 1;
-                }
-            }
-
-            if (addLayer15Flag == 0) {
-                if (routeNo.equals("15")) {
-                    Toast.makeText(getActivity(), "Route 15 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route15);
-                    addLayer15Flag = 1;
-                }
-            }
-            if (addLayer17Flag == 0) {
-                if (routeNo.equals("17")) {
-                    Toast.makeText(getActivity(), "Route 17 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route17);
-                    addLayer17Flag = 1;
-                }
-            }
-            if (addLayer18Flag == 0) {
-                if (routeNo.equals("18")) {
-                    Toast.makeText(getActivity(), "Route 18 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route18);
-                    addLayer18Flag = 1;
-                }
-            }
-            if (addLayer19Flag == 0) {
-                if (routeNo.equals("19")) {
-                    Toast.makeText(getActivity(), "Route 19 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route19);
-                    addLayer19Flag = 1;
-                }
-            }
-            if (addLayer20Flag == 0) {
-                if (routeNo.equals("20")) {
-                    Toast.makeText(getActivity(), "Route 20 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route20);
-                    addLayer20Flag = 1;
-                }
-            }
-            if (addLayer21Flag == 0) {
-                if (routeNo.equals("21")) {
-                    Toast.makeText(getActivity(), "Route 21 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route21);
-                    addLayer21Flag = 1;
-                }
-            }
-
-            if (addLayer22Flag == 0) {
-                if (routeNo.equals("22")) {
-                    Toast.makeText(getActivity(), "Route 22 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route22);
-                    addLayer22Flag = 1;
-                }
-            }
-
-            if (addLayer23Flag == 0) {
-                if (routeNo.equals("23")) {
-                    Toast.makeText(getActivity(), "Route 23 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route23);
-                    addLayer23Flag = 1;
-                }
-            }
-            if (addLayer24Flag == 0) {
-                if (routeNo.equals("24")) {
-                    Toast.makeText(getActivity(), "Route 24 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route24);
-                    addLayer24Flag = 1;
-                }
-            }
-
-            if (addLayer25Flag == 0) {
-                if (routeNo.equals("25")) {
-                    Toast.makeText(getActivity(), "Route 25 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route25);
-                    addLayer25Flag = 1;
-                }
-            }
-            if (addLayer26Flag == 0) {
-                if (routeNo.equals("26")) {
-                    Toast.makeText(getActivity(), "Route 26 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route26);
-                    addLayer26Flag = 1;
-                }
-            }
-            if (addLayer27Flag == 0) {
-                if (routeNo.equals("27")) {
-                    Toast.makeText(getActivity(), "Route 27 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route27);
-                    addLayer27Flag = 1;
-                }
-            }
-            if (addLayer28Flag == 0) {
-                if (routeNo.equals("28")) {
-                    Toast.makeText(getActivity(), "Route 28 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route28);
-                    addLayer28Flag = 1;
-                }
-            }
-            if (addLayer29Flag == 0) {
-                if (routeNo.equals("29")) {
-                    Toast.makeText(getActivity(), "Route 29 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route29);
-                    addLayer29Flag = 1;
-                }
-            }
-            if (addLayer30Flag == 0) {
-                if (routeNo.equals("30")) {
-                    Toast.makeText(getActivity(), "Route 30 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route30);
-                    addLayer30Flag = 1;
-                }
-            }
-            if (addLayer31Flag == 0) {
-                if (routeNo.equals("31")) {
-                    Toast.makeText(getActivity(), "Route 31 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route31);
-                    addLayer31Flag = 1;
-                }
-            }
-
-            if (addLayer32Flag == 0) {
-                if (routeNo.equals("32")) {
-                    Toast.makeText(getActivity(), "Route 32 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route32);
-                    addLayer32Flag = 1;
-                }
-            }
-
-            if (addLayer33Flag == 0) {
-                if (routeNo.equals("33")) {
-                    Toast.makeText(getActivity(), "Route 33 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route33);
-                    addLayer33Flag = 1;
-                }
-            }
-            if (addLayer34Flag == 0) {
-                if (routeNo.equals("34")) {
-                    Toast.makeText(getActivity(), "Route 34 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route34);
-                    addLayer34Flag = 1;
-                }
-            }
-
-            if (addLayer35Flag == 0) {
-                if (routeNo.equals("35")) {
-                    Toast.makeText(getActivity(), "Route 35 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route35);
-                    addLayer35Flag = 1;
-                }
-            }
-            if (addLayer36Flag == 0) {
-                if (routeNo.equals("36")) {
-                    Toast.makeText(getActivity(), "Route 36 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route36);
-                    addLayer36Flag = 1;
-                }
-            }
-            if (addLayer37Flag == 0) {
-                if (routeNo.equals("37")) {
-                    Toast.makeText(getActivity(), "Route 37 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route37);
-                    addLayer37Flag = 1;
-                }
-            }
-            if (addLayer38Flag == 0) {
-                if (routeNo.equals("38")) {
-                    Toast.makeText(getActivity(), "Route 38 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route38);
-                    addLayer38Flag = 1;
-                }
-            }
-            if (addLayer39Flag == 0) {
-                if (routeNo.equals("39")) {
-                    Toast.makeText(getActivity(), "Route 39 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route39);
-                    addLayer39Flag = 1;
-                }
-            }
-            if (addLayer40Flag == 0) {
-                if (routeNo.equals("40")) {
-                    Toast.makeText(getActivity(), "Route 40 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route40);
-                    addLayer40Flag = 1;
-                }
-            }
-            if (addLayer41Flag == 0) {
-                if (routeNo.equals("41")) {
-                    Toast.makeText(getActivity(), "Route 41 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route41);
-                    addLayer41Flag = 1;
-                }
-            }
-
-            if (addLayer42Flag == 0) {
-                if (routeNo.equals("42")) {
-                    Toast.makeText(getActivity(), "Route 42 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route42);
-                    addLayer42Flag = 1;
-                }
-            }
-
-            if (addLayer43Flag == 0) {
-                if (routeNo.equals("43")) {
-                    Toast.makeText(getActivity(), "Route 43 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route43);
-                    addLayer43Flag = 1;
-                }
-            }
-            if (addLayer44Flag == 0) {
-                if (routeNo.equals("44")) {
-                    Toast.makeText(getActivity(), "Route 44 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route44);
-                    addLayer44Flag = 1;
-                }
-            }
-
-            if (addLayer45Flag == 0) {
-                if (routeNo.equals("45")) {
-                    Toast.makeText(getActivity(), "Route 45 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route45);
-                    addLayer45Flag = 1;
-                }
-            }
-            if (addLayer46Flag == 0) {
-                if (routeNo.equals("46")) {
-                    Toast.makeText(getActivity(), "Route 46 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route46);
-                    addLayer46Flag = 1;
-                }
-            }
-            if (addLayer47Flag == 0) {
-                if (routeNo.equals("47")) {
-                    Toast.makeText(getActivity(), "Route 47 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route47);
-                    addLayer47Flag = 1;
-                }
-            }
-            if (addLayer48Flag == 0) {
-                if (routeNo.equals("48")) {
-                    Toast.makeText(getActivity(), "Route 48 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route48);
-                    addLayer48Flag = 1;
-                }
-            }
-            if (addLayer49Flag == 0) {
-                if (routeNo.equals("49")) {
-                    Toast.makeText(getActivity(), "Route 49 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route49);
-                    addLayer49Flag = 1;
-                }
-            }
-            if (addLayer50Flag == 0) {
-                if (routeNo.equals("50")) {
-                    Toast.makeText(getActivity(), "Route 50 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route50);
-                    addLayer50Flag = 1;
-                }
-            }
-            if (addLayer51Flag == 0) {
-                if (routeNo.equals("51")) {
-                    Toast.makeText(getActivity(), "Route 51 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route51);
-                    addLayer51Flag = 1;
-                }
-            }
-
-            if (addLayer52Flag == 0) {
-                if (routeNo.equals("52")) {
-                    Toast.makeText(getActivity(), "Route 52 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route52);
-                    addLayer52Flag = 1;
-                }
-            }
-
-            if (addLayer53Flag == 0) {
-                if (routeNo.equals("53")) {
-                    Toast.makeText(getActivity(), "Route 53 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route53);
-                    addLayer53Flag = 1;
-                }
-            }
-            if (addLayer54Flag == 0) {
-                if (routeNo.equals("54")) {
-                    Toast.makeText(getActivity(), "Route 54 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route54);
-                    addLayer54Flag = 1;
-                }
-            }
-
-            if (addLayer55Flag == 0) {
-                if (routeNo.equals("55")) {
-                    Toast.makeText(getActivity(), "Route 55 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route55);
-                    addLayer55Flag = 1;
-                }
-            }
-            if (addLayer56Flag == 0) {
-                if (routeNo.equals("56")) {
-                    Toast.makeText(getActivity(), "Route 56 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route56);
-                    addLayer56Flag = 1;
-                }
-            }
-            if (addLayer57Flag == 0) {
-                if (routeNo.equals("57")) {
-                    Toast.makeText(getActivity(), "Route 57 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route57);
-                    addLayer57Flag = 1;
-                }
-            }
-            if (addLayer58Flag == 0) {
-                if (routeNo.equals("58")) {
-                    Toast.makeText(getActivity(), "Route 58 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route58);
-                    addLayer58Flag = 1;
-                }
-            }
-            if (addLayer59Flag == 0) {
-                if (routeNo.equals("59")) {
-                    Toast.makeText(getActivity(), "Route 59 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route59);
-                    addLayer59Flag = 1;
-                }
-            }
-            if (addLayer60Flag == 0) {
-                if (routeNo.equals("60")) {
-                    Toast.makeText(getActivity(), "Route 60 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route60);
-                    addLayer60Flag = 1;
-                }
-            }
-
-            if (addLayer61Flag == 0) {
-                if (routeNo.equals("61")) {
-                    Toast.makeText(getActivity(), "Route 61 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route61);
-                    addLayer61Flag = 1;
-                }
-            }
-
-            if (addLayer62Flag == 0) {
-                if (routeNo.equals("62")) {
-                    Toast.makeText(getActivity(), "Route 62 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route62);
-                    addLayer62Flag = 1;
-                }
-            }
-
-            if (addLayer63Flag == 0) {
-                if (routeNo.equals("63")) {
-                    Toast.makeText(getActivity(), "Route 63 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route63);
-                    addLayer63Flag = 1;
-                }
-            }
-            if (addLayer64Flag == 0) {
-                if (routeNo.equals("64")) {
-                    Toast.makeText(getActivity(), "Route 64 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route64);
-                    addLayer64Flag = 1;
-                }
-            }
-
-            if (addLayer65Flag == 0) {
-                if (routeNo.equals("65")) {
-                    Toast.makeText(getActivity(), "Route 65 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route65);
-                    addLayer65Flag = 1;
-                }
-            }
-            if (addLayer66Flag == 0) {
-                if (routeNo.equals("66")) {
-                    Toast.makeText(getActivity(), "Route 66 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route66);
-                    addLayer66Flag = 1;
-                }
-            }
-            if (addLayer67Flag == 0) {
-                if (routeNo.equals("67")) {
-                    Toast.makeText(getActivity(), "Route 67 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route67);
-                    addLayer67Flag = 1;
-                }
-            }
-            if (addLayer68Flag == 0) {
-                if (routeNo.equals("68")) {
-                    Toast.makeText(getActivity(), "Route 68 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route68);
-                    addLayer68Flag = 1;
-                }
-            }
-            if (addLayer69Flag == 0) {
-                if (routeNo.equals("69")) {
-                    Toast.makeText(getActivity(), "Route 69 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route69);
-                    addLayer69Flag = 1;
-                }
-            }
-            if (addLayer70Flag == 0) {
-                if (routeNo.equals("70")) {
-                    Toast.makeText(getActivity(), "Route 70 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route70);
-                    addLayer70Flag = 1;
-                }
-            }
-            if (addLayer71Flag == 0) {
-                if (routeNo.equals("71")) {
-                    Toast.makeText(getActivity(), "Route 71 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route71);
-                    addLayer71Flag = 1;
-                }
-            }
-
-            if (addLayer72Flag == 0) {
-                if (routeNo.equals("72")) {
-                    Toast.makeText(getActivity(), "Route 72 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route72);
-                    addLayer72Flag = 1;
-                }
-            }
-
-            if (addLayer73Flag == 0) {
-                if (routeNo.equals("73")) {
-                    Toast.makeText(getActivity(), "Route 73 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route73);
-                    addLayer73Flag = 1;
-                }
-            }
-            if (addLayer74Flag == 0) {
-                if (routeNo.equals("74")) {
-                    Toast.makeText(getActivity(), "Route 74 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route74);
-                    addLayer74Flag = 1;
-                }
-            }
-
-            if (addLayer75Flag == 0) {
-                if (routeNo.equals("75")) {
-                    Toast.makeText(getActivity(), "Route 75 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route75);
-                    addLayer75Flag = 1;
-                }
-            }
-            if (addLayer76Flag == 0) {
-                if (routeNo.equals("76")) {
-                    Toast.makeText(getActivity(), "Route 76 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route76);
-                    addLayer76Flag = 1;
-                }
-            }
-            if (addLayer77Flag == 0) {
-                if (routeNo.equals("77")) {
-                    Toast.makeText(getActivity(), "Route 77 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route77);
-                    addLayer77Flag = 1;
-                }
-            }
-            if (addLayer78Flag == 0) {
-                if (routeNo.equals("78")) {
-                    Toast.makeText(getActivity(), "Route 78 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route78);
-                    addLayer78Flag = 1;
-                }
-            }
-            if (addLayer79Flag == 0) {
-                if (routeNo.equals("79")) {
-                    Toast.makeText(getActivity(), "Route 79 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route79);
-                    addLayer79Flag = 1;
-                }
-            }
-            if (addLayer80Flag == 0) {
-                if (routeNo.equals("80")) {
-                    Toast.makeText(getActivity(), "Route 80 called", Toast.LENGTH_SHORT).show();
-                    map.getStyle().addLayer(route80);
-                    addLayer80Flag = 1;
-                }
-            }
-
+//            setProperties(commonRoutes);
 //                    }
-
+            hideLayers();
+            setProperties(Integer.parseInt(s));
         }
     }
 }
