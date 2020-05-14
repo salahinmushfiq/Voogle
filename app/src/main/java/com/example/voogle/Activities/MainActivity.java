@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -37,9 +38,12 @@ public class MainActivity extends AppCompatActivity {
     ActivityMainBinding activityMainBinding;
     ArrayList<String>stopNames;
     String stopName;
+    String source,destination;
+    boolean sourceNull,destinationNull;
     private ArrayAdapter stopsAdapter;
     private Double lat,lng;
     int s_no;
+
     ArrayList<Integer>sourceRoute;
     ArrayList<Integer>destinationRoute;
     GlobalVariables gv;
@@ -52,8 +56,11 @@ public class MainActivity extends AppCompatActivity {
         stopRef = FirebaseDatabase.getInstance().getReference().child("root").child("stops");
         initACTV(stopRef);
 
+
+
         super.onCreate(savedInstanceState);
         activityMainBinding=DataBindingUtil.setContentView(this, R.layout.activity_main);
+
 
     }
 
@@ -71,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
                         activityMainBinding.sourceACTV.setThreshold(2);
                         activityMainBinding.destinationACTV.setAdapter(placesAdapter);
                         activityMainBinding.destinationACTV.setThreshold(2);
+
 
 
                     }
@@ -92,11 +100,32 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<String>stops=new ArrayList<>();
         stops.add(stops.getClass().getName());
 
-        String source=activityMainBinding.sourceACTV.getText().toString();
-        String destination=activityMainBinding.destinationACTV.getText().toString();
+        source=activityMainBinding.sourceACTV.getText().toString();
+        destination=activityMainBinding.destinationACTV.getText().toString();
+        nullCheck();
+        if(sourceNull==true && destinationNull==true)
+        {
+            Toast.makeText(this, "Please Insert Source and destination", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            getLatLngFromDB(source,destination,goToHome);
+            Log.d("check","Source: "+source+" Destination: "+destination);
+        }
        // Toast.makeText(this, destination, Toast.LENGTH_SHORT).show();
-        getLatLngFromDB(source,destination,goToHome);
 
+
+
+    }
+
+    private void nullCheck() {
+        if(source.isEmpty())
+        {
+            sourceNull=true;
+        }
+        if(source.isEmpty())
+        {
+            destinationNull=true;
+        }
 
     }
 
@@ -170,7 +199,12 @@ public class MainActivity extends AppCompatActivity {
 //                    goToHome.putExtra("destinationRoute",destination);
                     GlobalVariables.sourceRoutes=sourceRoute;
                     GlobalVariables.destinationRoutes=destinationRoute;
+                    Log.d("check","Source"+source);
+                    Log.d("check","Destination"+destination);
+                    Log.d("check","Source Route: "+GlobalVariables.sourceRoutes.toString());
+                    Log.d("check","Destination Route: "+GlobalVariables.sourceRoutes.toString());
              //       Toast.makeText(MainActivity.this, "Global Variable"+GlobalVariables.sourceRoutes.toString(), Toast.LENGTH_SHORT).show();
+
                     startActivity(goToHome);
                 } else {
                       Toast.makeText(MainActivity.this, "Empty Database", Toast.LENGTH_SHORT).show();

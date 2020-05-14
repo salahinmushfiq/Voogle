@@ -118,8 +118,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         // Write a message to the database
         sourceRoutes = new ArrayList<>();
@@ -136,6 +135,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
         mapView = fragmentMapBinding.mapView;
 
+        mapView.onCreate(savedInstanceState);
 
         source = GlobalVariables.sourceName;
         destination = GlobalVariables.destinationName;
@@ -151,7 +151,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 // bounds
 
         Log.i(TAG, "onCreateView: " + source + " and " + destination);
-        Toast.makeText(getActivity(), source, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), ""+String.valueOf(sourceLat), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), ""+String.valueOf(destinationLat), Toast.LENGTH_SHORT).show();
 
         Toast.makeText(getActivity(), destination, Toast.LENGTH_SHORT).show();
 
@@ -2144,7 +2145,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
             }
 
             geoJsonSources.add(geoJsonSource);
-            route = new LineLayer("ROUTE"+commonRoute+"L", "ROUTE"+commonRoute);
+
 //            if(i==0) {
 //                route.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
 //            }
@@ -2710,7 +2711,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 }
                             }
                         }
-                        Log.d("check", "Datasnapshot");
+                      Log.d("check", "Datasnapshot");
                     }
                     /*for (Symbol symbol : symbolArrayList) {
                         symbolManager.update(symbol)

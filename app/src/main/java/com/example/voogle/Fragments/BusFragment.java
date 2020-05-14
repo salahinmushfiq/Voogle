@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.voogle.Activities.HomeActivity;
 import com.example.voogle.R;
 import com.example.voogle.databinding.FragmentBusBinding;
 
@@ -19,7 +20,7 @@ import com.example.voogle.databinding.FragmentBusBinding;
 public class BusFragment extends Fragment {
 
     FragmentBusBinding fragmentBusBinding;
-
+    HomeActivity homeActivity;
 
     public BusFragment() {
         // Required empty public constructor
@@ -32,6 +33,8 @@ public class BusFragment extends Fragment {
         // Inflate the layout for this fragment
         fragmentBusBinding=DataBindingUtil.inflate(inflater,R.layout.fragment_bus, container, false);
         fragmentBusBinding.busFragmentTV.setText("Bus Fragment");
+        homeActivity=(HomeActivity) getActivity();
+
         return fragmentBusBinding.getRoot();
     }
 

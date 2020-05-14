@@ -55,7 +55,7 @@
             android:layout_width="match_parent"
             android:id="@+id/navView"
             android:visibility="gone"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
             mapbox:layout_constraintTop_toTopOf="parent"
             mapbox:layout_constraintBottom_toTopOf="@id/routeBtnRV">
 
