@@ -1,7 +1,8 @@
 package com.example.voogle.PojoClasses;
 
-public class UberMotoFairs {
+public class UberxFares {
     String base_fair;
+    String cancellation_fee;
     String cost_per_km;
     String cost_per_min;
     String min_charge;
@@ -12,6 +13,14 @@ public class UberMotoFairs {
 
     public void setBase_fair(String base_fair) {
         this.base_fair = base_fair;
+    }
+
+    public String getCancellation_fee() {
+        return cancellation_fee;
+    }
+
+    public void setCancellation_fee(String cancellation_fee) {
+        this.cancellation_fee = cancellation_fee;
     }
 
     public String getCost_per_km() {

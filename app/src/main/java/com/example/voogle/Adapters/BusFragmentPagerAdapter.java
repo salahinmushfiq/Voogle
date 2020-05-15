@@ -6,12 +6,12 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.example.voogle.Fragments.BusFragment;
 import com.example.voogle.Fragments.MapFragment;
-import com.example.voogle.Fragments.FairsFragment;
+import com.example.voogle.Fragments.FaresFragment;
 
 public class BusFragmentPagerAdapter extends FragmentPagerAdapter {
 
     private BusFragment busFragment;
-    private FairsFragment fairsFragment;
+    private FaresFragment faresFragment;
     private MapFragment mapFragment;
 
 
@@ -20,15 +20,15 @@ public class BusFragmentPagerAdapter extends FragmentPagerAdapter {
      * Extends {@link FragmentPagerAdapter}<br>
      * Used in our project to switch main menu fragments</p>
      *
-     * @param fm The {@link FragmentManager} to be used
+     * @param fm            The {@link FragmentManager} to be used
      * @param busFragment   The First Fragment to be used
-     * @param fairsFragment The Second Fragment to be used
-     * @param mapFragment The Third Fragment to be used
+     * @param faresFragment The Second Fragment to be used
+     * @param mapFragment   The Third Fragment to be used
      */
-    public BusFragmentPagerAdapter(FragmentManager fm, BusFragment busFragment, FairsFragment fairsFragment, MapFragment mapFragment) {
+    public BusFragmentPagerAdapter(FragmentManager fm, BusFragment busFragment, FaresFragment faresFragment, MapFragment mapFragment) {
         super(fm);
         this.busFragment = busFragment;
-        this.fairsFragment = fairsFragment;
+        this.faresFragment = faresFragment;
         this.mapFragment = mapFragment;
     }
 
@@ -39,7 +39,7 @@ public class BusFragmentPagerAdapter extends FragmentPagerAdapter {
                 // TODO: Was this a typo? there were two TrainFragments
                 return busFragment;
             case 1:
-                return fairsFragment;
+                return faresFragment;
             case 2:
                 return mapFragment;
             default:
@@ -57,8 +57,8 @@ public class BusFragmentPagerAdapter extends FragmentPagerAdapter {
         return busFragment;
     }
 
-    public FairsFragment getFairsFragment() {
-        return fairsFragment;
+    public FaresFragment getFaresFragment() {
+        return faresFragment;
     }
 
     public MapFragment getMapFragment() {

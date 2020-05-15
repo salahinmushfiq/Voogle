@@ -1,36 +1,22 @@
 package com.example.voogle.Activities;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import com.example.voogle.Adapters.BusFragmentPagerAdapter;
 import com.example.voogle.Fragments.BusFragment;
+import com.example.voogle.Fragments.FaresFragment;
 import com.example.voogle.Fragments.MapFragment;
-import com.example.voogle.Fragments.FairsFragment;
-import com.example.voogle.GlobalVariables;
-import com.example.voogle.PojoClasses.PathaoBikeFairs;
-import com.example.voogle.PojoClasses.PathaoCarFairs;
-import com.example.voogle.PojoClasses.UberMotoFairs;
-import com.example.voogle.PojoClasses.UberxFairs;
+import com.example.voogle.PojoClasses.PathaoBikeFares;
+import com.example.voogle.PojoClasses.PathaoCarFares;
+import com.example.voogle.PojoClasses.UberMotoFares;
+import com.example.voogle.PojoClasses.UberxFares;
 import com.example.voogle.R;
 import com.example.voogle.components.Custompager;
 import com.example.voogle.databinding.ActivityHomeBinding;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.database.*;
-import com.mapbox.api.directions.v5.DirectionsCriteria;
-import com.mapbox.api.directions.v5.models.DirectionsResponse;
-import com.mapbox.api.directions.v5.models.DirectionsRoute;
-import com.mapbox.geojson.Point;
-import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
-import com.mapbox.turf.TurfConstants;
-import com.mapbox.turf.TurfConversion;
-import org.jetbrains.annotations.NotNull;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
 
@@ -48,10 +34,10 @@ public class HomeActivity extends AppCompatActivity {
     Double pathaoBikeTotalCost, pathaoCarTotalCost, uberMotoTotalCost, uberXTotalCost;
     double distance, duration;
     double distanceInKm, durationInMinute;
-    PathaoBikeFairs pathaoBikeFairs = new PathaoBikeFairs();
-    PathaoCarFairs pathaoCarFairs = new PathaoCarFairs();
-    UberMotoFairs uberMotoFairs = new UberMotoFairs();
-    UberxFairs uberxFairs = new UberxFairs();
+    PathaoBikeFares pathaoBikeFairs = new PathaoBikeFares();
+    PathaoCarFares pathaoCarFares = new PathaoCarFares();
+    UberMotoFares uberMotoFares = new UberMotoFares();
+    UberxFares uberxFares = new UberxFares();
     DatabaseReference root = FirebaseDatabase.getInstance().getReference("root");
 
 
@@ -60,7 +46,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         activityHomeBinding = DataBindingUtil.setContentView(this, R.layout.activity_home);
         MapFragment mapFragment = new MapFragment();
-       // getRoute();
+        // getRoute();
 
 
 //        source = getIntent().getStringExtra("source");
@@ -99,7 +85,7 @@ public class HomeActivity extends AppCompatActivity {
 //        mapFragment.setArguments(bundle);
 
         // TODO : change if one needs pre-configured fragments
-        BusFragmentPagerAdapter busFragmentPagerAdapter = new BusFragmentPagerAdapter(getSupportFragmentManager(), new BusFragment(), new FairsFragment(), mapFragment);
+        BusFragmentPagerAdapter busFragmentPagerAdapter = new BusFragmentPagerAdapter(getSupportFragmentManager(), new BusFragment(), new FaresFragment(), mapFragment);
         Custompager custompager = activityHomeBinding.vehicleTypeVP;
         custompager.setAdapter(busFragmentPagerAdapter);
         activityHomeBinding.vehicleTypeTL.setupWithViewPager(custompager);
@@ -113,7 +99,7 @@ public class HomeActivity extends AppCompatActivity {
         //TabLayout.Tab x;
         Objects.requireNonNull(activityHomeBinding.vehicleTypeTL.getTabAt(0)).setCustomView(R.layout.sample_tab);
 
-        Objects.requireNonNull(activityHomeBinding.vehicleTypeTL.getTabAt(1)).setCustomView(R.layout.sample_tab_but_fairs);
+        Objects.requireNonNull(activityHomeBinding.vehicleTypeTL.getTabAt(1)).setCustomView(R.layout.sample_tab_but_fares);
         Objects.requireNonNull(activityHomeBinding.vehicleTypeTL.getTabAt(2)).setCustomView(R.layout.sample_tab_but_bus);
 
 

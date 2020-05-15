@@ -1,6 +1,6 @@
 package com.example.voogle;
 
-import com.example.voogle.PojoClasses.Fairs;
+import com.example.voogle.PojoClasses.Fares;
 import com.example.voogle.PojoClasses.Stops;
 
 import java.util.ArrayList;
@@ -17,6 +17,6 @@ public class GlobalVariables {
     public static Double sourceLng;
     public static Double destinationLat;
     public static Double destinationLng;
-    public static Fairs fairs;
+    public static Fares fares;
 
 }

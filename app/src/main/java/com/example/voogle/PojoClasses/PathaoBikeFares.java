@@ -1,10 +1,9 @@
 package com.example.voogle.PojoClasses;
 
-public class PathaoCarFairs {
+public class PathaoBikeFares {
     String base_fair;
     String cost_per_km;
     String min_charge;
-    String waiting_cost_per_min;
 
     public String getBase_fair() {
         return base_fair;
@@ -37,4 +36,8 @@ public class PathaoCarFairs {
     public void setWaiting_cost_per_min(String waiting_cost_per_min) {
         this.waiting_cost_per_min = waiting_cost_per_min;
     }
+
+    String waiting_cost_per_min;
+
+
 }
