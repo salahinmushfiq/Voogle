@@ -8,14 +8,14 @@ public class Stops {
     String name;
     double lat;
     double lng;
-    ArrayList<String>routes=new ArrayList<>();
+    ArrayList<Long> routes = new ArrayList<>();
     public Stops() {
     }
 
     String frontOrback;
 
 
-    public Stops(String name, double lat, double lng,String frontOrback, ArrayList<String> routes) {
+    public Stops(String name, double lat, double lng, String frontOrback, ArrayList<Long> routes) {
         this.name = name;
         this.lat = lat;
         this.lng = lng;
@@ -59,7 +59,12 @@ public class Stops {
     }
 
     public ArrayList<String> getRoutes() {
-        return routes;
+        ArrayList<String> newRoutes = new ArrayList<>();
+        for (Long intx :
+                routes) {
+            newRoutes.add(String.valueOf(intx));
+        }
+        return newRoutes;
     }
 
     @NonNull

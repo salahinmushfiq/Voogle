@@ -72,7 +72,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
     private MapView mapView;
     ArrayList<Integer> sourceRoutes, destinationRoutes;
     ArrayList<Point> points;
-    ArrayList<String> routes;
+    ArrayList<Long> routes;
     ArrayList<Stops> stopss;
     Bus currentBus;
     RouteButtonAdapter routeButtonAdapter;
@@ -338,6 +338,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
     }
 
     private void addAStop(int index, Stops stop) {
+        Log.i(TAG, "addAStop: AddAStop Triggered At " + index + " " + stop.getName());
         getActivity().runOnUiThread(() -> symbolArrayList.add(symbolManager.create(new SymbolOptions()
                 .withIconImage("ROUTE" + index)
                 .withIconHaloWidth(0.5f)
@@ -349,12 +350,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                 .withTextSize(15f)
                 .withTextOffset(new Float[]{0.0f, 3.0f})
                 .withLatLng(new LatLng((stop.getLat()), stop.getLng()))
-                .withTextField(stop.getName().toString()))));
+                .withTextField(stop.getName())
+                .withSymbolSortKey(index * 1f))));
     }
 
     private void addStops(ArrayList<Stops> stops) {
-        Symbol source = symbolManager.create(new SymbolOptions().withIconImage("X").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng(Double.valueOf(sourceLat), Double.valueOf(sourceLng))).withTextField("Source"));
-        Symbol destination = symbolManager.create(new SymbolOptions().withIconImage("Y").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng(Double.valueOf(destinationLat), Double.valueOf(destinationLng))).withTextField("Destination"));
+        Symbol source = symbolManager.create(new SymbolOptions().withIconImage("X").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng(sourceLat, sourceLng)).withTextField("Source").withSymbolSortKey(83f));
+        Symbol destination = symbolManager.create(new SymbolOptions().withIconImage("Y").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng(destinationLat, destinationLng)).withTextField("Destination").withSymbolSortKey(82f));
         symbolArrayList.add(source);
         symbolArrayList.add(destination);
 
@@ -362,10 +364,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
             symbolManager.update(symbol);
         }
         for (int commonRoute : commonRoutes) {
-            for (int i1 = 0; i1 < stops.size(); i1++) {
-                Stops stop = stops.get(i1);
+            for (Stops stop : stops) {
+                Log.i(TAG, "addStops: " + stop.getRoutes());
+                Log.i(TAG, "addStopsX: " + commonRoute);
                 if (stop.getRoutes().contains(String.valueOf(commonRoute)))
-                    addAStop(i1, stop);
+                    addAStop(commonRoute, stop);
             }
         }
     }
@@ -792,15 +795,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                             int i = 0;
                             for (int commonRoute : commonRoutes) {
 
-                                if (commonRoute == Integer.valueOf(route.getValue().toString())) {
-                                    GlobalVariables.stops.add(stops.getValue(Stops.class));
+                                if (commonRoute == Integer.parseInt(route.getValue().toString())) {
+//                                    GlobalVariables.stops.add(stops.getValue(Stops.class));
                                     // Toast.makeText(getActivity(), stops.getValue(Stops.class).toString(), Toast.LENGTH_SHORT).show();
                                     //Toast.makeText(getActivity(), stops.child("lat").getValue().toString(), Toast.LENGTH_SHORT).show();
                                     // Toast.makeText(getActivity(), stops.child("lng").getValue().toString(), Toast.LENGTH_SHORT).show();
                                     lat = stops.child("lat").getValue(Double.class);
                                     lng = stops.child("lng").getValue(Double.class);
                                     name = stops.child("name").getValue(String.class);
-                                    routes = (ArrayList<String>) stops.child("route").getValue();
+                                    routes = (ArrayList<Long>) stops.child("route").getValue();
                                     points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
                                     stopss.add(new Stops(name, lat, lng, "front", routes));
                                     points.get(i).latitude();
