@@ -148,6 +148,8 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
+
+
     private void getFairsFromDB() {
         root.child("pathaobike").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

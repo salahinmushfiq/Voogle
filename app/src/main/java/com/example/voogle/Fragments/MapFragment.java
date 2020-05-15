@@ -256,6 +256,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
     }
 
+
     private void getBusList() {
         currentBus = new Bus();
         busRef = FirebaseDatabase.getInstance().getReference().child("root").child("busList");
@@ -882,6 +883,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
         destinationRoutes.addAll(GlobalVariables.destinationRoutes);
 //        Toast.makeText(getActivity(), "Destination Route Map:" + destinationRoutes.toString(), Toast.LENGTH_SHORT).show();
 //        Toast.makeText(getActivity(), "Common Routes: " + commonRoutes.toString(), Toast.LENGTH_SHORT).show();
+        Log.d("common","Common Routes: "+commonRoutes.toString());
 
         stopRef = FirebaseDatabase.getInstance().getReference().child("root").child("stops");
         stopRef.addListenerForSingleValueEvent(new ValueEventListener() {
