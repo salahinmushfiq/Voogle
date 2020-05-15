@@ -9,7 +9,7 @@ import androidx.databinding.DataBindingUtil;
 import com.example.voogle.Adapters.BusFragmentPagerAdapter;
 import com.example.voogle.Fragments.BusFragment;
 import com.example.voogle.Fragments.MapFragment;
-import com.example.voogle.Fragments.TrainFragement;
+import com.example.voogle.Fragments.FairsFragment;
 import com.example.voogle.GlobalVariables;
 import com.example.voogle.PojoClasses.PathaoBikeFairs;
 import com.example.voogle.PojoClasses.PathaoCarFairs;
@@ -60,37 +60,8 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         activityHomeBinding = DataBindingUtil.setContentView(this, R.layout.activity_home);
         MapFragment mapFragment = new MapFragment();
-        NavigationRoute.Builder testE;
-        NavigationRoute route = (testE = NavigationRoute.builder(this)
-                .accessToken(getString(R.string.access_token))
-                .origin(Point.fromLngLat(GlobalVariables.sourceLng, GlobalVariables.sourceLat))
-                .destination(Point.fromLngLat(GlobalVariables.destinationLng, GlobalVariables.destinationLat)))
-                .profile(DirectionsCriteria.PROFILE_DRIVING)
-                .build();
-        route.getRoute(new Callback<DirectionsResponse>() {
-            @SuppressWarnings("ConstantConditions")
-            @Override
-            public void onResponse(Call<DirectionsResponse> call, @NotNull Response<DirectionsResponse> response) {
-                if (response.body() != null && !response.body().routes().isEmpty()) {
-                    DirectionsRoute responseRoute = response.body().routes().get(0);
-                    if (responseRoute != null) {
-                        distance = responseRoute.distance();
-                        duration = responseRoute.duration();
-                        distanceInKm = TurfConversion.convertLength(distance, TurfConstants.UNIT_METERS, TurfConstants.UNIT_KILOMETERS);
-                        durationInMinute = duration / 60;
-                        Log.d("check", String.valueOf(distanceInKm));
-                        Log.d("check", String.valueOf(durationInMinute));
+       // getRoute();
 
-                        getFairsFromDB();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<DirectionsResponse> call, Throwable t) {
-                Toast.makeText(HomeActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
 
 //        source = getIntent().getStringExtra("source");
 //        destination = getIntent().getStringExtra("destination");
@@ -128,7 +99,7 @@ public class HomeActivity extends AppCompatActivity {
 //        mapFragment.setArguments(bundle);
 
         // TODO : change if one needs pre-configured fragments
-        BusFragmentPagerAdapter busFragmentPagerAdapter = new BusFragmentPagerAdapter(getSupportFragmentManager(), new BusFragment(), new TrainFragement(), mapFragment);
+        BusFragmentPagerAdapter busFragmentPagerAdapter = new BusFragmentPagerAdapter(getSupportFragmentManager(), new BusFragment(), new FairsFragment(), mapFragment);
         Custompager custompager = activityHomeBinding.vehicleTypeVP;
         custompager.setAdapter(busFragmentPagerAdapter);
         activityHomeBinding.vehicleTypeTL.setupWithViewPager(custompager);
@@ -142,93 +113,10 @@ public class HomeActivity extends AppCompatActivity {
         //TabLayout.Tab x;
         Objects.requireNonNull(activityHomeBinding.vehicleTypeTL.getTabAt(0)).setCustomView(R.layout.sample_tab);
 
-        Objects.requireNonNull(activityHomeBinding.vehicleTypeTL.getTabAt(1)).setCustomView(R.layout.sample_tab_but_train);
+        Objects.requireNonNull(activityHomeBinding.vehicleTypeTL.getTabAt(1)).setCustomView(R.layout.sample_tab_but_fairs);
         Objects.requireNonNull(activityHomeBinding.vehicleTypeTL.getTabAt(2)).setCustomView(R.layout.sample_tab_but_bus);
 
 
     }
 
-
-
-    private void getFairsFromDB() {
-        root.child("pathaobike").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-
-                    pathaoBikeFairs = dataSnapshot.getValue(PathaoBikeFairs.class);
-                    pathaoBikeTotalCost = (distanceInKm * Double.valueOf(pathaoBikeFairs.getCost_per_km())) + Double.valueOf(pathaoBikeFairs.getBase_fair());
-                    Log.d("check", "Pathao Bike: " + pathaoBikeTotalCost.toString());
-
-//                    Log.d("check",pathaoBikeFairs.getBase_fair());
-//                    Log.d("check",pathaoBikeFairs.getCost_per_km());
-//                    Log.d("check",pathaoBikeFairs.getMin_charge());
-//                    Log.d("check",pathaoBikeFairs.getWaiting_cost_per_min());
-
-
-                    // Toast.makeText(HomeActivity.this, pathaoBikeTotalCost.toString(), Toast.LENGTH_SHORT).show();
-
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-        root.child("pathaocar").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-
-                    pathaoCarFairs = dataSnapshot.getValue(PathaoCarFairs.class);
-                    pathaoCarTotalCost = (distanceInKm * Double.valueOf(pathaoCarFairs.getCost_per_km())) + Double.valueOf(pathaoCarFairs.getBase_fair());
-                    Log.d("check", "Pathao Car: " + pathaoCarTotalCost.toString());
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-        root.child("ubermoto").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-
-                    uberMotoFairs = dataSnapshot.getValue(UberMotoFairs.class);
-                    uberMotoTotalCost = (distanceInKm * Double.valueOf(uberMotoFairs.getCost_per_km())) + Double.valueOf(uberMotoFairs.getBase_fair()) + (Double.valueOf(uberMotoFairs.getCost_per_min()) * durationInMinute);
-
-                    Log.d("check", "Uber Moto: " + uberMotoTotalCost.toString());
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-        root.child("uberx").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-
-                    uberxFairs = dataSnapshot.getValue(UberxFairs.class);
-                    uberXTotalCost = (distanceInKm * Double.valueOf(uberxFairs.getCost_per_km())) + Double.valueOf(uberxFairs.getBase_fair()) + (Double.valueOf(uberxFairs.getCost_per_min()) * durationInMinute);
-                    Log.d("check", "Uber X: " + uberXTotalCost.toString());
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-
-    }
 }

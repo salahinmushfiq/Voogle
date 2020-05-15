@@ -6,12 +6,12 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.example.voogle.Fragments.BusFragment;
 import com.example.voogle.Fragments.MapFragment;
-import com.example.voogle.Fragments.TrainFragement;
+import com.example.voogle.Fragments.FairsFragment;
 
 public class BusFragmentPagerAdapter extends FragmentPagerAdapter {
 
     private BusFragment busFragment;
-    private TrainFragement trainFragment;
+    private FairsFragment fairsFragment;
     private MapFragment mapFragment;
 
 
@@ -22,13 +22,13 @@ public class BusFragmentPagerAdapter extends FragmentPagerAdapter {
      *
      * @param fm The {@link FragmentManager} to be used
      * @param busFragment   The First Fragment to be used
-     * @param trainFragment The Second Fragment to be used
+     * @param fairsFragment The Second Fragment to be used
      * @param mapFragment The Third Fragment to be used
      */
-    public BusFragmentPagerAdapter(FragmentManager fm, BusFragment busFragment, TrainFragement trainFragment, MapFragment mapFragment) {
+    public BusFragmentPagerAdapter(FragmentManager fm, BusFragment busFragment, FairsFragment fairsFragment, MapFragment mapFragment) {
         super(fm);
         this.busFragment = busFragment;
-        this.trainFragment = trainFragment;
+        this.fairsFragment = fairsFragment;
         this.mapFragment = mapFragment;
     }
 
@@ -39,7 +39,7 @@ public class BusFragmentPagerAdapter extends FragmentPagerAdapter {
                 // TODO: Was this a typo? there were two TrainFragments
                 return busFragment;
             case 1:
-                return trainFragment;
+                return fairsFragment;
             case 2:
                 return mapFragment;
             default:
@@ -57,8 +57,8 @@ public class BusFragmentPagerAdapter extends FragmentPagerAdapter {
         return busFragment;
     }
 
-    public TrainFragement getTrainFragment() {
-        return trainFragment;
+    public FairsFragment getFairsFragment() {
+        return fairsFragment;
     }
 
     public MapFragment getMapFragment() {
