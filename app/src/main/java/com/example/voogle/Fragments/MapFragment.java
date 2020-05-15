@@ -250,7 +250,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
     private void getBusList() {
         currentBus = new Bus();
         busRef = FirebaseDatabase.getInstance().getReference().child("root").child("busList");
-        busRef.addValueEventListener(new ValueEventListener() {
+        busRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -313,12 +313,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                             .withImage("ROUTE3", getActivity().getDrawable(R.drawable.ic_directions_bus_red_24dp))
                     , style -> {
 
-
-                        symbolManager = new SymbolManager(mapView, mapboxMap, style);
-
+                        LineLayer lineLayerX = new LineLayer("x", "x");
+                        style.addLayer(lineLayerX);
+                        symbolManager = new SymbolManager(mapView, mapboxMap, style, "x");
+                        LineLayer lastLineLayer = new LineLayer("mapbox-android-symbol-layer-0", "x");
                         for (LineLayer lineLayer :
                                 routeLineLayers) {
-                            style.addLayer(lineLayer);
+                            style.addLayerBelow(lineLayer, lastLineLayer.getId());
+                            lastLineLayer = lineLayer;
                         }
 
                         readLocations();
@@ -335,855 +337,35 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
         });
     }
 
-    private void addStop(ArrayList<Stops> stops) {
+    private void addAStop(int index, Stops stop) {
+        getActivity().runOnUiThread(() -> symbolArrayList.add(symbolManager.create(new SymbolOptions()
+                .withIconImage("ROUTE" + index)
+                .withIconHaloWidth(0.5f)
+                .withIconSize(1.2f)
+                .withIconHaloColor("#E2000F")
+                .withTextColor("#E2000F")
+                .withTextHaloColor("#000000")
+                .withTextHaloWidth(0.5f)
+                .withTextSize(15f)
+                .withTextOffset(new Float[]{0.0f, 3.0f})
+                .withLatLng(new LatLng((stop.getLat()), stop.getLng()))
+                .withTextField(stop.getName().toString()))));
+    }
+
+    private void addStops(ArrayList<Stops> stops) {
         Symbol source = symbolManager.create(new SymbolOptions().withIconImage("X").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng(Double.valueOf(sourceLat), Double.valueOf(sourceLng))).withTextField("Source"));
         Symbol destination = symbolManager.create(new SymbolOptions().withIconImage("Y").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng(Double.valueOf(destinationLat), Double.valueOf(destinationLng))).withTextField("Destination"));
         symbolArrayList.add(source);
         symbolArrayList.add(destination);
 
         for (Symbol symbol : symbolArrayList) {
-
             symbolManager.update(symbol);
         }
         for (int commonRoute : commonRoutes) {
-            int i;
-            for (Stops stop : stops) {
-                for (i = 0; i < stop.getRoutes().size(); i++) {
-                    if (String.valueOf(stop.getRoutes().get(i)).equals(String.valueOf(commonRoute))) {
-                        try {
-
-
-                            // Toast.makeText(getActivity(), "routessss"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("1")) {
-                                Symbol Route1 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
-                                //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //    Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                symbolArrayList.add(Route1);
-                                //   Toast.makeText(getActivity(), "routessss 1: "+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //route1Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("2")) {
-                                Symbol Route2 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
-                                symbolArrayList.add(Route2);
-                                //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-//                                Toast.makeText(getActivity(), "routessss" + String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                // route2Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("3")) {
-                                Symbol Route3 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
-
-                                symbolArrayList.add(Route3);
-                                // Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //  Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //  route3Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("4")) {
-                                Symbol Route4 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F")
-                                        .withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route4);
-                                //      Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                //      Toast.makeText(getActivity(), "routessss4: "+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //   route4Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("5")) {
-                                Symbol Route5 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route5);
-                                //       Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //     Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //   route5Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("6")) {
-                                Symbol Route6 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route6);
-                                //    Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //     route6Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("7")) {
-                                Symbol Route7 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route7);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("8")) {
-                                Symbol Route8 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route8);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("9")) {
-                                Symbol Route9 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route9);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("10")) {
-                                Symbol Route10 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route10);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("11")) {
-                                Symbol Route11 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
-                                //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //    Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                symbolArrayList.add(Route11);
-                                //   Toast.makeText(getActivity(), "routessss 1: "+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //route1Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("12")) {
-                                Symbol Route12 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
-                                symbolArrayList.add(Route12);
-                                //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-//                                Toast.makeText(getActivity(), "routessss" + String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                // route2Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("13")) {
-                                Symbol Route13 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
-
-                                symbolArrayList.add(Route13);
-                                // Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //  Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //  route3Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("14")) {
-                                Symbol Route14 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F")
-                                        .withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route14);
-                                //      Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                //      Toast.makeText(getActivity(), "routessss4: "+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //   route4Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("15")) {
-                                Symbol Route15 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route15);
-                                //       Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //     Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //   route5Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("16")) {
-                                Symbol Route16 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route16);
-                                //    Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //     route6Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("17")) {
-                                Symbol Route17 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route17);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("18")) {
-                                Symbol Route18 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route18);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("19")) {
-                                Symbol Route19 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route19);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("20")) {
-                                Symbol Route20 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route20);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("21")) {
-                                Symbol Route21 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
-                                //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //    Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                symbolArrayList.add(Route21);
-                                //   Toast.makeText(getActivity(), "routessss 1: "+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //route1Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("22")) {
-                                Symbol Route22 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
-                                symbolArrayList.add(Route22);
-                                //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-//                                Toast.makeText(getActivity(), "routessss" + String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                // route2Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("23")) {
-                                Symbol Route23 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
-
-                                symbolArrayList.add(Route23);
-                                // Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //  Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //  route3Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("24")) {
-                                Symbol Route24 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F")
-                                        .withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route24);
-                                //      Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                //      Toast.makeText(getActivity(), "routessss4: "+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //   route4Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("25")) {
-                                Symbol Route25 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route25);
-                                //       Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //     Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //   route5Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("26")) {
-                                Symbol Route26 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route26);
-                                //    Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //     route6Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("27")) {
-                                Symbol Route27 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route27);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("28")) {
-                                Symbol Route28 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route28);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("29")) {
-                                Symbol Route29 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route29);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("30")) {
-                                Symbol Route30 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route30);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("31")) {
-                                Symbol Route31 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
-                                //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //    Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                symbolArrayList.add(Route31);
-                                //   Toast.makeText(getActivity(), "routessss 1: "+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //route1Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("32")) {
-                                Symbol Route32 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
-                                symbolArrayList.add(Route32);
-                                //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-//                                Toast.makeText(getActivity(), "routessss" + String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                // route2Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("33")) {
-                                Symbol Route33 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
-
-                                symbolArrayList.add(Route33);
-                                // Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //  Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //  route3Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("34")) {
-                                Symbol Route34 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F")
-                                        .withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route34);
-                                //      Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                //      Toast.makeText(getActivity(), "routessss4: "+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //   route4Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("35")) {
-                                Symbol Route35 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route35);
-                                //       Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //     Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //   route5Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("36")) {
-                                Symbol Route36 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route36);
-                                //    Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //     route6Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("37")) {
-                                Symbol Route37 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route37);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("38")) {
-                                Symbol Route38 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route38);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("39")) {
-                                Symbol Route39 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route39);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("40")) {
-                                Symbol Route40 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route40);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("41")) {
-                                Symbol Route41 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
-                                //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //    Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                symbolArrayList.add(Route41);
-                                //   Toast.makeText(getActivity(), "routessss 1: "+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //route1Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("42")) {
-                                Symbol Route42 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
-                                symbolArrayList.add(Route42);
-                                //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-//                                Toast.makeText(getActivity(), "routessss" + String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                // route2Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("43")) {
-                                Symbol Route43 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
-
-                                symbolArrayList.add(Route43);
-                                // Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //  Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //  route3Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("44")) {
-                                Symbol Route44 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F")
-                                        .withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route44);
-                                //      Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                //      Toast.makeText(getActivity(), "routessss4: "+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //   route4Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("45")) {
-                                Symbol Route45 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route45);
-                                //       Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //     Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //   route5Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("46")) {
-                                Symbol Route46 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route46);
-                                //    Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //     route6Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("47")) {
-                                Symbol Route47 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route47);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("48")) {
-                                Symbol Route48 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route48);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("49")) {
-                                Symbol Route49 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route49);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("50")) {
-                                Symbol Route50 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route50);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("51")) {
-                                Symbol Route51 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
-                                //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //    Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                symbolArrayList.add(Route51);
-                                //   Toast.makeText(getActivity(), "routessss 1: "+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //route1Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("52")) {
-                                Symbol Route52 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
-                                symbolArrayList.add(Route52);
-                                //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-//                                Toast.makeText(getActivity(), "routessss" + String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                // route2Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("53")) {
-                                Symbol Route53 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
-
-                                symbolArrayList.add(Route53);
-                                // Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //  Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //  route3Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("54")) {
-                                Symbol Route54 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F")
-                                        .withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route54);
-                                //      Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                //      Toast.makeText(getActivity(), "routessss4: "+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //   route4Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("55")) {
-                                Symbol Route55 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route55);
-                                //       Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //     Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //   route5Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("56")) {
-                                Symbol Route56 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route56);
-                                //    Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //     route6Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("57")) {
-                                Symbol Route57 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route57);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("58")) {
-                                Symbol Route58 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route58);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("59")) {
-                                Symbol Route59 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route59);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("60")) {
-                                Symbol Route60 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route60);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("61")) {
-                                Symbol Route61 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
-                                //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //    Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                symbolArrayList.add(Route61);
-                                //   Toast.makeText(getActivity(), "routessss 1: "+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //route1Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("62")) {
-                                Symbol Route62 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
-                                symbolArrayList.add(Route62);
-                                //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-//                                Toast.makeText(getActivity(), "routessss" + String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                // route2Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("63")) {
-                                Symbol Route63 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
-
-                                symbolArrayList.add(Route63);
-                                // Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //  Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //  route3Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("64")) {
-                                Symbol Route64 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F")
-                                        .withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route64);
-                                //      Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                //      Toast.makeText(getActivity(), "routessss4: "+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //   route4Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("65")) {
-                                Symbol Route65 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route65);
-                                //       Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //     Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //   route5Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("66")) {
-                                Symbol Route66 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route66);
-                                //    Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //     route6Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("67")) {
-                                Symbol Route67 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route67);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("68")) {
-                                Symbol Route68 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route68);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("69")) {
-                                Symbol Route69 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route69);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("70")) {
-                                Symbol Route70 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route70);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("71")) {
-                                Symbol Route71 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
-                                //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //    Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                symbolArrayList.add(Route71);
-                                //   Toast.makeText(getActivity(), "routessss 1: "+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //route1Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("72")) {
-                                Symbol Route72 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
-                                symbolArrayList.add(Route72);
-                                //     Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-//                                Toast.makeText(getActivity(), "routessss" + String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                // route2Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("73")) {
-                                Symbol Route73 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName().toString()));
-
-                                symbolArrayList.add(Route73);
-                                // Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //  Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //  route3Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("74")) {
-                                Symbol Route74 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F")
-                                        .withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route74);
-                                //      Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //      Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                //      Toast.makeText(getActivity(), "routessss4: "+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //   route4Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("75")) {
-                                Symbol Route75 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route75);
-                                //       Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //     Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //   route5Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("76")) {
-                                Symbol Route76 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route76);
-                                //    Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //     route6Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("77")) {
-                                Symbol Route77 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route77);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("78")) {
-                                Symbol Route78 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE1").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route78);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("79")) {
-                                Symbol Route79 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE2").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route79);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-                            if (String.valueOf(stop.getRoutes().get(i)).equals("80")) {
-                                Symbol Route80 = symbolManager.create(new SymbolOptions().withIconImage("ROUTE3").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng((stop.getLat()), stop.getLng())).withTextField(stop.getName()));
-                                symbolArrayList.add(Route80);
-                                //   Toast.makeText(getActivity(), "routessss 7 :"+String.valueOf(stop.getRoutes().get(i)), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), stop.getName(), Toast.LENGTH_SHORT).show();
-                                //   Toast.makeText(getActivity(), (int) stop.getLat(), Toast.LENGTH_SHORT).show();
-                                lat = stop.getLat();
-                                lng = stop.getLng();
-                                //       route7Points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-
-                            }
-
-                        } catch (Exception e) {
-                            Log.d(TAG, e.getMessage());
-                        }
-                    }
-                }
+            for (int i1 = 0; i1 < stops.size(); i1++) {
+                Stops stop = stops.get(i1);
+                if (stop.getRoutes().contains(String.valueOf(commonRoute)))
+                    addAStop(i1, stop);
             }
         }
     }
@@ -1194,24 +376,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
         for (int commonRoute : commonRoutes) {
             //Toast.makeText(getActivity(), "Common Routessss: "+commonRoute, Toast.LENGTH_SHORT).show();
             Log.d("route", "Common Routessss: " + commonRoute);
-            GeoJsonSource geoJsonSource = new GeoJsonSource("ROUTE" + commonRoute);
+//            GeoJsonSource geoJsonSource = new GeoJsonSource("ROUTE" + commonRoute);
 
             try {
                 URI uri = new URI("asset://route" + commonRoute + ".geojson");
                 Log.i(TAG, "onStyleLoaded: " + uri);
                 if (style.getSource("ROUTE" + commonRoute) == null)
-                    style.addSource(geoJsonSource = new GeoJsonSource("ROUTE" + commonRoute, uri));
+                    style.addSource(new GeoJsonSource("ROUTE" + commonRoute, uri));
                 else {
+                    Log.i(TAG, "loadRoute: Source existed");
                     if (style.removeSource("ROUTE" + commonRoute))
-                        style.addSource(geoJsonSource = new GeoJsonSource("ROUTE" + commonRoute, uri));
+                        style.addSource(new GeoJsonSource("ROUTE" + commonRoute, uri));
 
                 }
             } catch (NullPointerException | URISyntaxException e) {
                 e.printStackTrace();
             }
 
-            geoJsonSources.add(geoJsonSource);
-            Log.i(TAG, "onStyleLoaded: " + style.getSources());
+//            Log.i(TAG, "onStyleLoaded: " + style.getSources());
             /*if(i==0) {
                 route.setProperties(PropertyFactory.fillOutlineColor(Color.RED), PropertyFactory.fillOpacity(0.5f), PropertyFactory.lineWidth(6.23f), PropertyFactory.lineColor(Color.parseColor("#0054A5")));
             }
@@ -1271,11 +453,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
             if (map.getStyle().getLayer(routeLineLayers.get(index).getId()) != null)
                 map.getStyle().getLayer(routeLineLayers.get(index).getId()).setProperties(
                         PropertyFactory.visibility(Property.VISIBLE),
-                        PropertyFactory.fillOutlineColor(Color.RED),
-                        PropertyFactory.fillOpacity(0.7f),
-                        PropertyFactory.lineWidth(6.23f),
+                        PropertyFactory.lineOpacity(0.7f),
+                        PropertyFactory.lineWidth(6.33f),
                         PropertyFactory.lineColor(colors[new Random().nextInt(4)]));
             else Toast.makeText(getContext(), "null routelayer at index " + index, Toast.LENGTH_SHORT).show();
+        else Toast.makeText(getContext(), "null style at index " + index, Toast.LENGTH_SHORT).show();
     }
 
     private void readLocations() {
@@ -1635,7 +817,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                         symbolManager.update(symbol)
                     }*/
                     getCommonRoutesFlag = 1;
-                    addStop(stopss);
+                    addStops(stopss);
                     map.getStyle(new Style.OnStyleLoaded() {
                         @Override
                         public void onStyleLoaded(@NonNull Style style) {

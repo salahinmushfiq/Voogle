@@ -3,11 +3,9 @@ package com.example.voogle.Activities;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-
 import com.example.voogle.Adapters.BusFragmentPagerAdapter;
 import com.example.voogle.Fragments.BusFragment;
 import com.example.voogle.Fragments.MapFragment;
@@ -21,23 +19,20 @@ import com.example.voogle.R;
 import com.example.voogle.components.Custompager;
 import com.example.voogle.databinding.ActivityHomeBinding;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.*;
 import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
+import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.geojson.Point;
 import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
 import com.mapbox.turf.TurfConstants;
 import com.mapbox.turf.TurfConversion;
-
-import java.util.Objects;
-
+import org.jetbrains.annotations.NotNull;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import java.util.Objects;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -50,13 +45,13 @@ public class HomeActivity extends AppCompatActivity {
     double destinationLng;
     String sourceS_no;
     String destinationS_no;
-    Double pathaoBikeTotalCost, pathaoCarTotalCost,uberMotoTotalCost,uberXTotalCost;
+    Double pathaoBikeTotalCost, pathaoCarTotalCost, uberMotoTotalCost, uberXTotalCost;
     double distance, duration;
     double distanceInKm, durationInMinute;
-    PathaoBikeFairs pathaoBikeFairs=new PathaoBikeFairs();
-    PathaoCarFairs pathaoCarFairs=new PathaoCarFairs();
-    UberMotoFairs uberMotoFairs=new UberMotoFairs();
-    UberxFairs uberxFairs=new UberxFairs();
+    PathaoBikeFairs pathaoBikeFairs = new PathaoBikeFairs();
+    PathaoCarFairs pathaoCarFairs = new PathaoCarFairs();
+    UberMotoFairs uberMotoFairs = new UberMotoFairs();
+    UberxFairs uberxFairs = new UberxFairs();
     DatabaseReference root = FirebaseDatabase.getInstance().getReference("root");
 
 
@@ -73,18 +68,22 @@ public class HomeActivity extends AppCompatActivity {
                 .profile(DirectionsCriteria.PROFILE_DRIVING)
                 .build();
         route.getRoute(new Callback<DirectionsResponse>() {
+            @SuppressWarnings("ConstantConditions")
             @Override
-            public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
-                distance = response.body().routes().get(0).distance();
-                duration = response.body().routes().get(0).duration();
-                distanceInKm = TurfConversion.convertLength(distance, TurfConstants.UNIT_METERS, TurfConstants.UNIT_KILOMETERS);
-                durationInMinute = duration / 60;
-                Log.d("check", String.valueOf(distanceInKm));
-                Log.d("check", String.valueOf(durationInMinute));
+            public void onResponse(Call<DirectionsResponse> call, @NotNull Response<DirectionsResponse> response) {
+                if (response.body() != null && !response.body().routes().isEmpty()) {
+                    DirectionsRoute responseRoute = response.body().routes().get(0);
+                    if (responseRoute != null) {
+                        distance = responseRoute.distance();
+                        duration = responseRoute.duration();
+                        distanceInKm = TurfConversion.convertLength(distance, TurfConstants.UNIT_METERS, TurfConstants.UNIT_KILOMETERS);
+                        durationInMinute = duration / 60;
+                        Log.d("check", String.valueOf(distanceInKm));
+                        Log.d("check", String.valueOf(durationInMinute));
 
-                getFairsFromDB();
-
-
+                        getFairsFromDB();
+                    }
+                }
             }
 
             @Override
@@ -150,14 +149,14 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void getFairsFromDB() {
-        root.child("pathaobike").addValueEventListener(new ValueEventListener() {
+        root.child("pathaobike").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
 
-                        pathaoBikeFairs = dataSnapshot.getValue(PathaoBikeFairs.class);
-                        pathaoBikeTotalCost=(distanceInKm*Double.valueOf(pathaoBikeFairs.getCost_per_km()))+Double.valueOf(pathaoBikeFairs.getBase_fair());
-                        Log.d("check","Pathao Bike: "+pathaoBikeTotalCost.toString());
+                    pathaoBikeFairs = dataSnapshot.getValue(PathaoBikeFairs.class);
+                    pathaoBikeTotalCost = (distanceInKm * Double.valueOf(pathaoBikeFairs.getCost_per_km())) + Double.valueOf(pathaoBikeFairs.getBase_fair());
+                    Log.d("check", "Pathao Bike: " + pathaoBikeTotalCost.toString());
 
 //                    Log.d("check",pathaoBikeFairs.getBase_fair());
 //                    Log.d("check",pathaoBikeFairs.getCost_per_km());
@@ -165,7 +164,7 @@ public class HomeActivity extends AppCompatActivity {
 //                    Log.d("check",pathaoBikeFairs.getWaiting_cost_per_min());
 
 
-                   // Toast.makeText(HomeActivity.this, pathaoBikeTotalCost.toString(), Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(HomeActivity.this, pathaoBikeTotalCost.toString(), Toast.LENGTH_SHORT).show();
 
 
                 }
@@ -176,14 +175,14 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
-        root.child("pathaocar").addValueEventListener(new ValueEventListener() {
+        root.child("pathaocar").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
 
                     pathaoCarFairs = dataSnapshot.getValue(PathaoCarFairs.class);
-                    pathaoCarTotalCost=(distanceInKm*Double.valueOf(pathaoCarFairs.getCost_per_km()))+Double.valueOf(pathaoCarFairs.getBase_fair());
-                    Log.d("check","Pathao Car: "+pathaoCarTotalCost.toString());
+                    pathaoCarTotalCost = (distanceInKm * Double.valueOf(pathaoCarFairs.getCost_per_km())) + Double.valueOf(pathaoCarFairs.getBase_fair());
+                    Log.d("check", "Pathao Car: " + pathaoCarTotalCost.toString());
                 }
             }
 
@@ -192,15 +191,15 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
-        root.child("ubermoto").addValueEventListener(new ValueEventListener() {
+        root.child("ubermoto").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
 
                     uberMotoFairs = dataSnapshot.getValue(UberMotoFairs.class);
-                    uberMotoTotalCost=(distanceInKm*Double.valueOf(uberMotoFairs.getCost_per_km()))+Double.valueOf(uberMotoFairs.getBase_fair())+(Double.valueOf(uberMotoFairs.getCost_per_min())*durationInMinute);
+                    uberMotoTotalCost = (distanceInKm * Double.valueOf(uberMotoFairs.getCost_per_km())) + Double.valueOf(uberMotoFairs.getBase_fair()) + (Double.valueOf(uberMotoFairs.getCost_per_min()) * durationInMinute);
 
-                    Log.d("check","Uber Moto: "+uberMotoTotalCost.toString());
+                    Log.d("check", "Uber Moto: " + uberMotoTotalCost.toString());
 
                 }
             }
@@ -210,14 +209,14 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
-        root.child("uberx").addValueEventListener(new ValueEventListener() {
+        root.child("uberx").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
 
                     uberxFairs = dataSnapshot.getValue(UberxFairs.class);
-                    uberXTotalCost=(distanceInKm*Double.valueOf(uberxFairs.getCost_per_km()))+Double.valueOf(uberxFairs.getBase_fair())+(Double.valueOf(uberxFairs.getCost_per_min())*durationInMinute);
-                    Log.d("check","Uber X: "+uberXTotalCost.toString());
+                    uberXTotalCost = (distanceInKm * Double.valueOf(uberxFairs.getCost_per_km())) + Double.valueOf(uberxFairs.getBase_fair()) + (Double.valueOf(uberxFairs.getCost_per_min()) * durationInMinute);
+                    Log.d("check", "Uber X: " + uberXTotalCost.toString());
 
                 }
             }
@@ -227,7 +226,6 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         });
-
 
 
     }
