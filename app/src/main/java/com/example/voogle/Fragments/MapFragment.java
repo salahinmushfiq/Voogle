@@ -101,10 +101,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
             Color.parseColor("#00A650")
     };
 
-    int[] stopColors = new int[]{
-            Color.parseColor("#FF0000"),
-            Color.parseColor("#00FF00"),
-            Color.parseColor("#0000FF")
+    String[] stopIcons = new String[]{
+            "X1",
+            "X2",
+            "X3"
     };
     private Bundle savedInstanceState;
     private static final String LINE_GEOJSON_SOURCE_ID = "LINE_GEOJSON_SOURCE_ID";
@@ -317,9 +317,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                             .withImage("X", getActivity().getDrawable(R.drawable.ic_location_on_black_24dp))
                             .withImage("Y", getActivity().getDrawable(R.drawable.ic_location_on_red_24dp))
                             .withImage("LocationPointer", getActivity().getDrawable(R.drawable.ic_person_pin_circle_yellow_24dp))
-                            .withImage("ROUTE1", getActivity().getDrawable(R.drawable.ic_directions_bus_green_24dp))
-                            .withImage("ROUTE2", getActivity().getDrawable(R.drawable.ic_directions_bus_blue_24dp))
-                            .withImage("ROUTE3", getActivity().getDrawable(R.drawable.ic_directions_bus_red_24dp))
+                            .withImage(stopIcons[0], getActivity().getDrawable(R.drawable.ic_directions_bus_green_24dp))
+                            .withImage(stopIcons[1], getActivity().getDrawable(R.drawable.ic_directions_bus_blue_24dp))
+                            .withImage(stopIcons[2], getActivity().getDrawable(R.drawable.ic_directions_bus_red_24dp))
                     , style -> {
 
                         LineLayer lineLayerX = new LineLayer("x", "x");
@@ -366,7 +366,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
 
                 SymbolLayer symbolLayer = new SymbolLayer(stopLayer, stopSource).withProperties(
                         PropertyFactory.iconColor(colors[new Random().nextInt(3)]),
-                        PropertyFactory.iconImage("ROUTE1"),
+                        PropertyFactory.iconImage(stopIcons[0]),
                         PropertyFactory.textColor("#E2000F"),
                         PropertyFactory.textHaloColor("#000000"),
                         PropertyFactory.textHaloWidth(0.5f),
@@ -521,7 +521,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                             PropertyFactory.fillOpacity(0.7f),
                             PropertyFactory.lineWidth(6.23f),
                             PropertyFactory.lineColor(colors[new Random().nextInt(4)]));
-                int colorIndex = stopColors[new Random().nextInt(3)];
+                String iconIndex1 = stopIcons[new Random().nextInt(3)];
                 for (Stops stops : stopss) {
                     if (stops.getRoutes().contains(String.valueOf(x))
                             && map.getStyle().getLayer("STOPL" + x) != null)
@@ -529,8 +529,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                                 .getLayer("STOPL" + x)
                                 .setProperties(
                                         PropertyFactory.visibility(Property.VISIBLE),
-                                        PropertyFactory.iconColor(colorIndex)
-                                );
+                                        PropertyFactory.iconImage(iconIndex1));
+
                 }
 
             }
@@ -540,15 +540,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
     private void setProperties(int index) {
         Log.i(TAG, "setProperties: " + index);
         if (map.getStyle() != null) {
-            if (map.getStyle().getLayer(routeLineLayers.get(index).getId()) != null)
-                map.getStyle().getLayer(routeLineLayers.get(index).getId()).setProperties(
+            if (map.getStyle().getLayer(routeLineLayers.get(index - 1).getId()) != null)
+                map.getStyle().getLayer(routeLineLayers.get(index - 1).getId()).setProperties(
                         PropertyFactory.visibility(Property.VISIBLE),
                         PropertyFactory.lineOpacity(0.7f),
                         PropertyFactory.lineWidth(6.33f),
                         PropertyFactory.lineColor(colors[new Random().nextInt(4)]));
             else Toast.makeText(getContext(), "null routelayer at index " + index, Toast.LENGTH_SHORT).show();
 
-            int colorIndex1 = stopColors[new Random().nextInt(3)];
+            String iconIndex1 = stopIcons[new Random().nextInt(3)];
             for (SymbolLayer layer :
                     stopLayers) {
                 Log.i(TAG, "setProperties: " + layer.getTextField().value.getFormattedSections()[0].getText() + " " + layer.getId());
@@ -556,7 +556,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                     if (map.getStyle().getLayer(layer.getId()) != null)
                         map.getStyle().getLayer(layer.getId()).setProperties(
                                 PropertyFactory.visibility(Property.VISIBLE),
-                                PropertyFactory.lineColor(colorIndex1));
+                                PropertyFactory.iconImage(iconIndex1));
             }
         } else Toast.makeText(getContext(), "null style at index " + index, Toast.LENGTH_SHORT).show();
     }
