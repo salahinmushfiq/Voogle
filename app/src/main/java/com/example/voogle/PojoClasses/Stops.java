@@ -67,9 +67,18 @@ public class Stops {
         return newRoutes;
     }
 
+    public ArrayList<Integer> getRoutesInt() {
+        ArrayList<Integer> newRoutes = new ArrayList<>();
+        for (Long intx :
+                routes) {
+            newRoutes.add(intx.intValue());
+        }
+        return newRoutes;
+    }
+
     @NonNull
     @Override
     public String toString() {
-        return "Name: "+name+" Lat: "+lat+" Lng: "+lng;
+        return "Name: " + name + " Lat: " + lat + " Lng: " + lng;
     }
 }

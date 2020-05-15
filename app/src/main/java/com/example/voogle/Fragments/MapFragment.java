@@ -23,6 +23,7 @@ import com.example.voogle.databinding.FragmentMapBinding;
 import com.google.firebase.database.*;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
+import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
@@ -37,6 +38,7 @@ import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions;
 import com.mapbox.mapboxsdk.style.layers.LineLayer;
 import com.mapbox.mapboxsdk.style.layers.Property;
 import com.mapbox.mapboxsdk.style.layers.PropertyFactory;
+import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.mapbox.mapboxsdk.style.sources.Source;
 import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
@@ -98,10 +100,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
             Color.parseColor("#e5e15e"),
             Color.parseColor("#00A650")
     };
+
+    int[] stopColors = new int[]{
+            Color.parseColor("#FF0000"),
+            Color.parseColor("#00FF00"),
+            Color.parseColor("#0000FF")
+    };
     private Bundle savedInstanceState;
     private static final String LINE_GEOJSON_SOURCE_ID = "LINE_GEOJSON_SOURCE_ID";
     private static final String CIRCLE_GEOJSON_SOURCE_ID = "CIRCLE_GEOJSON_SOURCE_ID";
     ArrayList<LineLayer> routeLineLayers;
+    ArrayList<SymbolLayer> stopLayers = new ArrayList<>();
     private boolean firstRun;
     private Location current_location;
     String routeNo;
@@ -337,43 +346,107 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
         });
     }
 
-    private void addAStop(int index, Stops stop) {
-        Log.i(TAG, "addAStop: AddAStop Triggered At " + index + " " + stop.getName());
-        getActivity().runOnUiThread(() -> symbolArrayList.add(symbolManager.create(new SymbolOptions()
-                .withIconImage("ROUTE" + index)
-                .withIconHaloWidth(0.5f)
-                .withIconSize(1.2f)
-                .withIconHaloColor("#E2000F")
-                .withTextColor("#E2000F")
-                .withTextHaloColor("#000000")
-                .withTextHaloWidth(0.5f)
-                .withTextSize(15f)
-                .withTextOffset(new Float[]{0.0f, 3.0f})
-                .withLatLng(new LatLng((stop.getLat()), stop.getLng()))
-                .withTextField(stop.getName())
-                .withSymbolSortKey(index * 1f))));
+    private void addAStop(Stops stop) {
+
+        String stopSource = generateStopString(stop, false);
+        String stopLayer = generateStopString(stop, true);
+
+        getActivity().runOnUiThread(() -> {
+            map.getStyle(style -> {
+                if (style.getSource(stopSource) != null && style.getLayer(stopLayer) != null) return;
+
+                if (style.getSource(stopSource) == null)
+                    style.addSource(
+                            new GeoJsonSource(
+                                    stopSource,
+                                    Feature.fromGeometry(
+                                            Point.fromLngLat(
+                                                    stop.getLng(),
+                                                    stop.getLat()))));
+
+                SymbolLayer symbolLayer = new SymbolLayer(stopLayer, stopSource).withProperties(
+                        PropertyFactory.iconColor(colors[new Random().nextInt(3)]),
+                        PropertyFactory.iconImage("ROUTE1"),
+                        PropertyFactory.textColor("#E2000F"),
+                        PropertyFactory.textHaloColor("#000000"),
+                        PropertyFactory.textHaloWidth(0.5f),
+                        PropertyFactory.textSize(15f),
+                        PropertyFactory.textOffset(new Float[]{0.0f, 3.0f}),
+                        PropertyFactory.textField(stop.getName()));
+                style.addLayer(symbolLayer);
+                stopLayers.add(symbolLayer);
+            });
+
+        });
+    }
+
+    private String generateStopString(Stops stop, boolean layer) {
+        StringBuilder returner = new StringBuilder("STOP");
+        for (String id :
+                stop.getRoutes()) {
+            returner
+                    .append("-")
+                    .append(id)
+                    .append(layer ? "L" : "S");
+        }
+        return returner.toString();
     }
 
     private void addStops(ArrayList<Stops> stops) {
-        Symbol source = symbolManager.create(new SymbolOptions().withIconImage("X").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng(sourceLat, sourceLng)).withTextField("Source").withSymbolSortKey(83f));
-        Symbol destination = symbolManager.create(new SymbolOptions().withIconImage("Y").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng(destinationLat, destinationLng)).withTextField("Destination").withSymbolSortKey(82f));
-        symbolArrayList.add(source);
-        symbolArrayList.add(destination);
+        getActivity().runOnUiThread(() -> {
+            Symbol source = symbolManager.create(new SymbolOptions().withIconImage("X").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng(sourceLat, sourceLng)).withTextField("Source").withSymbolSortKey(83f));
+            Symbol destination = symbolManager.create(new SymbolOptions().withIconImage("Y").withIconHaloWidth(0.5f).withIconSize(1.2f).withIconHaloColor("#E2000F").withTextColor("#E2000F").withTextHaloColor("#000000").withTextHaloWidth(0.5f).withTextSize(15f).withTextOffset(new Float[]{0.0f, 3.0f}).withLatLng(new LatLng(destinationLat, destinationLng)).withTextField("Destination").withSymbolSortKey(82f));
+            symbolArrayList.add(source);
+            symbolArrayList.add(destination);
 
-        for (Symbol symbol : symbolArrayList) {
-            symbolManager.update(symbol);
-        }
+            for (Symbol symbol : symbolArrayList) {
+                symbolManager.update(symbol);
+            }
+        });
+
         for (int commonRoute : commonRoutes) {
             for (Stops stop : stops) {
                 Log.i(TAG, "addStops: " + stop.getRoutes());
                 Log.i(TAG, "addStopsX: " + commonRoute);
                 if (stop.getRoutes().contains(String.valueOf(commonRoute)))
-                    addAStop(commonRoute, stop);
+                    addAStop(stop);
             }
         }
+        getActivity().runOnUiThread(() -> map.getStyle(style -> {
+
+
+//                            CameraPosition position = new CameraPosition.Builder()
+//                                    .target(new LatLng(sourceLat, sourceLng
+//                                    )) // Sets the new camera position
+//                                    .zoom(14) // Sets the zoom
+//                                    .tilt(30) // Set the camera tilt
+//                                    .build(); // Creates a CameraPosition from the builder
+            locationComponent = map.getLocationComponent();
+
+            locationComponent.activateLocationComponent(locationComponentActivationOptions = LocationComponentActivationOptions.builder(getActivity(), style).build());
+
+
+//                            map.animateCamera(CameraUpdateFactory.newCameraPosition(position), 7000);
+
+            LatLngBounds latLngBounds = new LatLngBounds.Builder()
+                    .include(new LatLng(sourceLat, sourceLng)) // Northeast
+                    .include(new LatLng(destinationLat, destinationLng)) // Southwest
+                    .build();
+
+            map.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 50), 5000);
+
+
+            loadRoute(style);
+            Log.d("check", "OnStyle loaded");
+            Toast.makeText(getContext(),
+                    String.format("Time Taken %d seconds", (System.currentTimeMillis() - time1) / 1000),
+                    Toast.LENGTH_LONG).show();
+            fragmentMapBinding.progressBar.setVisibility(View.GONE);
+        }));
     }
 
     private void loadRoute(Style style) {
+        GeoJsonSource geoJsonSource = style.getSourceAs("k");
 
         int i = 0;
         for (int commonRoute : commonRoutes) {
@@ -440,7 +513,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
     private void setProperties(ArrayList<Integer> indexes) {
         for (Integer x :
                 indexes) {
-            if (map.getStyle() != null)
+            if (map.getStyle() != null) {
                 if (map.getStyle().getLayer(routeLineLayers.get(x).getId()) != null)
                     map.getStyle().getLayer(routeLineLayers.get(x).getId()).setProperties(
                             PropertyFactory.visibility(Property.VISIBLE),
@@ -448,11 +521,25 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                             PropertyFactory.fillOpacity(0.7f),
                             PropertyFactory.lineWidth(6.23f),
                             PropertyFactory.lineColor(colors[new Random().nextInt(4)]));
+                int colorIndex = stopColors[new Random().nextInt(3)];
+                for (Stops stops : stopss) {
+                    if (stops.getRoutes().contains(String.valueOf(x))
+                            && map.getStyle().getLayer("STOPL" + x) != null)
+                        map.getStyle()
+                                .getLayer("STOPL" + x)
+                                .setProperties(
+                                        PropertyFactory.visibility(Property.VISIBLE),
+                                        PropertyFactory.iconColor(colorIndex)
+                                );
+                }
+
+            }
         }
     }
 
     private void setProperties(int index) {
-        if (map.getStyle() != null)
+        Log.i(TAG, "setProperties: " + index);
+        if (map.getStyle() != null) {
             if (map.getStyle().getLayer(routeLineLayers.get(index).getId()) != null)
                 map.getStyle().getLayer(routeLineLayers.get(index).getId()).setProperties(
                         PropertyFactory.visibility(Property.VISIBLE),
@@ -460,7 +547,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
                         PropertyFactory.lineWidth(6.33f),
                         PropertyFactory.lineColor(colors[new Random().nextInt(4)]));
             else Toast.makeText(getContext(), "null routelayer at index " + index, Toast.LENGTH_SHORT).show();
-        else Toast.makeText(getContext(), "null style at index " + index, Toast.LENGTH_SHORT).show();
+
+            int colorIndex1 = stopColors[new Random().nextInt(3)];
+            for (SymbolLayer layer :
+                    stopLayers) {
+                Log.i(TAG, "setProperties: " + layer.getTextField().value.getFormattedSections()[0].getText() + " " + layer.getId());
+                if (layer.getId().contains("-" + index + "L"))
+                    if (map.getStyle().getLayer(layer.getId()) != null)
+                        map.getStyle().getLayer(layer.getId()).setProperties(
+                                PropertyFactory.visibility(Property.VISIBLE),
+                                PropertyFactory.lineColor(colorIndex1));
+            }
+        } else Toast.makeText(getContext(), "null style at index " + index, Toast.LENGTH_SHORT).show();
     }
 
     private void readLocations() {
@@ -790,71 +888,39 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    for (DataSnapshot stops : dataSnapshot.getChildren()) {
-                        for (DataSnapshot route : stops.child("route").getChildren()) {
-                            int i = 0;
-                            for (int commonRoute : commonRoutes) {
+                    new Thread(() -> {
+                        for (DataSnapshot stops : dataSnapshot.getChildren()) {
+                            GlobalVariables.stops.add(stops.getValue(Stops.class));
+                            for (DataSnapshot route : stops.child("route").getChildren()) {
+                                int i = 0;
+                                for (int commonRoute : commonRoutes) {
 
-                                if (commonRoute == Integer.parseInt(route.getValue().toString())) {
+                                    if (commonRoute == Integer.parseInt(route.getValue().toString())) {
 //                                    GlobalVariables.stops.add(stops.getValue(Stops.class));
-                                    // Toast.makeText(getActivity(), stops.getValue(Stops.class).toString(), Toast.LENGTH_SHORT).show();
-                                    //Toast.makeText(getActivity(), stops.child("lat").getValue().toString(), Toast.LENGTH_SHORT).show();
-                                    // Toast.makeText(getActivity(), stops.child("lng").getValue().toString(), Toast.LENGTH_SHORT).show();
-                                    lat = stops.child("lat").getValue(Double.class);
-                                    lng = stops.child("lng").getValue(Double.class);
-                                    name = stops.child("name").getValue(String.class);
-                                    routes = (ArrayList<Long>) stops.child("route").getValue();
-                                    points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
-                                    stopss.add(new Stops(name, lat, lng, "front", routes));
-                                    points.get(i).latitude();
-                                    i++;
-
-
-//
+                                        // Toast.makeText(getActivity(), stops.getValue(Stops.class).toString(), Toast.LENGTH_SHORT).show();
+                                        //Toast.makeText(getActivity(), stops.child("lat").getValue().toString(), Toast.LENGTH_SHORT).show();
+                                        // Toast.makeText(getActivity(), stops.child("lng").getValue().toString(), Toast.LENGTH_SHORT).show();
+                                        lat = stops.child("lat").getValue(Double.class);
+                                        lng = stops.child("lng").getValue(Double.class);
+                                        name = stops.child("name").getValue(String.class);
+                                        routes = (ArrayList<Long>) stops.child("route").getValue();
+                                        points.add(Point.fromLngLat(Double.valueOf(lng), Double.valueOf(lat)));
+                                        stopss.add(new Stops(name, lat, lng, "front", routes));
+                                        points.get(i).latitude();
+                                        i++;
+                                    }
                                 }
                             }
+                            Log.d("check", "Datasnapshot");
                         }
-                        Log.d("check", "Datasnapshot");
-                    }
                     /*for (Symbol symbol : symbolArrayList) {
                         symbolManager.update(symbol)
                     }*/
-                    getCommonRoutesFlag = 1;
-                    addStops(stopss);
-                    map.getStyle(new Style.OnStyleLoaded() {
-                        @Override
-                        public void onStyleLoaded(@NonNull Style style) {
+                        getCommonRoutesFlag = 1;
+                        addStops(stopss);
+                    }).start();
 
 
-//                            CameraPosition position = new CameraPosition.Builder()
-//                                    .target(new LatLng(sourceLat, sourceLng
-//                                    )) // Sets the new camera position
-//                                    .zoom(14) // Sets the zoom
-//                                    .tilt(30) // Set the camera tilt
-//                                    .build(); // Creates a CameraPosition from the builder
-                            locationComponent = map.getLocationComponent();
-
-                            locationComponent.activateLocationComponent(locationComponentActivationOptions = LocationComponentActivationOptions.builder(getActivity(), style).build());
-
-
-//                            map.animateCamera(CameraUpdateFactory.newCameraPosition(position), 7000);
-
-                            LatLngBounds latLngBounds = new LatLngBounds.Builder()
-                                    .include(new LatLng(sourceLat, sourceLng)) // Northeast
-                                    .include(new LatLng(destinationLat, destinationLng)) // Southwest
-                                    .build();
-
-                            map.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, 50), 5000);
-
-
-                            loadRoute(style);
-                            Log.d("check", "OnStyle loaded");
-                            Toast.makeText(getContext(),
-                                    String.format("Time Taken %d seconds", (System.currentTimeMillis() - time1) / 1000),
-                                    Toast.LENGTH_LONG).show();
-                            fragmentMapBinding.progressBar.setVisibility(View.GONE);
-                        }
-                    });
                     //  initMap(savedInstanceState, stopss);
                 }
 
@@ -974,6 +1040,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
             if (map.getStyle() != null && map.getStyle().getLayer(layer.getId()) != null)
                 map.getStyle().getLayer(layer.getId()).setProperties(PropertyFactory.visibility(Property.NONE));
         }
+        for (SymbolLayer layer :
+                stopLayers) {
+            if (map.getStyle() != null && map.getStyle().getLayer(layer.getId()) != null)
+                map.getStyle().getLayer(layer.getId()).setProperties(PropertyFactory.visibility(Property.NONE));
+        }
     }
 
     @Override
@@ -981,8 +1052,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
         routeNo = s;
         Toast.makeText(getActivity(), "Route No.: " + s, Toast.LENGTH_SHORT).show();
         if (!commonRoutes.isEmpty()) {
-//            setProperties(commonRoutes);
-//                    }
             hideLayers();
             setProperties(Integer.parseInt(s));
         }
