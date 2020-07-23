@@ -6,7 +6,13 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.location.LocationManager;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
@@ -27,7 +33,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.NetworkInterface;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class ManagerActivty extends AppCompatActivity {
 
@@ -37,10 +49,11 @@ public class ManagerActivty extends AppCompatActivity {
     String licensePlate,phoneNo;
     private FirebaseAuth mAuth;
     Manager manager ;
-    int busIdCount,phoneNoCount;
+    int busIdCount,driverPhoneNoCount;
     LicensePlateAdapter licensePlateAdapter;
     PhoneNoAdapter phoneNoAdapter;
-
+    private static final String marshmallowMacAddress = "02:00:00:00:00:00";
+    private static final String fileAddressMac = "/sys/class/net/wlan0/address";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +119,15 @@ public class ManagerActivty extends AppCompatActivity {
 
 
     public void phoneNumberBtnOnClick(View view) {
+
+
+
+
+
+
+
+
+
         activityManagerBinding.licensePlateRV.setVisibility(View.GONE);
         activityManagerBinding.addLicensePlateACTV.setVisibility(View.GONE);
         activityManagerBinding.addLicensePlateBtn.setVisibility(View.GONE);
@@ -118,25 +140,28 @@ public class ManagerActivty extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
 //
-                    manager=dataSnapshot.getValue(Manager.class);
-
-                    Toast.makeText(ManagerActivty.this, "Phone Numbers : " + manager.getPhoneNumbers(), Toast.LENGTH_SHORT).show();
-
-                    if(!manager.getPhoneNumbers().isEmpty()) {
-                        phoneNoAdapter = new PhoneNoAdapter(manager.getPhoneNumbers(), ManagerActivty.this);
-                        activityManagerBinding.phoneNoRV.setAdapter(phoneNoAdapter);
-                        activityManagerBinding.phoneNoRV.setVisibility(View.VISIBLE);
-
-                        try {
-                            for (String phoneNumbers : manager.getPhoneNumbers()) {
-                                Toast.makeText(ManagerActivty.this, "Phone Numbers: " + phoneNumbers, Toast.LENGTH_SHORT).show();
-                            }
-                        } catch (Exception e) {
-                            Toast.makeText(ManagerActivty.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-
-                        activityManagerBinding.phoneNoRV.setLayoutManager(new LinearLayoutManager(ManagerActivty.this));
-                    }
+//                    manager=dataSnapshot.getValue(Manager.class);
+//
+//                    Toast.makeText(ManagerActivty.this, "Phone Numbers : " + manager.getDriverPhoneNumbers(), Toast.LENGTH_SHORT).show();
+//
+//                    if(!manager.getDriverPhoneNumbers().isEmpty()) {
+//                        phoneNoAdapter = new PhoneNoAdapter(manager.getDriverPhoneNumbers(), ManagerActivty.this);
+//                        activityManagerBinding.phoneNoRV.setAdapter(phoneNoAdapter);
+//                        activityManagerBinding.phoneNoRV.setVisibility(View.VISIBLE);
+//
+//                        try {
+//                            for (String phoneNumbers : manager.getPhoneNumbers()) {
+//                                Toast.makeText(ManagerActivty.this, "Phone Numbers: " + phoneNumbers, Toast.LENGTH_SHORT).show();
+//                            }
+//                        } catch (Exception e) {
+//                            Toast.makeText(ManagerActivty.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+//                        }
+//
+//                        activityManagerBinding.phoneNoRV.setLayoutManager(new LinearLayoutManager(ManagerActivty.this));
+//                    }
+//                    else{
+//                        Toast.makeText(ManagerActivty.this, "No Phone Numbers", Toast.LENGTH_SHORT).show();
+//                    }
                 }
             }
 
@@ -148,6 +173,7 @@ public class ManagerActivty extends AppCompatActivity {
         });
 
     }
+
 
     public void addLicensePlateBtnOnClick(View view) {
         licensePlate=activityManagerBinding.addLicensePlateACTV.getText().toString();
@@ -169,6 +195,8 @@ public class ManagerActivty extends AppCompatActivity {
 
 
         });
+
+
 
 
 
@@ -201,7 +229,7 @@ public class ManagerActivty extends AppCompatActivity {
                 if (dataSnapshot.exists()) {
 
                         manager=dataSnapshot.getValue(Manager.class);
-                        phoneNoCount=manager.getPhoneNoCount();
+                        driverPhoneNoCount=manager.getDriverPhoneNoCount();
 
                 }
             }
@@ -216,7 +244,8 @@ public class ManagerActivty extends AppCompatActivity {
 
 
 
-        databaseReference.child("root").child("ManagerList").child(manager.getManagerId()).child("phoneNumbers").child(String.valueOf(phoneNoCount)).setValue(phoneNo).addOnCompleteListener(new OnCompleteListener<Void>() {
+        String driverId = databaseReference.child("root").child("ManagerList").child(manager.getManagerId()).child("driverPhoneNumbers").child(String.valueOf(driverPhoneNoCount)).push().getKey();
+        databaseReference.child("root").child("ManagerList").child(manager.getManagerId()).child("driverPhoneNumbers").child(String.valueOf(driverPhoneNoCount)).child("number").setValue(phoneNo).addOnCompleteListener(new OnCompleteListener<Void>() {
 
 
             @Override
@@ -229,7 +258,20 @@ public class ManagerActivty extends AppCompatActivity {
                 Toast.makeText(ManagerActivty.this,e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-        phoneNoCount=phoneNoCount+1;
-        databaseReference.child("root").child("ManagerList").child(manager.getManagerId()).child("phoneNoCount").setValue(phoneNoCount);
+        databaseReference.child("root").child("ManagerList").child(manager.getManagerId()).child("driverPhoneNumbers").child(String.valueOf(driverPhoneNoCount)).child("macId").setValue("default").addOnCompleteListener(new OnCompleteListener<Void>() {
+
+
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Toast.makeText(ManagerActivty.this, "Phone No. Written", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(ManagerActivty.this,e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        driverPhoneNoCount=driverPhoneNoCount+1;
+        databaseReference.child("root").child("ManagerList").child(manager.getManagerId()).child("driverPhoneNoCount").setValue(driverPhoneNoCount);
     }
 }

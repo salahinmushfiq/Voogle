@@ -8,8 +8,34 @@ public class Manager {
     String groupName;
     String managerId;
     String groupId;
+
+    public int getDriverPhoneNoCount() {
+        return driverPhoneNoCount;
+    }
+
+    public void setDriverPhoneNoCount(int driverPhoneNoCount) {
+        this.driverPhoneNoCount = driverPhoneNoCount;
+    }
+
     ArrayList<String>licensePlate;
-    ArrayList<String>phoneNumbers;
+    ArrayList<String>driverPhoneNumbers;
+    ArrayList<String>checkerPhoneNumbers;
+    int driverPhoneNoCount,busIdCount;
+    public ArrayList<String> getDriverPhoneNumbers() {
+        return driverPhoneNumbers;
+    }
+
+    public void setDriverPhoneNumbers(ArrayList<String> driverPhoneNumbers) {
+        this.driverPhoneNumbers = driverPhoneNumbers;
+    }
+
+    public ArrayList<String> getCheckerPhoneNumbers() {
+        return checkerPhoneNumbers;
+    }
+
+    public void setCheckerPhoneNumbers(ArrayList<String> checkerPhoneNumbers) {
+        this.checkerPhoneNumbers = checkerPhoneNumbers;
+    }
 
     public ArrayList<String> getLicensePlate() {
         return licensePlate;
@@ -19,23 +45,17 @@ public class Manager {
         this.licensePlate = licensePlate;
     }
 
-    int phoneNoCount,busIdCount;
+
 
     public ArrayList<String> getPhoneNumbers() {
-        return phoneNumbers;
+        return driverPhoneNumbers;
     }
 
-    public void setPhoneNumbers(ArrayList<String> phoneNumbers) {
-        this.phoneNumbers = phoneNumbers;
+    public void setPhoneNumbers(ArrayList<String> driverPhoneNumbers) {
+        this.driverPhoneNumbers = driverPhoneNumbers;
     }
 
-    public int getPhoneNoCount() {
-        return phoneNoCount;
-    }
 
-    public void setPhoneNoCount(int phoneNoCount) {
-        this.phoneNoCount = phoneNoCount;
-    }
 
     public int getBusIdCount() {
         return busIdCount;

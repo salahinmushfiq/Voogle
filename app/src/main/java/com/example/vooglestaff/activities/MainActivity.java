@@ -16,20 +16,28 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.vooglestaff.R;
 import com.example.vooglestaff.constants.GlobalVariables;
 import com.example.vooglestaff.databinding.ActivityMainBinding;
+import com.example.vooglestaff.databinding.LoginPopupCheckerBinding;
 import com.example.vooglestaff.databinding.LoginPopupDriverBinding;
 import com.example.vooglestaff.databinding.LoginPopupManagerBinding;
 import com.example.vooglestaff.databinding.LoginPopupManagerBinding;
+import com.example.vooglestaff.pojoClass.Manager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
@@ -37,6 +45,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 import static com.android.volley.Request.Method.POST;
 
@@ -48,12 +57,16 @@ public class MainActivity extends AppCompatActivity {
     AlertDialog.Builder reportBuild;
     LoginPopupManagerBinding loginPopupManagerBinding;
     LoginPopupDriverBinding loginPopupDriverBinding;
+    LoginPopupCheckerBinding loginPopupCheckerBinding;
     View alertView;
     String email, password;
     int nullCheckFlag;
     String phoneNumber,groupId,licensePlate;
     JSONObject signInJson;
     private FirebaseAuth mAuth;
+    DatabaseReference databaseReference;
+    Manager currentManager;
+    ArrayList<Manager>managerList=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,93 +174,262 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void logInAsDriverClick(View view) throws JSONException {
+    public void logInAsDriverClick(View view)  {
+
 
 
         phoneNumber=loginPopupDriverBinding.phoneNoET.getText().toString();
         groupId=loginPopupDriverBinding.managerIdET.getText().toString();
-        licensePlate=loginPopupDriverBinding.licensePlateET.getText().toString();
-        GlobalVariables.licensePlate=licensePlate;
 
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url="https://us-central1-imperial-tiger-237207.cloudfunctions.net/getCredentialsById?fbclid=IwAR3wL4XhJ3LTvxIzzfKmUhw09QppSf1SvHGC8V5c5rXsgazoFncYvS4zimw";
-        Response.Listener listenResponse=new Response.Listener<String>() {
+        databaseReference= FirebaseDatabase.getInstance().getReference("root/ManagerList/");
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject hotelJSON = null;
-
-                    hotelJSON = new JSONObject(response).getJSONObject("result");
-
-                    email = hotelJSON.getString("email");
-                    password = hotelJSON.getString("password");
-                    Toast.makeText(MainActivity.this, "Email"+email, Toast.LENGTH_SHORT).show();
-                    Toast.makeText(MainActivity.this, "Password"+password, Toast.LENGTH_SHORT).show();
-
-                    mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            Toast.makeText(MainActivity.this, "Successfully Signed In", Toast.LENGTH_SHORT).show();
-                            Intent goToDriverActivity=new Intent(MainActivity.this,DriverActivity.class);
-                            startActivity(goToDriverActivity);
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot dataSnapshot1:dataSnapshot.getChildren()){
+                    Manager manager=dataSnapshot.getValue(Manager.class);
+                    if(manager.getGroupId().equals(phoneNumber)){
+                        for(String d:manager.getDriverPhoneNumbers()){
+                            if(d.equals(phoneNumber))
+                            {
+                                Toast.makeText(MainActivity.this, manager.getManagerId(), Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    });
-
-
-
-
+                    };
 
                 }
-                catch (Exception e)
-                {
-                    Toast.makeText(MainActivity.this, "Response Listener Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
+               // managerList=dataSnapshot.getValue(Manager.class);
+                currentManager.getDriverPhoneNumbers();
 
-            }
-
-
-
-        };
-        Response.ErrorListener listenError  = new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (error instanceof TimeoutError) {
-                    Log.i("errors", "onErrorResponse: Timeout");
-
-                }
-                error.printStackTrace();
-            }
-        };
-
-        try {
-             signInJson=new JSONObject().put("data",new JSONObject().put("phoneNumber",phoneNumber).put("groupId",groupId).put("licensePlate",licensePlate));
-
-        }catch (Exception e)
-        {
-            Toast.makeText(this,"Json Object creation Error: "+ e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-
-
-
-        final String mRequestBody = signInJson.toString();
-        Log.d("TAG","json" +signInJson.toString(4));
-
-
-        StringRequest request = new StringRequest(POST, url, listenResponse, listenError) {
-            @Override
-            public String getBodyContentType() {
-                return "application/json; charset=utf-8";
             }
 
             @Override
-            public byte[] getBody() {
-                return mRequestBody.getBytes(StandardCharsets.UTF_8);
-            }
-        };
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-        queue.add(request);
+            }
+
+
+        });
+//        licensePlate=loginPopupDriverBinding.licensePlateET.getText().toString();
+//
+//        GlobalVariables.licensePlate=licensePlate;
+//
+//        RequestQueue queue = Volley.newRequestQueue(this);
+//        String url="https://us-central1-imperial-tiger-237207.cloudfunctions.net/getCredentialsById?fbclid=IwAR3wL4XhJ3LTvxIzzfKmUhw09QppSf1SvHGC8V5c5rXsgazoFncYvS4zimw";
+//        Response.Listener listenResponse=new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response) {
+//                try {
+//                    JSONObject hotelJSON = null;
+//
+//                    hotelJSON = new JSONObject(response).getJSONObject("result");
+//
+//                    email = hotelJSON.getString("email");
+//                    password = hotelJSON.getString("password");
+//                    Toast.makeText(MainActivity.this, "Email"+email, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(MainActivity.this, "Password"+password, Toast.LENGTH_SHORT).show();
+//
+//                    mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<AuthResult> task) {
+//                            Toast.makeText(MainActivity.this, "Successfully Signed In", Toast.LENGTH_SHORT).show();
+//                            Intent goToDriverActivity=new Intent(MainActivity.this,DriverActivity.class);
+//                            startActivity(goToDriverActivity);
+//                        }
+//                    });
+//
+//
+//
+//
+//
+//                }
+//                catch (Exception e)
+//                {
+//                    Toast.makeText(MainActivity.this, "Response Listener Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
+//                }
+//
+//            }
+//
+//
+//
+//        };
+//        Response.ErrorListener listenError  = new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                if (error instanceof TimeoutError) {
+//                    Log.i("errors", "onErrorResponse: Timeout");
+//
+//                }
+//                error.printStackTrace();
+//            }
+//        };
+//
+//        try {
+//             signInJson=new JSONObject().put("data",new JSONObject().put("phoneNumber",phoneNumber).put("groupId",groupId).put("licensePlate",licensePlate));
+//
+//        }catch (Exception e)
+//        {
+//            Toast.makeText(this,"Json Object creation Error: "+ e.getMessage(), Toast.LENGTH_SHORT).show();
+//        }
+//
+//
+//
+//        final String mRequestBody = signInJson.toString();
+//        Log.d("TAG","json" +signInJson.toString(4));
+//
+//
+//        StringRequest request = new StringRequest(POST, url, listenResponse, listenError) {
+//            @Override
+//            public String getBodyContentType() {
+//                return "application/json; charset=utf-8";
+//            }
+//
+//            @Override
+//            public byte[] getBody() {
+//                return mRequestBody.getBytes(StandardCharsets.UTF_8);
+//            }
+//        };
+//
+//        queue.add(request);
 
 
     }
 
+    public void logInAsCheckerClick(View view)  {
+
+
+        phoneNumber=loginPopupCheckerBinding.phoneNoET.getText().toString();
+        groupId=loginPopupCheckerBinding.managerIdET.getText().toString();
+
+        databaseReference= FirebaseDatabase.getInstance().getReference("root/ManagerList/");
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Manager manager=dataSnapshot.getValue(Manager.class);
+                currentManager.getDriverPhoneNumbers();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+
+        });
+
+//        licensePlate=loginPopupDriverBinding.licensePlateET.getText().toString();
+
+//        GlobalVariables.licensePlate=licensePlate;
+//
+//        RequestQueue queue = Volley.newRequestQueue(this);
+//        String url="https://us-central1-imperial-tiger-237207.cloudfunctions.net/getCredentialsById?fbclid=IwAR3wL4XhJ3LTvxIzzfKmUhw09QppSf1SvHGC8V5c5rXsgazoFncYvS4zimw";
+//        Response.Listener listenResponse=new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response) {
+//                try {
+//                    JSONObject hotelJSON = null;
+//
+//                    hotelJSON = new JSONObject(response).getJSONObject("result");
+//
+//                    email = hotelJSON.getString("email");
+//                    password = hotelJSON.getString("password");
+//                    Toast.makeText(MainActivity.this, "Email"+email, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(MainActivity.this, "Password"+password, Toast.LENGTH_SHORT).show();
+//
+//                    mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<AuthResult> task) {
+//                            Toast.makeText(MainActivity.this, "Successfully Signed In", Toast.LENGTH_SHORT).show();
+//                            Intent goToDriverActivity=new Intent(MainActivity.this,DriverActivity.class);
+//                            startActivity(goToDriverActivity);
+//                        }
+//                    });
+//
+//
+//
+//
+//
+//                }
+//                catch (Exception e)
+//                {
+//                    Toast.makeText(MainActivity.this, "Response Listener Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
+//                }
+//
+//            }
+
+
+
+        };
+//        Response.ErrorListener listenError  = new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                if (error instanceof TimeoutError) {
+//                    Log.i("errors", "onErrorResponse: Timeout");
+//
+//                }
+//                error.printStackTrace();
+//            }
+//        };
+//
+//        try {
+//
+//            signInJson=new JSONObject().put("data",new JSONObject().put("phoneNumber",phoneNumber).put("groupId",groupId).put("licensePlate",licensePlate));
+//
+//        }catch (Exception e)
+//        {
+//            Toast.makeText(this,"Json Object creation Error: "+ e.getMessage(), Toast.LENGTH_SHORT).show();
+//        }
+//
+//
+//
+//        final String mRequestBody = signInJson.toString();
+//        Log.d("TAG","json" +signInJson.toString(4));
+//
+//
+//        StringRequest request = new StringRequest(POST, url, listenResponse, listenError) {
+//            @Override
+//            public String getBodyContentType() {
+//                return "application/json; charset=utf-8";
+//            }
+//
+//            @Override
+//            public byte[] getBody() {
+//                return mRequestBody.getBytes(StandardCharsets.UTF_8);
+//            }
+//        };
+//
+//        queue.add(request);
+
+
+//    }
+
+    public void checkerBtnOnClick(View view) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            // User is signed in
+            Intent goToDriverActivity=new Intent(MainActivity.this,DriverActivity.class);
+            startActivity(goToDriverActivity);
+        } else {
+            // No user is signed in
+            alertDialogChecker();
+        }
+    }
+    private void alertDialogChecker() {
+        alert = new AlertDialog.Builder(MainActivity.this);
+        alertView = getLayoutInflater().inflate(R.layout.login_popup_checker, null);
+
+        alertDialog = alert.create();
+
+        if (alertDialog.getWindow() != null)
+            alertDialog.getWindow().setBackgroundDrawable(null);
+        alert.setView(alertView);
+
+        ad = alert.show();
+        loginPopupCheckerBinding = DataBindingUtil.bind(alertView);
+
+        // alertDialog.show();
+
+    }
 }

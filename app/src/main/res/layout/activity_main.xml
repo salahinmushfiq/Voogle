@@ -37,6 +37,7 @@
             android:text="Sign In As Checker"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:onClick="checkerBtnOnClick"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
