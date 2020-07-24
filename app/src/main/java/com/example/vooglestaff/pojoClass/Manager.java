@@ -17,15 +17,16 @@ public class Manager {
         this.driverPhoneNoCount = driverPhoneNoCount;
     }
 
-    ArrayList<String>licensePlate;
-    ArrayList<String>driverPhoneNumbers;
-    ArrayList<String>checkerPhoneNumbers;
-    int driverPhoneNoCount,busIdCount;
-    public ArrayList<String> getDriverPhoneNumbers() {
+    ArrayList<String> licensePlate;
+    ArrayList<DriverPhoneMac> driverPhoneNumbers;
+    ArrayList<String> checkerPhoneNumbers;
+    int driverPhoneNoCount, busIdCount;
+
+    public ArrayList<DriverPhoneMac> getDriverPhoneNumbers() {
         return driverPhoneNumbers;
     }
 
-    public void setDriverPhoneNumbers(ArrayList<String> driverPhoneNumbers) {
+    public void setDriverPhoneNumbers(ArrayList<DriverPhoneMac> driverPhoneNumbers) {
         this.driverPhoneNumbers = driverPhoneNumbers;
     }
 
@@ -46,15 +47,13 @@ public class Manager {
     }
 
 
-
-    public ArrayList<String> getPhoneNumbers() {
+    public ArrayList<DriverPhoneMac> getPhoneNumbers() {
         return driverPhoneNumbers;
     }
 
-    public void setPhoneNumbers(ArrayList<String> driverPhoneNumbers) {
+    public void setPhoneNumbers(ArrayList<DriverPhoneMac> driverPhoneNumbers) {
         this.driverPhoneNumbers = driverPhoneNumbers;
     }
-
 
 
     public int getBusIdCount() {
@@ -104,8 +103,6 @@ public class Manager {
     public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
-
-
 
 
 }

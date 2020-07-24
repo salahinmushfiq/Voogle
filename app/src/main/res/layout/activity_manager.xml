@@ -84,7 +84,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Add License Plate No."
+            android:hint="Add License Plate No."
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolbar" />
@@ -94,11 +94,36 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Add Phone No."
+            android:hint="Add Phone No."
             android:visibility="gone"
+            android:inputType="phone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+        <AutoCompleteTextView
+            android:id="@+id/addLicNoACTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:hint="Add License No."
+            android:inputType="number"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addPhoneNoACTV" />
+
+        <AutoCompleteTextView
+            android:id="@+id/addNameACTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:hint="Add Name"
+            android:inputType="textPersonName"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addLicNoACTV" />
 
         <Button
             android:id="@+id/addLicensePlateBtn"
@@ -124,7 +149,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/addPhoneNoACTV"
+            app:layout_constraintTop_toBottomOf="@+id/addNameACTV"
             app:layout_constraintVertical_bias="0.0"
             android:visibility="gone"/>
 

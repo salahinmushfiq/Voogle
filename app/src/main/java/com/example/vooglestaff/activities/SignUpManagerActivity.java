@@ -39,16 +39,15 @@ public class SignUpManagerActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAnalytics mFirebaseAnalytics;
     DatabaseReference databaseReference,managerListRef;
-    @RequiresApi(api = Build.VERSION_CODES.P)
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
          activitySignUpManagerBinding =DataBindingUtil.setContentView(this,R.layout.activity_sign_up_manager);
          databaseReference= FirebaseDatabase.getInstance().getReference("");
 
-
-
     }
+
     private void passwordCheck() {
         passwordCheckFlag=0;
         if(!password.equals(confirmPassword))
@@ -60,6 +59,7 @@ public class SignUpManagerActivity extends AppCompatActivity {
             passwordCheckFlag=1;
         }
     }
+
     private void nullcheck() {
         nullcheckFlag=0;
         if(busGroupName.isEmpty())
@@ -88,6 +88,7 @@ public class SignUpManagerActivity extends AppCompatActivity {
             activitySignUpManagerBinding.busGroupIdET.setError("Empty Field");
         }
     }
+
     public void signUpBtnClick(View view) {
         busGroupName = activitySignUpManagerBinding.busGroupNameET.getText().toString();
         email = activitySignUpManagerBinding.emailET.getText().toString();

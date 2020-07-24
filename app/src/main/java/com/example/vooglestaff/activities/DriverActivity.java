@@ -57,14 +57,8 @@ public class DriverActivity extends AppCompatActivity {
         databaseReference = FirebaseDatabase.getInstance().getReference("");
         if (ContextCompat.checkSelfPermission(DriverActivity.this,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(DriverActivity.this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-                ActivityCompat.requestPermissions(DriverActivity.this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-            } else {
-                ActivityCompat.requestPermissions(DriverActivity.this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-            }
+            ActivityCompat.requestPermissions(DriverActivity.this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
 
     }
@@ -77,27 +71,18 @@ public class DriverActivity extends AppCompatActivity {
             String msg = "New Latitude: " + latitude + "New Longitude: " + longitude;
             //Toast.makeText(mContext,msg,Toast.LENGTH_LONG).show();
             Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
-            com.example.vooglestaff.pojoClass.Location locationPojoClass=new com.example.vooglestaff.pojoClass.Location();
+            com.example.vooglestaff.pojoClass.Location locationPojoClass = new com.example.vooglestaff.pojoClass.Location();
 
 
             locationPojoClass.setLat(latitude);
             locationPojoClass.setLng(longitude);
             locationPojoClass.setLicensePlate(GlobalVariables.licensePlate);
-            Toast.makeText(mContext, "License Plate: "+locationPojoClass.getLicensePlate(), Toast.LENGTH_SHORT).show();
-            databaseReference.child("root").child("locations").child(GlobalVariables.licensePlate).setValue(locationPojoClass).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if(task.isComplete())
-                    {
-                        Toast.makeText(mContext, "Location written", Toast.LENGTH_SHORT).show();
-                    }
+            Toast.makeText(mContext, "License Plate: " + locationPojoClass.getLicensePlate(), Toast.LENGTH_SHORT).show();
+            databaseReference.child("root").child("locations").child(GlobalVariables.licensePlate).setValue(locationPojoClass).addOnCompleteListener(task -> {
+                if (task.isComplete()) {
+                    Toast.makeText(mContext, "Location written", Toast.LENGTH_SHORT).show();
                 }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
+            }).addOnFailureListener(e -> Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show());
         }
 
         @Override
@@ -126,17 +111,11 @@ public class DriverActivity extends AppCompatActivity {
             AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
             alertDialog.setTitle("Enable Location");
             alertDialog.setMessage("Your locations setting is not enabled. Please enabled it in settings menu.");
-            alertDialog.setPositiveButton("Location Settings", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    startActivity(intent);
-                }
+            alertDialog.setPositiveButton("Location Settings", (dialog, which) -> {
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(intent);
             });
-            alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
+            alertDialog.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
             AlertDialog alert = alertDialog.create();
             alert.show();
         } else {

@@ -1,32 +1,26 @@
 package com.example.vooglestaff.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
-
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+
 import com.example.vooglestaff.R;
-import com.example.vooglestaff.constants.GlobalVariables;
 import com.example.vooglestaff.databinding.ActivityMainBinding;
 import com.example.vooglestaff.databinding.LoginPopupCheckerBinding;
 import com.example.vooglestaff.databinding.LoginPopupDriverBinding;
 import com.example.vooglestaff.databinding.LoginPopupManagerBinding;
-import com.example.vooglestaff.databinding.LoginPopupManagerBinding;
+import com.example.vooglestaff.pojoClass.DriverPhoneMac;
 import com.example.vooglestaff.pojoClass.Manager;
+import com.example.vooglestaff.utils.DeviceInformation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -38,17 +32,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.gson.JsonObject;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
-import static com.android.volley.Request.Method.POST;
-
+@SuppressLint("LogNotTimber")
 public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding activityMainBinding;
@@ -61,22 +50,26 @@ public class MainActivity extends AppCompatActivity {
     View alertView;
     String email, password;
     int nullCheckFlag;
-    String phoneNumber,groupId,licensePlate;
+    String phoneNumber, groupId, licensePlate;
     JSONObject signInJson;
     private FirebaseAuth mAuth;
     DatabaseReference databaseReference;
     Manager currentManager;
-    ArrayList<Manager>managerList=new ArrayList<>();
+    ArrayList<Manager> managerList = new ArrayList<>();
+    private static final String TAG = "MainActivity";
+    DriverPhoneMac currentDriver;
+    String MAC_ID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activityMainBinding=DataBindingUtil.setContentView(this,R.layout.activity_main);
-
+        activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        MAC_ID = DeviceInformation.getMAC((WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE));
         mAuth = FirebaseAuth.getInstance();
         // loginPopupBinding = DataBindingUtil.inflate(LayoutInflater.from(this), R.layout.login_popup_manager, null, false);
         //
     }
+
     private void alertDialogManager() {
         alert = new AlertDialog.Builder(MainActivity.this);
         alertView = getLayoutInflater().inflate(R.layout.login_popup_manager, null);
@@ -90,9 +83,10 @@ public class MainActivity extends AppCompatActivity {
         ad = alert.show();
         loginPopupManagerBinding = DataBindingUtil.bind(alertView);
 
-      // alertDialog.show();
+        // alertDialog.show();
 
     }
+
     private void alertDialogDriver() {
         alert = new AlertDialog.Builder(MainActivity.this);
         alertView = getLayoutInflater().inflate(R.layout.login_popup_driver, null);
@@ -112,47 +106,35 @@ public class MainActivity extends AppCompatActivity {
 
     public void logInAsManagerClick(View view) {
         Toast.makeText(this, "Log In", Toast.LENGTH_SHORT).show();
-        email=loginPopupManagerBinding.emailET.getText().toString().trim();
-        password=loginPopupManagerBinding.passwordET.getText().toString().trim();
+        email = loginPopupManagerBinding.emailET.getText().toString().trim();
+        password = loginPopupManagerBinding.passwordET.getText().toString().trim();
         Toast.makeText(this, email, Toast.LENGTH_SHORT).show();
         Toast.makeText(this, password, Toast.LENGTH_SHORT).show();
-        nullcheck(email,password);
-        if (nullCheckFlag==0) {
-            FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @SuppressWarnings("NullableProblems")
-                @Override
-                public void onComplete(Task<AuthResult> task) {
-                    Toast.makeText(MainActivity.this, "Sign In Successful", Toast.LENGTH_SHORT).show();
-                    ad.dismiss();
-                    Intent goToManagerActivity=new Intent(MainActivity.this,ManagerActivty.class);
-                    startActivity(goToManagerActivity);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-        else{
+        nullcheck(email, password);
+        if (nullCheckFlag == 0) {
+            FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).addOnSuccessListener(task -> {
+                Toast.makeText(MainActivity.this, "Sign In Successful", Toast.LENGTH_SHORT).show();
+                ad.dismiss();
+                Intent goToManagerActivity = new Intent(MainActivity.this, ManagerActivty.class);
+                startActivity(goToManagerActivity);
+            }).addOnFailureListener(e -> Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
+        } else {
             Toast.makeText(this, "Fill Up the fields", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void nullcheck(String email, String password) {
-        nullCheckFlag=0;
-        if(email.isEmpty())
-        {
-            nullCheckFlag=1;
+        nullCheckFlag = 0;
+        if (email.isEmpty()) {
+            nullCheckFlag = 1;
         }
-        if(password.isEmpty())
-        {
-            nullCheckFlag=1;
+        if (password.isEmpty()) {
+            nullCheckFlag = 1;
         }
     }
 
     public void signUpBtnClick(View view) {
-        Intent goToSignUpManagerActivity=new Intent(this, SignUpManagerActivity.class);
+        Intent goToSignUpManagerActivity = new Intent(this, SignUpManagerActivity.class);
         startActivity(goToSignUpManagerActivity);
     }
 
@@ -162,53 +144,71 @@ public class MainActivity extends AppCompatActivity {
 
     public void driverBtnOnClick(View view) {
         //FirebaseUser user=mAuth.getCurrentUser();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        /*FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             // User is signed in
-            Intent goToDriverActivity=new Intent(MainActivity.this,DriverActivity.class);
+            Intent goToDriverActivity = new Intent(MainActivity.this, DriverActivity.class);
             startActivity(goToDriverActivity);
-        } else {
-            // No user is signed in
-            alertDialogDriver();
-        }
+        } else {*/
+        // No user is signed in
+        alertDialogDriver();
+//        }
 
     }
 
-    public void logInAsDriverClick(View view)  {
+    public void logInAsDriverClick(View view) {
 
 
+        licensePlate = loginPopupDriverBinding.licensePlateET.getText().toString();
+        phoneNumber = loginPopupDriverBinding.phoneNoET.getText().toString();
+        groupId = loginPopupDriverBinding.managerIdET.getText().toString();
 
-        phoneNumber=loginPopupDriverBinding.phoneNoET.getText().toString();
-        groupId=loginPopupDriverBinding.managerIdET.getText().toString();
+        databaseReference = FirebaseDatabase.getInstance().getReference("root").child("ManagerList");
 
-        databaseReference= FirebaseDatabase.getInstance().getReference("root/ManagerList/");
-
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference.orderByChild("groupId").equalTo(groupId)/*.equalTo(phoneNumber, "phoneNumber")*/.addListenerForSingleValueEvent(new ValueEventListener() {
+            @SuppressWarnings("SuspiciousMethodCalls")
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot dataSnapshot1:dataSnapshot.getChildren()){
-                    Manager manager=dataSnapshot.getValue(Manager.class);
-                    if(manager.getGroupId().equals(phoneNumber)){
-                        for(String d:manager.getDriverPhoneNumbers()){
-                            if(d.equals(phoneNumber))
-                            {
-                                Toast.makeText(MainActivity.this, manager.getManagerId(), Toast.LENGTH_SHORT).show();
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    Log.i(TAG, "onDataChange: " + snapshot.toString());
+                    if (snapshot.hasChildren())
+                        for (DataSnapshot dataSnapshot1 : snapshot.getChildren()) {
+                            Log.i(TAG, "onDataChange Inside: " + dataSnapshot1.toString());
+                            try {
+                                currentManager = dataSnapshot1.getValue(Manager.class);
+                                assert currentManager != null;
+                                for (DriverPhoneMac dPM : currentManager.getDriverPhoneNumbers()
+                                ) {
+                                    if (dPM.getNumber().equals(phoneNumber)) {
+                                        if (dPM.getMacId().equals(MAC_ID) || dPM.getMacId().equals("default")) {
+                                            currentDriver = dPM;
+                                            if (dPM.getMacId().equals("default"))
+                                                databaseReference.child(currentManager.getManagerId()).child("driverPhoneNumbers").child(currentDriver.getLocalId()).child("macId").setValue(MAC_ID);
+                                            FirebaseDatabase.getInstance().getReference("root").child("locations").child(licensePlate).child("licenseNo").setValue(dPM.getLicenseNo());
+                                        } else {
+                                            Toast.makeText(getApplicationContext(), "This Device needs to be registered, Contact administration", Toast.LENGTH_LONG).show();
+                                        }
+                                        return;
+                                    }
+                                }
+                                Log.i(TAG, "onChildAdded: " + currentManager.getDriverPhoneNumbers().contains(new DriverPhoneMac(phoneNumber, true)));
+
+                            } catch (Exception x) {
+                                x.printStackTrace();
                             }
                         }
-                    };
-
+                        // managerList=dataSnapshot.getValue(Manager.class);
+                    else {
+                        currentManager = snapshot.getValue(Manager.class);
+                        Log.i(TAG, "onChildAdded: " + currentManager.getDriverPhoneNumbers().contains("phone:" + phoneNumber));
+                    }
                 }
-               // managerList=dataSnapshot.getValue(Manager.class);
-                currentManager.getDriverPhoneNumbers();
-
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError error) {
 
             }
-
-
         });
 //        licensePlate=loginPopupDriverBinding.licensePlateET.getText().toString();
 //
@@ -295,18 +295,18 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void logInAsCheckerClick(View view)  {
+    public void logInAsCheckerClick(View view) {
 
 
-        phoneNumber=loginPopupCheckerBinding.phoneNoET.getText().toString();
-        groupId=loginPopupCheckerBinding.managerIdET.getText().toString();
+        phoneNumber = loginPopupCheckerBinding.phoneNoET.getText().toString();
+        groupId = loginPopupCheckerBinding.managerIdET.getText().toString();
 
-        databaseReference= FirebaseDatabase.getInstance().getReference("root/ManagerList/");
+        databaseReference = FirebaseDatabase.getInstance().getReference("root/ManagerList/");
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Manager manager=dataSnapshot.getValue(Manager.class);
+                Manager manager = dataSnapshot.getValue(Manager.class);
                 currentManager.getDriverPhoneNumbers();
 
             }
@@ -360,8 +360,9 @@ public class MainActivity extends AppCompatActivity {
 //            }
 
 
+    }
 
-        };
+    ;
 //        Response.ErrorListener listenError  = new Response.ErrorListener() {
 //            @Override
 //            public void onErrorResponse(VolleyError error) {
@@ -409,13 +410,14 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             // User is signed in
-            Intent goToDriverActivity=new Intent(MainActivity.this,DriverActivity.class);
+            Intent goToDriverActivity = new Intent(MainActivity.this, DriverActivity.class);
             startActivity(goToDriverActivity);
         } else {
             // No user is signed in
             alertDialogChecker();
         }
     }
+
     private void alertDialogChecker() {
         alert = new AlertDialog.Builder(MainActivity.this);
         alertView = getLayoutInflater().inflate(R.layout.login_popup_checker, null);
