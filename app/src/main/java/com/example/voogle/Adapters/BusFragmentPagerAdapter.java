@@ -4,13 +4,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.example.voogle.Fragments.BusFragment;
+import com.example.voogle.Fragments.TestMapsFragment;
 import com.example.voogle.Fragments.MapFragment;
 import com.example.voogle.Fragments.FaresFragment;
 
 public class BusFragmentPagerAdapter extends FragmentPagerAdapter {
 
-    private BusFragment busFragment;
+    private TestMapsFragment busFragment;
     private FaresFragment faresFragment;
     private MapFragment mapFragment;
 
@@ -25,7 +25,7 @@ public class BusFragmentPagerAdapter extends FragmentPagerAdapter {
      * @param faresFragment The Second Fragment to be used
      * @param mapFragment   The Third Fragment to be used
      */
-    public BusFragmentPagerAdapter(FragmentManager fm, BusFragment busFragment, FaresFragment faresFragment, MapFragment mapFragment) {
+    public BusFragmentPagerAdapter(FragmentManager fm, TestMapsFragment busFragment, FaresFragment faresFragment, MapFragment mapFragment) {
         super(fm);
         this.busFragment = busFragment;
         this.faresFragment = faresFragment;
@@ -53,7 +53,7 @@ public class BusFragmentPagerAdapter extends FragmentPagerAdapter {
         return 3;
     }
 
-    public BusFragment getBusFragment() {
+    public TestMapsFragment getBusFragment() {
         return busFragment;
     }
 

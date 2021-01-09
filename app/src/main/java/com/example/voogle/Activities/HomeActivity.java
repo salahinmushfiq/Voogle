@@ -7,6 +7,7 @@ import com.example.voogle.Adapters.BusFragmentPagerAdapter;
 import com.example.voogle.Fragments.BusFragment;
 import com.example.voogle.Fragments.FaresFragment;
 import com.example.voogle.Fragments.MapFragment;
+import com.example.voogle.Fragments.TestMapsFragment;
 import com.example.voogle.PojoClasses.PathaoBikeFares;
 import com.example.voogle.PojoClasses.PathaoCarFares;
 import com.example.voogle.PojoClasses.UberMotoFares;
@@ -85,7 +86,7 @@ public class HomeActivity extends AppCompatActivity {
 //        mapFragment.setArguments(bundle);
 
         // TODO : change if one needs pre-configured fragments
-        BusFragmentPagerAdapter busFragmentPagerAdapter = new BusFragmentPagerAdapter(getSupportFragmentManager(), new BusFragment(), new FaresFragment(), mapFragment);
+        BusFragmentPagerAdapter busFragmentPagerAdapter = new BusFragmentPagerAdapter(getSupportFragmentManager(), new TestMapsFragment(), new FaresFragment(), mapFragment);
         Custompager custompager = activityHomeBinding.vehicleTypeVP;
         custompager.setAdapter(busFragmentPagerAdapter);
         activityHomeBinding.vehicleTypeTL.setupWithViewPager(custompager);

@@ -56,7 +56,7 @@ public class FaresFragment extends Fragment {
         // Inflate the layout for this fragment
 
         fragmentFaresBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_fares, container, false);
-        getRoute();
+//        getRoute();
 
 
         return fragmentFaresBinding.getRoot();
