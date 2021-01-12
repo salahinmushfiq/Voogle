@@ -86,7 +86,7 @@ public class HomeActivity extends AppCompatActivity {
 //        mapFragment.setArguments(bundle);
 
         // TODO : change if one needs pre-configured fragments
-        BusFragmentPagerAdapter busFragmentPagerAdapter = new BusFragmentPagerAdapter(getSupportFragmentManager(), new TestMapsFragment(), new FaresFragment(), mapFragment);
+        BusFragmentPagerAdapter busFragmentPagerAdapter = new BusFragmentPagerAdapter(getSupportFragmentManager(), new FaresFragment(),new TestMapsFragment());
         Custompager custompager = activityHomeBinding.vehicleTypeVP;
         custompager.setAdapter(busFragmentPagerAdapter);
         activityHomeBinding.vehicleTypeTL.setupWithViewPager(custompager);

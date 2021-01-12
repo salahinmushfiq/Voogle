@@ -27,7 +27,9 @@ public class TestMainActivity extends AppCompatActivity {
 
         // TODO : change if one needs pre-configured fragments
         MapFragment mapFragment = new MapFragment();
-        BusFragmentPagerAdapter busFragmentPagerAdapter = new BusFragmentPagerAdapter(getSupportFragmentManager(), new TestMapsFragment(), new FaresFragment(), mapFragment);
+        TestMapsFragment testMapsFragment = new TestMapsFragment();
+
+        BusFragmentPagerAdapter busFragmentPagerAdapter = new BusFragmentPagerAdapter(getSupportFragmentManager(), new FaresFragment(), testMapsFragment);
         Custompager custompager = activityTestMainBinding.vehicleTypeVP;
         custompager.setAdapter(busFragmentPagerAdapter);
         activityTestMainBinding.vehicleTypeTL.setupWithViewPager(custompager);
@@ -40,10 +42,10 @@ public class TestMainActivity extends AppCompatActivity {
         StopsNew stopsNew=new StopsNew();
         stopsNew.setUp(1);
         //TabLayout.Tab x;
-        Objects.requireNonNull(activityTestMainBinding.vehicleTypeTL.getTabAt(0)).setCustomView(R.layout.sample_tab);
+//        Objects.requireNonNull(activityTestMainBinding.vehicleTypeTL.getTabAt(0)).setCustomView(R.layout.sample_tab);
 
-        Objects.requireNonNull(activityTestMainBinding.vehicleTypeTL.getTabAt(1)).setCustomView(R.layout.sample_tab_but_fares);
-        Objects.requireNonNull(activityTestMainBinding.vehicleTypeTL.getTabAt(2)).setCustomView(R.layout.sample_tab_but_bus);
+        Objects.requireNonNull(activityTestMainBinding.vehicleTypeTL.getTabAt(0)).setCustomView(R.layout.sample_tab_but_fares);
+        Objects.requireNonNull(activityTestMainBinding.vehicleTypeTL.getTabAt(1)).setCustomView(R.layout.sample_tab_but_bus);
 
     }
 }
