@@ -3,20 +3,20 @@ package com.example.voogle.PojoClasses;
 import java.util.ArrayList;
 
 public class RouteNew {
-    ArrayList<StopsNew> stopsNew = new ArrayList<>();
+    ArrayList<StopNew> stopNew = new ArrayList<>();
 
     public RouteNew() {
     }
 
-    public RouteNew(ArrayList<StopsNew> stopsNew) {
-        this.stopsNew = stopsNew;
+    public RouteNew(ArrayList<StopNew> stopNew) {
+        this.stopNew = stopNew;
     }
 
-    public ArrayList<StopsNew> getStopsNew() {
-        return stopsNew;
+    public ArrayList<StopNew> getStopNew() {
+        return stopNew;
     }
 
-    public void setStopsNew(ArrayList<StopsNew> stopsNew) {
-        this.stopsNew = stopsNew;
+    public void setStopNew(ArrayList<StopNew> stopNew) {
+        this.stopNew = stopNew;
     }
 }

@@ -9,7 +9,7 @@ import com.example.voogle.Adapters.BusFragmentPagerAdapter;
 import com.example.voogle.Fragments.FaresFragment;
 import com.example.voogle.Fragments.MapFragment;
 import com.example.voogle.Fragments.TestMapsFragment;
-import com.example.voogle.PojoClasses.StopsNew;
+import com.example.voogle.PojoClasses.StopNew;
 import com.example.voogle.R;
 import com.example.voogle.components.Custompager;
 import com.example.voogle.databinding.ActivityTestMainBinding;
@@ -39,8 +39,8 @@ public class TestMainActivity extends AppCompatActivity {
         activityTestMainBinding.vehicleTypeTL.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(custompager));
 
 //        activityHomeBinding.vehicleTypeVP.requestDisallowInterceptTouchEvent(true);
-        StopsNew stopsNew=new StopsNew();
-        stopsNew.setUp(1);
+        StopNew stopNew =new StopNew();
+        stopNew.setUp(1);
         //TabLayout.Tab x;
 //        Objects.requireNonNull(activityTestMainBinding.vehicleTypeTL.getTabAt(0)).setCustomView(R.layout.sample_tab);
 

@@ -17,7 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.voogle.PojoClasses.StopsNew;
+import com.example.voogle.PojoClasses.StopNew;
 import com.example.voogle.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -42,17 +42,17 @@ import java.util.Map;
 public class TestMapsFragment extends Fragment {
 
     private GoogleMap mMap;
-    private DatabaseReference stopRef,root,routeRef;
+    private DatabaseReference stopRef,root,routeRef,currentRouteRef;
     private Double lat,lng;
     ArrayList <Integer>possibleRoutes;
     LocationManager locationManager;
-    Location userLocation,busLocation;
+    Location userLocation,busLocation,startingStopLocalLocation,endingStopLocalLocation;
     Calendar cal;
     Date currentLocalTime;
     SimpleDateFormat date ;
-    StopsNew startingStop,endingStop;
-    Location startingStopLocalLocation,currentStopLocalLocation,endingStopLocalLocation;
-
+    StopNew startingStop,endingStop;
+    ArrayList <Location>locations;
+    int iteratorForStart,iteratorForEnd;
 // you can get seconds by adding  "...:ss" to it
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
@@ -98,9 +98,15 @@ public class TestMapsFragment extends Fragment {
 
 
 
-            endingStop.setName("Kolabagan");
-            endingStop.setLat(23.747854936993697);
-            endingStop.setLng(90.38027281299742);
+//            endingStop.setName("Kolabagan");
+//            endingStop.setLat(23.747854936993697);
+//            endingStop.setLng(90.38027281299742);
+
+            //enable for up
+            endingStop.setName("Science Laboratory");
+            endingStop.setLat(23.73879827872002);
+            endingStop.setLng(90.38395013170603);
+
 
 
             userLocation=new Location("dummyprovider");
@@ -109,63 +115,64 @@ public class TestMapsFragment extends Fragment {
             mMap.addMarker(new MarkerOptions().position( new LatLng(startingStop.getLat(), startingStop.getLng())).title("Me")).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.man));
 
 
-//            getRouteDataFromDB(possibleRoutes);
+//          getRouteDataFromDB(possibleRoutes);
             getRouteDataFromDBNew(startingStop,endingStop);
 
 
-           getBusLocationFromDB();
+            getBusLocationFromDB();
 
 
         }
     };
 
 
-    private void getRouteDataFromDB(ArrayList<Integer> possibleRoutes) {
 
+//    private void getRouteDataFromDB(ArrayList<Integer> possibleRoutes) {
+//
+//
+//        stopRef = FirebaseDatabase.getInstance().getReference().child("root").child("routeNew");
+//        stopRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                if (dataSnapshot.exists()) {
+//                    for (DataSnapshot route : dataSnapshot.getChildren()) {
+//
+//
+//                        Log.d ("Route: ",route.getKey());
+//                        for (int routeNo:possibleRoutes) {
+//                            if(Integer.valueOf(route.getKey())==routeNo){
+//                                for (DataSnapshot stops:route.getChildren())
+//                                {
+//
+//                                    Log.d ("Route: ","stop: "+stops.getValue().toString());
+//                                    Log.d ("Route: ","name: "+stops.child("name").getValue().toString());
+//                                    Log.d ("Route: ","lat: "+stops.child("lat").getValue().toString());
+//                                    Log.d ("Route: ","lng: "+stops.child("lng").getValue().toString());
+//
+//
+//                                    LatLng position = new LatLng(Double.valueOf(stops.child("lat").getValue().toString()), Double.valueOf(stops.child("lng").getValue().toString()));
+//                                    mMap.addMarker(new MarkerOptions().position(position).title("name: "+stops.child("name").getValue().toString()+"      Route No.:"+stops.child("route").getValue().toString())).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.pointer));
+//
+//                                }
+//                                Log.d("Route",route.getValue().toString());
+//                            }
+//                        }
+//
+//                    }
+//
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//
+//    }
 
-        stopRef = FirebaseDatabase.getInstance().getReference().child("root").child("routeNew");
-        stopRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot route : dataSnapshot.getChildren()) {
-
-
-                        Log.d ("Route: ",route.getKey());
-                        for (int routeNo:possibleRoutes) {
-                            if(Integer.valueOf(route.getKey())==routeNo){
-                                for (DataSnapshot stops:route.getChildren())
-                                {
-
-                                    Log.d ("Route: ","stop: "+stops.getValue().toString());
-                                    Log.d ("Route: ","name: "+stops.child("name").getValue().toString());
-                                    Log.d ("Route: ","lat: "+stops.child("lat").getValue().toString());
-                                    Log.d ("Route: ","lng: "+stops.child("lng").getValue().toString());
-
-
-                                    LatLng position = new LatLng(Double.valueOf(stops.child("lat").getValue().toString()), Double.valueOf(stops.child("lng").getValue().toString()));
-                                    mMap.addMarker(new MarkerOptions().position(position).title("name: "+stops.child("name").getValue().toString()+"      Route No.:"+stops.child("route").getValue().toString())).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.pointer));
-
-                                }
-                                Log.d("Route",route.getValue().toString());
-                            }
-                        }
-
-                    }
-
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-    }
-
-    private void getRouteDataFromDBNew(StopsNew startingStop,StopsNew endingStop) {
+    private void getRouteDataFromDBNew(StopNew startingStop, StopNew endingStop) {
         startingStopLocalLocation=new Location(startingStop.getName());
         startingStopLocalLocation.setLatitude(startingStop.getLat());
         startingStopLocalLocation.setLongitude(startingStop.getLng());
@@ -190,20 +197,27 @@ public class TestMapsFragment extends Fragment {
                     for (DataSnapshot route : dataSnapshot.getChildren()) {
 
 
-//                        returnedSourceExistingRoutes=detectingDownOrUp(route,sourceExistingRoutes,startingStopLocalLocation);
-//                        returnedSourceExistingRoutes.size();
-
-
-
                         checkedRoute= (detectingAvailableRoutes(route,sourceExistingRoutes,startingStop,endingStop));
 
                         //find common route for source and destination
                         if(checkedRoute){
                             Log.d("getRouteDataFromDBNew","Route found: true for: "+route.getKey());
-                            int iteratorForStart=-1;
-                            int iteratorForEnd=-1;
+                            iteratorForStart=-1;
+                            iteratorForEnd=-1;
                             String direction=traverseRoute(route,iteratorForStart,iteratorForEnd,startingStop,endingStop);
                             Log.d("getRouteDataFromDBNew","Route Direction : "+direction);
+                            Log.d("getRouteDataFromDBNew","Iterator Start : "+iteratorForStart);
+                            Log.d("getRouteDataFromDBNew","Iterator End : "+iteratorForEnd);
+
+//                            getDistanceForRoute(route,route.getKey());
+                            Double distanceOfCurrentRoute= Double.valueOf(0);
+                            currentRouteRef = routeRef.child(route.getKey());
+                            locations=new ArrayList<>();
+                            if(direction.equals("up")) {
+                                getDistanceForUp(route);
+
+                            }
+
 
                         }
                         else{
@@ -226,11 +240,128 @@ public class TestMapsFragment extends Fragment {
 
     }
 
-    private String traverseRoute(DataSnapshot route, int iteratorForStart, int iteratorForEnd, StopsNew startingStop, StopsNew endingStop) {
+    private void getDistanceForUp(DataSnapshot route) {
+        Log.d("getDistanceForUp", "Route No.:"+ route.getValue().toString());
+        locations.clear();
+        currentRouteRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot route) {
+                if (route.exists()) {
+                    for (DataSnapshot stops : route.getChildren()) {
+
+                        Log.d("getDistanceForUp", "Stop No.:"+ stops.getValue().toString());
+//                        Log.d("getDistanceForUp", "testssss: previously stated" + startingStop.getName());
+                        if ((startingStop.getName().equals(stops.child("name").getValue().toString()))&&(Integer.valueOf(stops.child("up").getValue().toString())==1)&&(locations.size())==0){
+                            Location location = new Location(startingStop.getName());
+                            location.setLatitude(startingStop.getLat());
+                            location.setLongitude(startingStop.getLng());
+                            locations.add(location);
+                            Log.d("getDistanceForUp", "Started getting location"+ stops.child("name").getValue().toString());
+                        }
+                        if ((Integer.valueOf(stops.child("up").getValue().toString())==0)&&((locations.size())!=0)) {
+                            Location location = new Location(stops.child("name").getValue().toString());
+                            location.setLatitude(Double.valueOf(stops.child("lat").getValue().toString()));
+                            location.setLongitude(Double.valueOf(stops.child("lng").getValue().toString()));
+                            locations.add(location);
+                            Log.d("getDistanceForUp", "Iteration Running");
+                            Log.d("getDistanceForUp", "Current iteration" + stops.child("name").getValue().toString());
+                        }
+                        if ((endingStop.getName().equals(stops.child("name").getValue().toString()))&&(Integer.valueOf(stops.child("up").getValue().toString())==1)) {
+                            Log.d("getDistanceForUp", "Done iterating" + stops.child("name").getValue().toString());
+                            int iterator = 0;
+                            Log.d("getDistanceForUp", "Size: : " + String.valueOf(locations.size()));
+                            int distance = 0;
+//                            locations.indexOf();
+                            for (Location location : locations) {
+                                if(iterator>=locations.indexOf(location.getProvider())&&(iterator<locations.size()-1))
+                                {
+                                    Log.d("getDistanceForUp", "Location From : " + location.toString()+"Location To : "+(locations.get(iterator + 1).toString()));
+                                    distance += locations.get(iterator).distanceTo(locations.get(iterator + 1));
+                                    Log.d("getDistanceForUp", "Name: : " + location.getProvider());
+                                    Log.d("getDistanceForUp", "Distance: : " + (distance));
+                                    iterator++;
+                                }
+
+                            }
+                            locations.clear();
+                        }
+
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void getDistanceForDown(DataSnapshot route) {
+        Log.d("getDistanceForDown", "Route No.:"+ route.getValue().toString());
+        locations.clear();
+        currentRouteRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot route) {
+                if (route.exists()) {
+                    for (DataSnapshot stops : route.getChildren()) {
+
+
+//                        Log.d("getDistanceForUp", "testssss: previously stated" + startingStop.getName());
+                        if ((startingStop.getName().equals(stops.child("name").getValue().toString()))&&(Integer.valueOf(stops.child("up").getValue().toString())==0)&&(locations.size())==0){
+                            Location location = new Location(startingStop.getName());
+                            location.setLatitude(startingStop.getLat());
+                            location.setLongitude(startingStop.getLng());
+                            locations.add(location);
+                            Log.d("getDistanceForDown", "Started getting location"+ stops.child("name").getValue().toString());
+                        }
+                        if ((Integer.valueOf(stops.child("up").getValue().toString())==0)&&((locations.size())!=0)) {
+                            Location location = new Location(stops.child("name").getValue().toString());
+                            location.setLatitude(Double.valueOf(stops.child("lat").getValue().toString()));
+                            location.setLongitude(Double.valueOf(stops.child("lng").getValue().toString()));
+                            locations.add(location);
+                            Log.d("getDistanceForDown", "Iteration Running");
+                            Log.d("getDistanceForDown", "Current iteration" + stops.child("name").getValue().toString());
+                        }
+                        if ((endingStop.getName().equals(stops.child("name").getValue().toString()))&&(Integer.valueOf(stops.child("up").getValue().toString())==0)) {
+                            Log.d("getDistanceForDown", "Done iterating" + stops.child("name").getValue().toString());
+                            int iterator = 0;
+                            Log.d("getDistanceForDown", "Size: : " + String.valueOf(locations.size()));
+                            int distance = 0;
+//                            locations.indexOf();
+                            for (Location location : locations) {
+                                if(iterator>=locations.indexOf(location.getProvider())&&(iterator<locations.size()-1))
+                                {
+                                    Log.d("getDistanceForDown", "Location: : " + location.toString());
+                                    distance += locations.get(iterator).distanceTo(locations.get(iterator + 1));
+                                    Log.d("getDistanceForDown", "Name: : " + location.toString());
+                                    Log.d("getDistanceForDown", "Distance: : " + (distance));
+                                    iterator++;
+                                }
+
+                            }
+                            locations.clear();
+                        }
+
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private String traverseRoute(DataSnapshot route, int iteratorForStart, int iteratorForEnd, StopNew startingStop, StopNew endingStop) {
 
         Location startingStopLocation = new Location(startingStop.getName());
         startingStopLocation.setLatitude(startingStop.getLat());
         startingStopLocation.setLongitude(startingStop.getLng());
+
 
         ArrayList<Double> sourceDownUpDistance=new ArrayList();
         for (DataSnapshot stops : route.getChildren()) {
@@ -240,7 +371,7 @@ public class TestMapsFragment extends Fragment {
             Log.d("traverseRoute","end "+iteratorForEnd);
 
 
-                if((this.startingStop.getName().equals(stops.child("name").getValue().toString())))  {
+                if((startingStop.getName().equals(stops.child("name").getValue().toString())))  {
 
                     iteratorForStart=Integer.valueOf(stops.getKey().toString());
 
@@ -259,6 +390,7 @@ public class TestMapsFragment extends Fragment {
                             sourceDownUpDistance.add(1,distanceStart);
                         }
                         if(Integer.valueOf(stops.child("down").getValue().toString())==1){
+
                             Log.d("traverseRoute", "stop: " + stops.child("name").getValue().toString());
                             Log.d("traverseRoute", "Route: " + stops.child("route").getValue().toString());
                             Log.d("traverseRoute", "up: " + stops.child("up").getValue().toString());
@@ -277,7 +409,7 @@ public class TestMapsFragment extends Fragment {
                 }
                 if((this.endingStop.getName().equals(stops.child("name").getValue().toString())) &&(iteratorForEnd==-1))
                 {
-                    iteratorForEnd=Integer.valueOf(stops.getKey().toString());
+                    iteratorForEnd=Integer.valueOf(stops.getKey());
                     if(iteratorForEnd!=-1){
 
                         Log.d("traverseRoute","iterator End: "+iteratorForEnd);
@@ -327,15 +459,9 @@ public class TestMapsFragment extends Fragment {
         return selectedDirection;
     }
 
-    private boolean detectingAvailableRoutes(DataSnapshot route, Map<Integer, String> sourceExistingRoutes, StopsNew startingStop, StopsNew endingStop) {
+    private boolean detectingAvailableRoutes(DataSnapshot route, Map<Integer, String> sourceExistingRoutes, StopNew startingStop, StopNew endingStop) {
 
-        startingStopLocalLocation=new Location(startingStop.getName());
-        startingStopLocalLocation.setLatitude(startingStop.getLat());
-        startingStopLocalLocation.setLongitude(startingStop.getLng());
 
-        endingStopLocalLocation=new Location(endingStop.getName());
-        endingStopLocalLocation.setLatitude(endingStop.getLat());
-        endingStopLocalLocation.setLongitude(endingStop.getLng());
         Log.d("detectingRoutes","Check source: "+startingStop.getName()+startingStop.getLat()+startingStop.getLng());
         Log.d("detectingRoutes","Check destination: "+endingStop.getName()+endingStop.getLat()+endingStop.getLng());
         boolean sourceFound=false;
@@ -343,12 +469,10 @@ public class TestMapsFragment extends Fragment {
         for (DataSnapshot stops:route.getChildren()) {
             if((stops.child("name").getValue().toString().equals(startingStop.getName())))
             {
-
                 sourceFound=true;
             }
             if((stops.child("name").getValue().toString().equals(endingStop.getName())))
             {
-
                 destinationFound=true;
             }
 
@@ -367,115 +491,6 @@ public class TestMapsFragment extends Fragment {
     }
 
 
-
-
-
-    private void detectSourceAndDestinationCoexistingRoutes(Map<Integer, String> returnedSourceExistingRoutes) {
-        routeRef = FirebaseDatabase.getInstance().getReference().child("root").child("routeNew");
-        routeRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot route : dataSnapshot.getChildren()) {
-                        if(returnedSourceExistingRoutes.containsKey(Integer.valueOf(route.getKey())))
-                        {
-
-                            Log.d("Routes","detectedSource In Function(detectSourceAndDestinationCoexistingRoutes ): "+route.getKey());
-                            Log.d("Routes","detectedSource In Function(detecting Up Down:  "+returnedSourceExistingRoutes.get(Integer.valueOf(route.getKey())));
-                        }else{
-                            Log.d("Routes","Not detectedSource In get key: "+route.getKey());
-
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    private Map<Integer, String> detectingDownOrUp(DataSnapshot route, Map<Integer, String> sourceExistingRoutes, Location startingStopLocalLocation) {
-        double distanceInMetersDown=0;
-        double distanceInMetersUp=0;
-        int upCurrentRouteNo=-1;
-        int downCurrentRouteNo=-1;
-        for (DataSnapshot stops:route.getChildren())
-        {
-
-            Log.d("detectingDownOrUp","Stop: "+ stops.child("name").getValue().toString());
-            if( ((Double.valueOf(stops.child("lat").getValue().toString()))==startingStop.getLat().doubleValue())  && (Double.valueOf(stops.child("lng").getValue().toString())==startingStop.getLng()) ){
-                distanceInMetersUp=0;
-                distanceInMetersDown=0;
-                Log.d("detectingDownOrUp","Stop if everything matches: "+ stops.child("name").getValue().toString());
-                if(Integer.valueOf(stops.child("up").getValue().toString())==1)
-                {
-
-                    currentStopLocalLocation=new Location(startingStop.getName());
-                    currentStopLocalLocation.setLatitude(Double.valueOf(stops.child("lat").getValue().toString()));
-                    currentStopLocalLocation.setLongitude(Double.valueOf(stops.child("lat").getValue().toString()));
-                    distanceInMetersUp= (startingStopLocalLocation.distanceTo(currentStopLocalLocation))/10000;
-                    Log.d("detectingDownOrUp", "stop: " + stops.getValue().toString());
-//                    Log.d("detectingDownOrUp", "name: " + stops.child("name").getValue().toString());
-                    Log.d("detectingDownOrUp", "Source Name: " + startingStopLocalLocation.toString());
-                    Log.d("detectingDownOrUp", "Source Lat: " + startingStopLocalLocation.getLatitude());
-                    Log.d("detectingDownOrUp", "Source Lng: " + startingStopLocalLocation.getLongitude());
-                    Log.d("detectingDownOrUp", "route_no.: " + stops.child("route").getValue().toString());
-                    Log.d("detectingDownOrUp", "lat: " + stops.child("lat").getValue().toString());
-                    Log.d("detectingDownOrUp", "lng: " + stops.child("lng").getValue().toString());
-                    Log.d("detectingDownOrUp", "distance from source up: " + distanceInMetersUp);
-                    upCurrentRouteNo=Integer.valueOf(stops.child("route").getValue().toString());
-
-                }
-                if(Integer.valueOf(stops.child("down").getValue().toString())==1)
-                {
-
-                    currentStopLocalLocation=new Location(startingStop.getName());
-                    currentStopLocalLocation.setLatitude(Double.valueOf(stops.child("lat").getValue().toString()));
-                    currentStopLocalLocation.setLongitude(Double.valueOf(stops.child("lat").getValue().toString()));
-                    distanceInMetersDown= this.startingStopLocalLocation.distanceTo(currentStopLocalLocation)/10000;
-                    Log.d("detectingDownOrUp", "stop: " + stops.getValue().toString());
-                    Log.d("detectingDownOrUp", "name: " + stops.child("name").getValue().toString());
-                    Log.d("detectingDownOrUp", "Source Lat: " + startingStopLocalLocation.getLatitude());
-                    Log.d("detectingDownOrUp", "Source Lat: " + startingStopLocalLocation.getLongitude());
-                    Log.d("detectingDownOrUp", "route_no.: " + stops.child("route").getValue().toString());
-                    Log.d("detectingDownOrUp", "lat: " + stops.child("lat").getValue().toString());
-                    Log.d("detectingDownOrUp", "lng: " + stops.child("lng").getValue().toString());
-                    Log.d("detectingDownOrUp", "distance from source down: " + distanceInMetersDown);
-                    downCurrentRouteNo=Integer.valueOf(stops.child("route").getValue().toString());
-                }
-
-
-            }else{
-                Log.d("detectingDownOrUp","Not Detected");
-            }
-//
-            LatLng position = new LatLng(Double.valueOf(stops.child("lat").getValue().toString()), Double.valueOf(stops.child("lng").getValue().toString()));
-
-            mMap.addMarker(new MarkerOptions().position(position).title("name: "+stops.child("name").getValue().toString()+"      Route No.:"+stops.child("route").getValue().toString()+" Up: "+stops.child("up").getValue()+" Down: "+stops.child("down").getValue())).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.pointer));
-
-
-        }
-        Log.d("Route",route.getValue().toString());
-        if((upCurrentRouteNo==downCurrentRouteNo)&&(upCurrentRouteNo!=-1))
-        {
-            Log.d("Routes: ", "Routes matched : " + String.valueOf(upCurrentRouteNo));
-            if(distanceInMetersDown<distanceInMetersUp)
-            {
-                Log.d("Routes: ", "Route should be : Down" );
-                sourceExistingRoutes.put(upCurrentRouteNo,"down");
-            }
-            if(distanceInMetersDown>distanceInMetersUp)
-            {
-                Log.d("Routes: ", "Route should be : Up" );
-                sourceExistingRoutes.put(upCurrentRouteNo,"up");
-            }
-        }
-        return sourceExistingRoutes;
-    }
-
     private void getBusLocationFromDB() {
 
         stopRef = FirebaseDatabase.getInstance().getReference().child("root").child("locations");
@@ -485,9 +500,8 @@ public class TestMapsFragment extends Fragment {
                 if (dataSnapshot.exists()) {
 
                     for (DataSnapshot bus : dataSnapshot.getChildren()) {
-//                        if (data.child("name").getValue().toString().trim().equals(source)) {
+
                         String licensePlate = bus.child("licensePlate").getValue().toString();
-                        //     Toast.makeText(MainActivity.this,"Stop: "+stop, Toast.LENGTH_SHORT).show();
                         lat = Double.valueOf(bus.child("lat").getValue().toString());
                         lng = Double.valueOf(bus.child("lng").getValue().toString());
                         LatLng currentBusLocation = new LatLng(lat, lng);
@@ -503,9 +517,6 @@ public class TestMapsFragment extends Fragment {
                         Log.d("Bus","License Plate: "+licensePlate);
                         Log.d("Bus","Estimated distanceInMeters: "+distanceInMeters);
 //                        Log.d("Route","Estimated Speed: "+speed);
-
-
-
 
                     }
                 }
@@ -527,8 +538,8 @@ public class TestMapsFragment extends Fragment {
 
         possibleRoutes=new ArrayList<>();
         root= FirebaseDatabase.getInstance().getReference().child("root");
-        startingStop = new StopsNew();
-        endingStop = new StopsNew();
+        startingStop = new StopNew();
+        endingStop = new StopNew();
         cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+1:00"));
         currentLocalTime = cal.getTime();
         date =  new SimpleDateFormat("HH:mm:ss");
@@ -543,7 +554,6 @@ public class TestMapsFragment extends Fragment {
         Log.d("Route", "Current Time In Oncreate: "+ localTime);
 
 
-//        Toast.makeText(getContext(), String.valueOf(date), Toast.LENGTH_SHORT).show();
         return inflater.inflate(R.layout.fragment_test_maps, container, false);
 
     }

@@ -1,14 +1,14 @@
 package com.example.voogle.PojoClasses;
 
-public class StopsNew {
+public class StopNew {
     Double lat,lng;
     String name;
     Integer route,up,down;
 
-    public StopsNew() {
+    public StopNew() {
     }
 
-    public StopsNew(Double lat, Double lng, String name, Integer route, Integer up, Integer down) {
+    public StopNew(Double lat, Double lng, String name, Integer route, Integer up, Integer down) {
         this.lat = lat;
         this.lng = lng;
         this.name = name;

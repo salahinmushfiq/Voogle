@@ -1,13 +1,14 @@
 package com.example.voogle.Fragments;
 
 
+import android.location.Location;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -16,17 +17,8 @@ import com.example.voogle.PojoClasses.*;
 import com.example.voogle.R;
 import com.example.voogle.databinding.FragmentFaresBinding;
 import com.google.firebase.database.*;
-import com.mapbox.api.directions.v5.DirectionsCriteria;
-import com.mapbox.api.directions.v5.models.DirectionsResponse;
-import com.mapbox.api.directions.v5.models.DirectionsRoute;
-import com.mapbox.geojson.Point;
-import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
 import com.mapbox.turf.TurfConstants;
 import com.mapbox.turf.TurfConversion;
-import org.jetbrains.annotations.NotNull;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
 /**
@@ -44,6 +36,8 @@ public class FaresFragment extends Fragment {
     UberMotoFares uberMotoFares = new UberMotoFares();
     UberxFares uberxFares = new UberxFares();
     DatabaseReference root = FirebaseDatabase.getInstance().getReference("root");
+    StopNew startingStop,endingStop;
+    private Location startingStopLocalLocation,endingStopLocalLocation;
 
     public FaresFragment() {
         // Required empty public constructor
@@ -56,7 +50,9 @@ public class FaresFragment extends Fragment {
         // Inflate the layout for this fragment
 
         fragmentFaresBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_fares, container, false);
-//        getRoute();
+        startingStop = new StopNew();
+        endingStop = new StopNew();
+        getRoute();
 
 
         return fragmentFaresBinding.getRoot();
@@ -64,38 +60,37 @@ public class FaresFragment extends Fragment {
 
     private void getRoute() {
 
-        NavigationRoute.Builder testE;
-        NavigationRoute route = (testE = NavigationRoute.builder(getActivity())
-                .accessToken(getString(R.string.access_token))
-                .origin(Point.fromLngLat(GlobalVariables.sourceLng, GlobalVariables.sourceLat))
-                .destination(Point.fromLngLat(GlobalVariables.destinationLng, GlobalVariables.destinationLat)))
-                .profile(DirectionsCriteria.PROFILE_DRIVING)
-                .build();
-        route.getRoute(new Callback<DirectionsResponse>() {
-            @SuppressWarnings("ConstantConditions")
-            @Override
-            public void onResponse(Call<DirectionsResponse> call, @NotNull Response<DirectionsResponse> response) {
-                if (response.body() != null && !response.body().routes().isEmpty()) {
-                    DirectionsRoute responseRoute = response.body().routes().get(0);
-                    if (responseRoute != null) {
-                        distance = responseRoute.distance();
-                        duration = responseRoute.duration();
+//                        distance = responseRoute.distance();
+//                        duration = responseRoute.duration();
+
+        startingStop.setName("Shishu Mela");
+        startingStop.setLat(23.773018887636074);
+        startingStop.setLng(90.36722380809236);
+
+
+
+        endingStop.setName("Kolabagan");
+        endingStop.setLat(23.747854936993697);
+        endingStop.setLng(90.38027281299742);
+
+        startingStopLocalLocation=new android.location.Location(startingStop.getName());
+        startingStopLocalLocation.setLatitude(startingStop.getLat());
+        startingStopLocalLocation.setLongitude(startingStop.getLng());
+
+        endingStopLocalLocation=new Location(endingStop.getName());
+        endingStopLocalLocation.setLatitude(endingStop.getLat());
+        endingStopLocalLocation.setLongitude(endingStop.getLng());
+
+
+        double distance= startingStopLocalLocation.distanceTo(endingStopLocalLocation)/10000;
                         distanceInKm = TurfConversion.convertLength(distance, TurfConstants.UNIT_METERS, TurfConstants.UNIT_KILOMETERS);
                         durationInMinute = duration / 60;
                         Log.d("check", String.valueOf(distanceInKm));
                         Log.d("check", String.valueOf(durationInMinute));
 
                         getFaresFromDB();
-                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<DirectionsResponse> call, Throwable t) {
-                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 
     private void getFaresFromDB() {
 
@@ -107,10 +102,10 @@ public class FaresFragment extends Fragment {
                     fares = dataSnapshot.getValue(Fares.class);
                     GlobalVariables.fares = fares;
                     pathaoBikeTotalCost = (distanceInKm * Double.parseDouble(fares.getPathaobike().getCost_per_km())) + Double.parseDouble(fares.getPathaobike().getBase_fair());
-                    Log.d("checks", pathaoBikeTotalCost.toString());
+                    Log.d("fares", pathaoBikeTotalCost.toString());
 
                     pathaoCarTotalCost = (distanceInKm * Double.parseDouble(fares.getPathaocar().getCost_per_km())) + Double.parseDouble(fares.getPathaocar().getBase_fair());
-                    Log.d("checks", pathaoCarTotalCost.toString());
+                    Log.d("fares", pathaoCarTotalCost.toString());
 
                     uberXTotalCost = Double.parseDouble(fares.getUberx().getBase_fair()) + (distanceInKm * Double.parseDouble(fares.getUberx().getCost_per_km())) + ((durationInMinute * Double.parseDouble(fares.getUberx().getCost_per_min())));
                     uberMotoTotalCost = Double.parseDouble(fares.getUberx().getBase_fair()) + (distanceInKm * Double.parseDouble(fares.getUbermoto().getCost_per_km())) + ((durationInMinute * Double.parseDouble(fares.getUbermoto().getCost_per_min())));
