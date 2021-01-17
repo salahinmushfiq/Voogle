@@ -2,6 +2,7 @@ package com.example.voogle.Adapters;
 
 import android.app.Application;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +48,7 @@ public class RouteButtonAdapter extends RecyclerView.Adapter<RouteButtonAdapter.
             @Override
             public void onClick(View v) {
                 mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()));
+                Log.d("getBusList: ","Route No.:"+busList.get(position).getRoute_no());
             }
         });
 //        Bundle bundle=new Bundle();

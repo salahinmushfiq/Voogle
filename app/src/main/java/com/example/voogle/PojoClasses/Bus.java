@@ -4,6 +4,15 @@ public class Bus {
     long groupId;
     String groupName;
     int route_no;
+    double ratings;
+
+    public double getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(double ratings) {
+        this.ratings = ratings;
+    }
 
     public long getGroupId() {
         return groupId;

@@ -17,6 +17,7 @@ import com.example.voogle.Functions.MapClick;
 import com.example.voogle.GlobalVariables;
 import com.example.voogle.PojoClasses.Bus;
 import com.example.voogle.PojoClasses.Location;
+import com.example.voogle.PojoClasses.StopNew;
 import com.example.voogle.PojoClasses.Stops;
 import com.example.voogle.R;
 import com.example.voogle.databinding.FragmentMapBinding;
@@ -66,6 +67,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
     Symbol locationPointer;
     LocationComponent locationComponent;
     LocationComponentActivationOptions locationComponentActivationOptions;
+    StopNew startingStop,endingStop;
     double sourceLat;
     double sourceLng;
     double destinationLat;
@@ -140,7 +142,38 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
         fragmentMapBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_map, container, false);
 
         mapView = fragmentMapBinding.mapView;
+//        startingStop=new StopNew();
+//        endingStop=new StopNew();
+//        //            enable for up
+//        startingStop.setName("Shyamoli");
+//        startingStop.setLat(23.774913);
+//        startingStop.setLng(90.365721);
+//
+//////            enable for down
+////            endingStop.setName("Mohammadpur");
+////            endingStop.setLat(23.756998872575224);
+////            endingStop.setLng(90.36161473701699);
+//
+//
+//        //enable for down
+////            endingStop.setName("Kolabagan");
+////            endingStop.setLat(23.747854936993697);
+////            endingStop.setLng(90.38027281299742);
+//
+//        //enable for up
+////            endingStop.setName("Kolabagan");
+////            endingStop.setLat(23.748978125411217);
+////            endingStop.setLng(90.37943700869494);
+//
+//        //enable for up
+//        endingStop.setName("Science Laboratory");
+//        endingStop.setLat(23.739502);
+//        endingStop.setLng(90.383345);
 
+        //            //enable for down
+//                startingStop.setName("Science Laboratory");
+//                startingStop.setLat(23.73917813218871);
+//                startingStop.setLng(90.38343505809199);
 
         source = GlobalVariables.sourceName;
         destination = GlobalVariables.destinationName;
@@ -149,6 +182,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
         destinationLat = GlobalVariables.destinationLat;
         destinationLng = GlobalVariables.destinationLng;
 
+//        source = startingStop.getName();
+//        destination = endingStop.getName();
+//        sourceLat = startingStop.getLat();
+//        sourceLng = startingStop.getLng();
+//        destinationLat = endingStop.getLat();
+//        destinationLng = endingStop.getLng();
 
 // Set the camera to the greatest possible zoom level that includes the
 // bounds

@@ -10,7 +10,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Bus\n "
+        android:text="Bus Old\n "
         android:textColor="#000000"
         android:textSize="11sp"
         app:layout_constraintLeft_toLeftOf="parent"

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="20dp"
+            android:padding="20sp"
+            tools:ignore="MissingConstraints">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="fill_vertical"
+                >
+<!--                <Button-->
+<!--                    android:id="@+id/routeBtn"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="50dp"-->
+<!--                    android:textSize="10dp"-->
+<!--                    android:layout_marginLeft="5dp" />-->
+                <LinearLayout
+                    android:id="@+id/upperHalfLL"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_weight="1"
+                    >
+                <TextView
+                    android:id="@+id/busGroupNameTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:fontFamily="Franklin Gothic Book"
+                    android:textSize="25sp"
+                    android:textColor="@color/Color_Black"
+                    android:layout_weight="1"
+                    />
+                <TextView
+                    android:id="@+id/busRatingTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:fontFamily="Franklin Gothic Book"
+                    android:textSize="15sp"
+                    android:textColor="@color/Color_Black"
+                    android:layout_weight="1"
+                    />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:id="@+id/lowerHalfLL"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_below="@+id/upperHalfLL"
+                    android:gravity="fill_horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:fontFamily="Franklin Gothic Book"
+                        android:textSize="25sp"
+                        android:textColor="@color/Color_Black"
+                        android:layout_weight="1"
+                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:fontFamily="Franklin Gothic Book"
+                        android:textSize="15sp"
+                        android:textColor="@color/Color_Black"
+                        android:layout_weight="1"
+
+                        />
+                </LinearLayout>
+
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+
+
+
+</layout>

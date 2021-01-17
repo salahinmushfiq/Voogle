@@ -16,28 +16,29 @@ public class BusFragmentPagerAdapter extends FragmentPagerAdapter {
     private MapFragment mapFragment;
     private TestMapsFragment testMapsFragment;
 
-    /**
-     * <p>Custom {@link androidx.viewpager.widget.ViewPager} Adapter<br>
-     * Extends {@link FragmentPagerAdapter}<br>
-     * Used in our project to switch main menu fragments</p>
-     *
-     * @param fm            The {@link FragmentManager} to be used
-     * @param busFragment   The First Fragment to be used
-     * @param faresFragment The Second Fragment to be used
-     * @param mapFragment   The Third Fragment to be used
-     */
-//    public BusFragmentPagerAdapter(FragmentManager fm,  FaresFragment faresFragment, MapFragment mapFragment) {
-//        super(fm);
-//        this.busFragment = busFragment;
-//        this.faresFragment = faresFragment;
-//        this.mapFragment = mapFragment;
+//    /**
+//     * <p>Custom {@link androidx.viewpager.widget.ViewPager} Adapter<br>
+//     * Extends {@link FragmentPagerAdapter}<br>
+//     * Used in our project to switch main menu fragments</p>
+//     *
+//     * @param fm            The {@link FragmentManager} to be used
+//     * @param busFragment   The First Fragment to be used
+//     * @param faresFragment The Second Fragment to be used
+//     * @param mapFragment   The Third Fragment to be used
+//     */
+////    public BusFragmentPagerAdapter(FragmentManager fm,  FaresFragment faresFragment, MapFragment mapFragment) {
+////        super(fm);
+////        this.busFragment = busFragment;
+////        this.faresFragment = faresFragment;
+////        this.mapFragment = mapFragment;
 //    }
 
-    public BusFragmentPagerAdapter(FragmentManager supportFragmentManager,FaresFragment faresFragment, TestMapsFragment testMapsFragment) {
+    public BusFragmentPagerAdapter(FragmentManager supportFragmentManager,FaresFragment faresFragment, TestMapsFragment testMapsFragment,MapFragment mapFragment) {
         super(supportFragmentManager);
 
         this.faresFragment = faresFragment;
         this.testMapsFragment = testMapsFragment;
+        this.mapFragment=mapFragment;
     }
 
     @Override
@@ -50,6 +51,8 @@ public class BusFragmentPagerAdapter extends FragmentPagerAdapter {
                 return faresFragment;
             case 1:
                 return testMapsFragment;
+            case 2:
+                return mapFragment;
             default:
                 return null;
         }
@@ -58,7 +61,7 @@ public class BusFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 2;
+        return 3;
     }
 
 //    public TestMapsFragment getBusFragment() {
@@ -72,4 +75,10 @@ public class BusFragmentPagerAdapter extends FragmentPagerAdapter {
     public MapFragment getMapFragment() {
         return mapFragment;
     }
+
+    public BusFragment getBusFragment() {
+        return busFragment;
+    }
+
+
 }

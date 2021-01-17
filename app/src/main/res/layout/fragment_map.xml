@@ -32,7 +32,7 @@
             android:id="@+id/routeBtnRV"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-
+            android:background="@color/grey_hex_0a"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:enabled="false"

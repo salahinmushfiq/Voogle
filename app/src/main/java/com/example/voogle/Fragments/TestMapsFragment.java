@@ -3,7 +3,10 @@ package com.example.voogle.Fragments;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.graphics.Color;
 import android.icu.util.Calendar;
@@ -19,12 +22,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.voogle.Adapters.BusButtonAdapter;
+import com.example.voogle.Adapters.BusButtonDetailsAdapter;
+import com.example.voogle.Adapters.RouteButtonAdapter;
+import com.example.voogle.Functions.MapClick;
+import com.example.voogle.PojoClasses.Bus;
 import com.example.voogle.PojoClasses.StopNew;
 import com.example.voogle.R;
+import com.example.voogle.databinding.FragmentTestMapsBinding;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -43,16 +52,18 @@ import java.util.Date;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
 
-public class TestMapsFragment extends Fragment {
+public class TestMapsFragment extends Fragment implements MapClick{
 
     private GoogleMap mMap;
-    private DatabaseReference stopRef,root,routeRef,currentRouteRef;
+    private DatabaseReference stopRef,root,routeRef,currentRouteRef,busRef;
     private Double lat,lng;
-    ArrayList <Integer>possibleRoutes;
+    ArrayList<Long> possibleRoutes;
     LocationManager locationManager;
+    MapView mapView;
+    ArrayList<Bus> busList;
+    Bus currentBus;
     Location userLocation,busLocation,startingStopLocalLocation,endingStopLocalLocation;
     Calendar cal;
     Date currentLocalTime;
@@ -65,161 +76,12 @@ public class TestMapsFragment extends Fragment {
     ArrayList<Polyline>polylines;
     MarkerOptions markerOptions;
     static DecimalFormat df = new DecimalFormat("0.000");
+    FragmentTestMapsBinding fragmentTestMapsBinding;
+    private RouteButtonAdapter routeButtonAdapter;
+    private BusButtonAdapter busButtonAdapter;
+    BusButtonDetailsAdapter busButtonDetailsAdapter;
 // you can get seconds by adding  "...:ss" to it
 
-    private OnMapReadyCallback callback = new OnMapReadyCallback() {
-
-
-        /**
-         * Manipulates the map once available.
-         * This callback is triggered when the map is ready to be used.
-         * This is where we can add markers or lines, add listeners or move the camera.
-         * In this case, we just add a marker near Sydney, Australia.
-         * If Google Play services is not installed on the device, the user will be prompted to
-         * install it inside the SupportMapFragment. This method will only be triggered once the
-         * user has installed Google Play services and returned to the app.
-         */
-        @Override
-        public void onMapReady(GoogleMap googleMap) {
-            mMap = googleMap;
-
-            // Add a marker in Sydney and move the camera
-            LatLng Shyamoli = new LatLng(23.774804, 90.365533);
-//            mMap.addMarker(new MarkerOptions().position(Shyamoli).title("Me")).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.man));
-            userLocation=new Location("dummyprovider");
-            userLocation.setLatitude(Shyamoli.latitude);
-            userLocation.setLongitude (Shyamoli.longitude);
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(Shyamoli));
-            mMap.setTrafficEnabled(true);
-            mMap.setMinZoomPreference(12);
-
-////            enable for down
-//            endingStop.setName("Shishu Mela");
-//            endingStop.setLat(23.77487089842745);
-//            endingStop.setLng(90.36569494679532);
-
-////            enable for up
-//            startingStop.setName("Shishu Mela");
-//            startingStop.setLat(23.773018887636074);
-//            startingStop.setLng(90.36722380809236);
-
-            //shyamoli
-//            startingStop.setName("Me");
-//            startingStop.setLat(23.774804);
-//            startingStop.setLng(90.365533);
-
-
-////////            enable for up
-//            startingStop.setName("Shyamoli");
-//            startingStop.setLat(23.774545853558333);
-//            startingStop.setLng(90.3658781270351);
-
-////            enable for down
-            endingStop.setName("Shyamoli");
-            endingStop.setLat(23.774905990568854);
-            endingStop.setLng(90.365667223853);
-
-
-////            enable for up
-//            startingStop.setName("Mohammadpur");
-//            startingStop.setLat(23.756961809167528);
-//            startingStop.setLng(90.36157122318448);
-
-////            enable for down
-//            endingStop.setName("Mohammadpur");
-//            endingStop.setLat(23.756998872575224);
-//            endingStop.setLng(90.36161473701699);
-
-
-            //enable for down
-//            endingStop.setName("Kolabagan");
-//            endingStop.setLat(23.747854936993697);
-//            endingStop.setLng(90.38027281299742);
-
-            //enable for up
-//            endingStop.setName("Kolabagan");
-//            endingStop.setLat(23.748978125411217);
-//            endingStop.setLng(90.37943700869494);
-
-            //enable for up
-//            endingStop.setName("Science Laboratory");
-//            endingStop.setLat(23.73879827872002);
-//            endingStop.setLng(90.38395013170603);
-
-            //            //enable for down
-            startingStop.setName("Science Laboratory");
-            startingStop.setLat(23.73917813218871);
-            startingStop.setLng(90.38343505809199);
-
-
-            userLocation=new Location("dummyprovider");
-            userLocation.setLatitude(startingStop.getLat());
-            userLocation.setLongitude (startingStop.getLng());
-            mMap.addMarker(new MarkerOptions().position( new LatLng(startingStop.getLat(), startingStop.getLng())).title("Me")).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.man));
-
-            polylines=new ArrayList();
-//          getRouteDataFromDB(possibleRoutes);
-            getRouteDataFromDBNew(startingStop,endingStop);
-
-
-            getBusLocationFromDB();
-            mMap.setOnPolylineClickListener(new GoogleMap.OnPolylineClickListener() {
-                @Override
-                public void onPolylineClick(Polyline polyline) {
-                    Toast.makeText(getContext(), polyline.getTag().toString(), Toast.LENGTH_SHORT).show();
-                }
-            });
-
-
-        }
-    };
-
-
-
-//    private void getRouteDataFromDB(ArrayList<Integer> possibleRoutes) {
-//
-//
-//        stopRef = FirebaseDatabase.getInstance().getReference().child("root").child("routeNew");
-//        stopRef.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                if (dataSnapshot.exists()) {
-//                    for (DataSnapshot route : dataSnapshot.getChildren()) {
-//
-//
-//                        Log.d ("Route: ",route.getKey());
-//                        for (int routeNo:possibleRoutes) {
-//                            if(Integer.valueOf(route.getKey())==routeNo){
-//                                for (DataSnapshot stops:route.getChildren())
-//                                {
-//
-//                                    Log.d ("Route: ","stop: "+stops.getValue().toString());
-//                                    Log.d ("Route: ","name: "+stops.child("name").getValue().toString());
-//                                    Log.d ("Route: ","lat: "+stops.child("lat").getValue().toString());
-//                                    Log.d ("Route: ","lng: "+stops.child("lng").getValue().toString());
-//
-//
-//                                    LatLng position = new LatLng(Double.valueOf(stops.child("lat").getValue().toString()), Double.valueOf(stops.child("lng").getValue().toString()));
-//                                    mMap.addMarker(new MarkerOptions().position(position).title("name: "+stops.child("name").getValue().toString()+"      Route No.:"+stops.child("route").getValue().toString())).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.pointer));
-//
-//                                }
-//                                Log.d("Route",route.getValue().toString());
-//                            }
-//                        }
-//
-//                    }
-//
-//
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//
-//    }
 
     private void getRouteDataFromDBNew(StopNew startingStop, StopNew endingStop) {
         startingStopLocalLocation=new Location(startingStop.getName());
@@ -254,11 +116,12 @@ public class TestMapsFragment extends Fragment {
                             iteratorForStart=-1;
                             iteratorForEnd=-1;
                             String direction=traverseRoute(route,iteratorForStart,iteratorForEnd,startingStop,endingStop);
-                            Log.d("getRouteDataFromDBNew","Route Direction : "+direction);
-                            Log.d("getRouteDataFromDBNew","Iterator Start : "+iteratorForStart);
-                            Log.d("getRouteDataFromDBNew","Iterator End : "+iteratorForEnd);
+//                            Log.d("getRouteDataFromDBNew","Route Direction : "+direction);
+//                            Log.d("getRouteDataFromDBNew","Iterator Start : "+iteratorForStart);
+//                            Log.d("getRouteDataFromDBNew","Iterator End : "+iteratorForEnd);
 
                             currentRouteRef = routeRef.child(route.getKey());
+                            possibleRoutes.add(Long.valueOf(route.getKey()));
                             locations=new ArrayList<>();
                             if(direction.equals("up")) {
                                 Log.d("getDistanceForUp", "Route No.:"+ route.getValue().toString());
@@ -269,7 +132,7 @@ public class TestMapsFragment extends Fragment {
                                         Toast.makeText(getContext(),"Route: "+ polyline.getTag().toString(), Toast.LENGTH_SHORT).show();
                                     }
                                 });
-
+//                                possibleRoutes.add(Long.valueOf(route.getKey()));
                             }
                             if(direction.equals("down")) {
                                 Log.d("getDistanceForDown", "Route No.:"+ route.getValue().toString());
@@ -280,9 +143,11 @@ public class TestMapsFragment extends Fragment {
                                         Toast.makeText(getContext(),"Route: "+ polyline.getTag().toString(), Toast.LENGTH_SHORT).show();
                                     }
                                 });
-
+//                                possibleRoutes.add(Long.valueOf(route.getKey()));
                             }
-
+                            if(!possibleRoutes.contains(Long.valueOf(route.getKey()))){
+                                possibleRoutes.add(Long.valueOf(route.getKey()));
+                            }
 
                         }
                         else{
@@ -293,6 +158,8 @@ public class TestMapsFragment extends Fragment {
 
 
                     }
+//                    getBusList();
+                    Log.d("getRouteDataFromDBNew","RouteList"+possibleRoutes.get(0).toString());
 
                 }
             }
@@ -305,6 +172,56 @@ public class TestMapsFragment extends Fragment {
 
     }
 
+    private void getBusList() {
+        currentBus = new Bus();
+        busRef = FirebaseDatabase.getInstance().getReference().child("root").child("busList");
+        busRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot bus : dataSnapshot.getChildren()) {
+//                        for (DataSnapshot route : stops.child("route").getChildren()) {
+//
+                        currentBus = bus.getValue(Bus.class);
+                        for (Long route : possibleRoutes) {
+                            if (route == currentBus.getRoute_no()) {
+
+                                busList.add(currentBus);
+                            }
+                        }
+//                        }
+                        // Log.d("busLoad",bus.getValue().toString());
+                        //Toast.makeText(getActivity(), currentBus.getGroupName(), Toast.LENGTH_SHORT).show();
+                    }
+                    if (!busList.isEmpty()) {
+//                        routeButtonAdapter = new RouteButtonAdapter(getActivity(), busList, (MapClick) TestMapsFragment.this);
+//                        fragmentTestMapsBinding.busRV.setAdapter(routeButtonAdapter);
+//                        fragmentTestMapsBinding.busRV.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
+
+                        busButtonAdapter=new BusButtonAdapter(getActivity(), busList, (MapClick) TestMapsFragment.this);
+                        busButtonDetailsAdapter=new BusButtonDetailsAdapter(getActivity(), busList, (MapClick) TestMapsFragment.this);
+
+
+                        fragmentTestMapsBinding.busRV.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
+                        fragmentTestMapsBinding.busRV.setAdapter(busButtonAdapter);
+
+                        fragmentTestMapsBinding.busDetailsRV.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+                        fragmentTestMapsBinding.busDetailsRV.setAdapter(busButtonDetailsAdapter);
+                        for (Bus bus : busList) {
+                            Log.d("getBusList:", "Bus Name: "+bus.getGroupName());
+                        }
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
     private void getDistanceForUp(DataSnapshot route) {
         Log.d("getDistanceForUp", "Route No.:"+ route.getValue().toString());
 
@@ -356,7 +273,7 @@ public class TestMapsFragment extends Fragment {
                                             .width(15));
                                    polyline.setClickable(true);
                                    polyline.setTag(route.getKey());
-//                                   polylines.add(polyline);
+                                   polylines.add(polyline);
 
 
                                     // draw the polyline for the route so far
@@ -372,7 +289,7 @@ public class TestMapsFragment extends Fragment {
                                             .width(15));
                                     polyline.setClickable(true);
                                     polyline.setTag(route.getKey().toString()+" Distance: "+df.format(distance/1000)+" km");
-//                                    polylines.add(polyline);
+                                    polylines.add(polyline);
 
                                 }
 
@@ -517,7 +434,7 @@ public class TestMapsFragment extends Fragment {
                                             .width(15));
                                     polyline.setClickable(true);
                                     polyline.setTag(route.getKey());
-//                                   polylines.add(polyline);
+                                   polylines.add(polyline);
 
 
                                     // draw the polyline for the route so far
@@ -533,7 +450,7 @@ public class TestMapsFragment extends Fragment {
                                             .width(15));
                                     polyline.setClickable(true);
                                     polyline.setTag(route.getKey().toString()+" Distance: "+df.format(distance/1000)+" km");
-//                                    polylines.add(polyline);
+                                    polylines.add(polyline);
 
                                 }
 
@@ -754,6 +671,7 @@ public class TestMapsFragment extends Fragment {
         {
             Log.d("detectedRoute","detectedRoute: "+route.getValue().toString());
 
+
             return true;
 
         }else{
@@ -808,7 +726,7 @@ public class TestMapsFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        possibleRoutes=new ArrayList<>();
+        possibleRoutes=new ArrayList<Long>();
         root= FirebaseDatabase.getInstance().getReference().child("root");
         startingStop = new StopNew();
         endingStop = new StopNew();
@@ -820,23 +738,166 @@ public class TestMapsFragment extends Fragment {
 //        date.setTimeZone(TimeZone.getTimeZone("GMT+1:00"));
         String localTime = date.format(currentLocalTime);
 
-        possibleRoutes.add(3);
-        possibleRoutes.add(6);
-        possibleRoutes.add(9);
+
         Log.d("Route", "Current Time In Oncreate: "+ localTime);
 
 
-        return inflater.inflate(R.layout.fragment_test_maps, container, false);
+        fragmentTestMapsBinding= DataBindingUtil.inflate(inflater,R.layout.fragment_test_maps, container, false);
+        mapView=fragmentTestMapsBinding.map;
+        mapView.onCreate(savedInstanceState);
+        mapView.onResume();
+        mapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                mMap = googleMap;
+
+                // Add a marker in Sydney and move the camera
+                LatLng Shyamoli = new LatLng(23.774804, 90.365533);
+//            mMap.addMarker(new MarkerOptions().position(Shyamoli).title("Me")).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.man));
+                userLocation=new Location("dummyprovider");
+                userLocation.setLatitude(Shyamoli.latitude);
+                userLocation.setLongitude (Shyamoli.longitude);
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(Shyamoli));
+                mMap.setTrafficEnabled(true);
+                mMap.setMinZoomPreference(12);
+
+////            enable for down
+//            endingStop.setName("Shishu Mela");
+//            endingStop.setLat(23.77487089842745);
+//            endingStop.setLng(90.36569494679532);
+
+////            enable for up
+//            startingStop.setName("Shishu Mela");
+//            startingStop.setLat(23.773018887636074);
+//            startingStop.setLng(90.36722380809236);
+
+                //shyamoli
+//            startingStop.setName("Me");
+//            startingStop.setLat(23.774804);
+//            startingStop.setLng(90.365533);
+
+
+////////            enable for up
+//            startingStop.setName("Shyamoli");
+//            startingStop.setLat(23.774545853558333);
+//            startingStop.setLng(90.3658781270351);
+
+////            enable for down
+//                endingStop.setName("Shyamoli");
+//                endingStop.setLat(23.774905990568854);
+//                endingStop.setLng(90.365667223853);
+
+
+//            enable for up
+            startingStop.setName("Mohammadpur");
+            startingStop.setLat(23.756961809167528);
+            startingStop.setLng(90.36157122318448);
+
+////            enable for down
+//            endingStop.setName("Mohammadpur");
+//            endingStop.setLat(23.756998872575224);
+//            endingStop.setLng(90.36161473701699);
+
+
+                //enable for down
+//            endingStop.setName("Kolabagan");
+//            endingStop.setLat(23.747854936993697);
+//            endingStop.setLng(90.38027281299742);
+
+                //enable for up
+//            endingStop.setName("Kolabagan");
+//            endingStop.setLat(23.748978125411217);
+//            endingStop.setLng(90.37943700869494);
+
+                //enable for up
+            endingStop.setName("Science Laboratory");
+            endingStop.setLat(23.73879827872002);
+            endingStop.setLng(90.38395013170603);
+                busList = new ArrayList<>();
+                //            //enable for down
+//                startingStop.setName("Science Laboratory");
+//                startingStop.setLat(23.73917813218871);
+//                startingStop.setLng(90.38343505809199);
+
+
+                userLocation=new Location("dummyprovider");
+                userLocation.setLatitude(startingStop.getLat());
+                userLocation.setLongitude (startingStop.getLng());
+                mMap.addMarker(new MarkerOptions().position( new LatLng(startingStop.getLat(), startingStop.getLng())).title("Me")).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.man));
+
+                polylines=new ArrayList();
+//          getRouteDataFromDB(possibleRoutes);
+                getRouteDataFromDBNew(startingStop,endingStop);
+//                getBusList();
+
+                getBusLocationFromDB();
+                getBusList();
+                Log.d("onMapReady","BusList"+busList.toString());
+                mMap.setOnPolylineClickListener(new GoogleMap.OnPolylineClickListener() {
+                    @Override
+                    public void onPolylineClick(Polyline polyline) {
+                        Toast.makeText(getContext(), polyline.getTag().toString(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+        return fragmentTestMapsBinding.getRoot();
 
     }
 
+
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(callback);
-        }
+    public void onClick(String s) {
+        String routeNo = s;
+        Toast.makeText(getActivity(), "On Click Route No.: " + routeNo, Toast.LENGTH_SHORT).show();
+//        if (!commonRoutes.isEmpty()) {
+//            hideLayers();
+//            setProperties(Integer.parseInt(s));
+//        }
+                if (!polylines.isEmpty()) {
+                    Log.d("onClick","polyline size: "+polylines.size());
+        //            hideLayers();
+        //            setProperties(Integer.parseInt(s));
+                    for (Polyline polyline: polylines) {
+                        Log.d("onClick","polyline route No.: "+polyline.getTag());
+                        if(polyline.getTag().toString().contains(routeNo))
+                        {
+                            polyline.setColor(R.color.rounded_rectangle_2_copy_2_color);
+                            Log.d("onClick","polyline route No.: "+polyline.getTag());
+
+
+                        }
+                        if(!polyline.getTag().toString().contains(routeNo))
+                        {
+                            polyline.setColor(R.color.mapbox_plugins_white);
+                            Log.d("onClick","polyline route No.: "+polyline.getTag());
+
+
+                        }
+
+//                        if(polyline.getTag().toString().contains("3"))
+//                        {
+//                            polyline.setColor(R.color.rounded_rectangle_2_color);
+//                            Log.d("onClick","polyline route No.: "+polyline.getTag());
+//                        }
+//                        if(polyline.getTag().toString().contains("6"))
+//                        {
+//                            polyline.setColor(R.color.rounded_rectangle_2_color);
+//                            Log.d("onClick","polyline route No.: "+polyline.getTag());
+//                        }
+//                        if(polyline.getTag().toString().contains("17"))
+//                        {
+//                            polyline.setColor(R.color.Color_BlueViolet);
+//                            Log.d("onClick","polyline route No.: "+polyline.getTag());
+//                        }
+                    }
+                    }
+                else{
+                    Log.d("onClick","polyline size: "+polylines.size());
+                }
+
+
+
     }
 }
