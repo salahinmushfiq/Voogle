@@ -1,4 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- android_mobile___1 strings -->
     <string name="app_name">Voogle</string>
     <string name="enter_source">Source</string>
     <string name="enter_destination">Destination</string>
@@ -11,5 +13,19 @@
     <string name="obhai_placeholder">Obhai</string>
     <string name="pathao_placeholder">Pathao</string>
     <string name="uber_placeholder">Uber</string>
-    <string name="title_activity_maps">Map</string>
+
+
+    <string name="ek_img_content">ExportKit Image</string>
+    <string name="___string"></string>
+    <string name="home_string">Home</string>
+    <string name="___ek1_string"></string>
+    <string name="___ek2_string"></string>
+    <string name="___ek3_string"></string>
+    <string name="__2_string">2</string>
+    <string name="____________4_5___ftcl_______5min________________________________string">4.5* FTCL       5min 10 tk                             0.5 km</string>
+    <string name="____________4_0___midway__20min________________________________1_string">4.0* Midway 20min 10 tk                                10 km</string>
+    <string name="start_string">START</string>
+    <string name="_____________3_8__moitri___10min_________________________________string">3.8* Moitri 10min 10 tk                         5 km</string>
+    <string name="_____________4_8__atcl____20min__________________________________string">4.8* ATCL 20min 10 tk                         10 km</string>
+    <string name="title_activity_maps">Home</string>
 </resources>
