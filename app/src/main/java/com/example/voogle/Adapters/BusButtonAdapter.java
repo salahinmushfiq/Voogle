@@ -54,6 +54,7 @@ public class BusButtonAdapter extends RecyclerView.Adapter<BusButtonAdapter.View
                 @Override
                 public void onClick(View v) {
                     mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()));
+                    mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()),String.valueOf(busList.get(position).getGroupId()));
                     Log.d("getBusList: ","Route No.:"+busList.get(position).getRoute_no());
                 }
             });
@@ -69,6 +70,7 @@ public class BusButtonAdapter extends RecyclerView.Adapter<BusButtonAdapter.View
                 @Override
                 public void onClick(View v) {
                     mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()));
+                    mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()),String.valueOf(busList.get(position).getGroupId()));
                     Log.d("getBusList: ","Route No.:"+busList.get(position).getRoute_no());
                 }
             });
@@ -84,6 +86,7 @@ public class BusButtonAdapter extends RecyclerView.Adapter<BusButtonAdapter.View
                 @Override
                 public void onClick(View v) {
                     mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()));
+                    mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()),String.valueOf(busList.get(position).getGroupId()));
                     Log.d("getBusList: ","Route No.:"+busList.get(position).getRoute_no());
                 }
             });
@@ -100,12 +103,59 @@ public class BusButtonAdapter extends RecyclerView.Adapter<BusButtonAdapter.View
                 @Override
                 public void onClick(View v) {
                     mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()));
-
+                    mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()),String.valueOf(busList.get(position).getGroupId()));
 
                 }
             });
         }
-
+        if(busList.get(position).getGroupId()==0)
+        {
+            holder.busButtonItemLayoutBinding.routeBtn.setBackgroundColor( ContextCompat.getColor(holder.busButtonItemLayoutBinding.getRoot().getContext(), R.color.Color_SlateBlue)) ;
+            holder.busButtonItemLayoutBinding.routeBtn.setText(busList.get(position).getGroupName());
+//        holder.busButtonItemLayoutBinding.busGroupNameTV.setText(busList.get(position).getGroupName());
+//        holder.busButtonItemLayoutBinding.routeBtn.setVisibility(View.GONE);
+//        holder.busButtonItemLayoutBinding.busGroupNameTV.setOnClickListener(new View.OnClickListener() {
+            holder.busButtonItemLayoutBinding.routeBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()));
+                    mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()),String.valueOf(busList.get(position).getGroupId()));
+                    Log.d("getBusList: ","Route No.:"+busList.get(position).getRoute_no());
+                }
+            });
+        }
+        if(busList.get(position).getGroupId()==9)
+        {
+            holder.busButtonItemLayoutBinding.routeBtn.setBackgroundColor( ContextCompat.getColor(holder.busButtonItemLayoutBinding.getRoot().getContext(), R.color.rounded_rectangle_2_copy_color)) ;
+            holder.busButtonItemLayoutBinding.routeBtn.setText(busList.get(position).getGroupName());
+//        holder.busButtonItemLayoutBinding.busGroupNameTV.setText(busList.get(position).getGroupName());
+//        holder.busButtonItemLayoutBinding.routeBtn.setVisibility(View.GONE);
+//        holder.busButtonItemLayoutBinding.busGroupNameTV.setOnClickListener(new View.OnClickListener() {
+            holder.busButtonItemLayoutBinding.routeBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()));
+                    Log.d("getBusList: ","Route No.:"+busList.get(position).getRoute_no());
+                    mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()),String.valueOf(busList.get(position).getGroupId()));
+                }
+            });
+        }
+        if(busList.get(position).getGroupId()==10)
+        {
+            holder.busButtonItemLayoutBinding.routeBtn.setBackgroundColor( ContextCompat.getColor(holder.busButtonItemLayoutBinding.getRoot().getContext(), R.color.Color_Coral)) ;
+            holder.busButtonItemLayoutBinding.routeBtn.setText(busList.get(position).getGroupName());
+//        holder.busButtonItemLayoutBinding.busGroupNameTV.setText(busList.get(position).getGroupName());
+//        holder.busButtonItemLayoutBinding.routeBtn.setVisibility(View.GONE);
+//        holder.busButtonItemLayoutBinding.busGroupNameTV.setOnClickListener(new View.OnClickListener() {
+            holder.busButtonItemLayoutBinding.routeBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()));
+                    mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()),String.valueOf(busList.get(position).getGroupId()));
+                    Log.d("getBusList: ","Route No.:"+busList.get(position).getRoute_no());
+                }
+            });
+        }
 
 
     }

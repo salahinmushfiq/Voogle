@@ -272,7 +272,7 @@ public class TestMapsFragment extends Fragment implements MapClick{
                                             .color(color)
                                             .width(15));
                                    polyline.setClickable(true);
-                                   polyline.setTag(route.getKey());
+                                   polyline.setTag("Route No.: "+route.getKey());
                                    polylines.add(polyline);
 
 
@@ -288,7 +288,7 @@ public class TestMapsFragment extends Fragment implements MapClick{
                                             .color(color)
                                             .width(15));
                                     polyline.setClickable(true);
-                                    polyline.setTag(route.getKey().toString()+" Distance: "+df.format(distance/1000)+" km");
+                                    polyline.setTag("Route No.: "+route.getKey().toString()+" Distance: "+df.format(distance/1000)+" km");
                                     polylines.add(polyline);
 
                                 }
@@ -415,6 +415,7 @@ public class TestMapsFragment extends Fragment implements MapClick{
                             locations.add(location);
                             Log.d("getDistanceForDown", "Iteration Running");
                             Log.d("getDistanceFoDown", "Current iteration" + stops.child("name").getValue().toString());
+
                         }
                         if ((startingStop.getName().equals(stops.child("name").getValue().toString()))&&(Integer.valueOf(stops.child("up").getValue().toString())==1)) {
                             Log.d("getDistanceForDown", "Done Iterating: " + stops.child("name").getValue().toString());
@@ -433,7 +434,7 @@ public class TestMapsFragment extends Fragment implements MapClick{
                                             .color(color)
                                             .width(15));
                                     polyline.setClickable(true);
-                                    polyline.setTag(route.getKey());
+                                    polyline.setTag("Route No.: "+route.getKey());
                                    polylines.add(polyline);
 
 
@@ -449,7 +450,8 @@ public class TestMapsFragment extends Fragment implements MapClick{
                                             .color(color)
                                             .width(15));
                                     polyline.setClickable(true);
-                                    polyline.setTag(route.getKey().toString()+" Distance: "+df.format(distance/1000)+" km");
+                                    polyline.setTag("Route No.: "+route.getKey().toString()+" Distance: "+df.format(distance/1000)+" km");
+
                                     polylines.add(polyline);
 
                                 }
@@ -697,7 +699,7 @@ public class TestMapsFragment extends Fragment implements MapClick{
                         LatLng currentBusLocation = new LatLng(lat, lng);
                         MarkerOptions markerOptions= new MarkerOptions().position(currentBusLocation).title(licensePlate);
 
-                        mMap.addMarker(markerOptions).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus));
+                        mMap.addMarker(markerOptions.zIndex(1)).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.__ff3333));
                         busLocation=new Location(licensePlate);
                         busLocation.setLatitude(lat);
                         busLocation.setLongitude (lng);
@@ -718,7 +720,75 @@ public class TestMapsFragment extends Fragment implements MapClick{
             }
         });
     }
+    private void getBusLocationFromDB(String groupId) {
 
+        stopRef = FirebaseDatabase.getInstance().getReference().child("root").child("locations");
+        stopRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+
+                    for (DataSnapshot busLocationSnapshot : dataSnapshot.getChildren()) {
+
+                        String licensePlate = busLocationSnapshot.child("licensePlate").getValue().toString();
+                        lat = Double.valueOf(busLocationSnapshot.child("lat").getValue().toString());
+                        lng = Double.valueOf(busLocationSnapshot.child("lng").getValue().toString());
+                        LatLng currentBusLocation = new LatLng(lat, lng);
+                        MarkerOptions markerOptions= new MarkerOptions().position(currentBusLocation).title(licensePlate);
+//                        mMap.addMarker(markerOptions).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus));
+//
+                        busLocation=new Location(licensePlate);
+                        busLocation.setLatitude(lat);
+                        busLocation.setLongitude (lng);
+                        int localGroupId =Integer.valueOf(busLocationSnapshot.child("groupId").getValue().toString());
+                        int passedGroupId =Integer.valueOf(groupId);
+                        double distanceInMeters=busLocation.distanceTo(userLocation);
+//                        double speed=Double.valueOf(busLocation.getSpeed());
+
+                        Log.d("Bus","License Plate: "+licensePlate);
+                        Log.d("Bus","Estimated distanceInMeters: "+distanceInMeters);
+                        int zIndex=0;
+                        if((passedGroupId==0)&&(passedGroupId==localGroupId)){
+                            licensePlate = busLocationSnapshot.child("licensePlate").getValue().toString();
+                            lat = Double.valueOf(busLocationSnapshot.child("lat").getValue().toString());
+                            lng = Double.valueOf(busLocationSnapshot.child("lng").getValue().toString());
+                            currentBusLocation = new LatLng(lat, lng);
+
+                            busLocation=new Location(licensePlate);
+                            busLocation.setLatitude(lat);
+                            busLocation.setLongitude (lng);
+
+
+                            distanceInMeters=busLocation.distanceTo(userLocation);
+
+
+
+                            zIndex=2;
+                            mMap.addMarker(markerOptions.zIndex(zIndex).title("Distance: "+String.valueOf(df.format(distanceInMeters/1000))+" km"+" Available Seats: "+busLocationSnapshot.child("availableSeats").getValue().toString()+" License Plate No.: "+busLocationSnapshot.child("licensePlate").getValue().toString())).setIcon(BitmapDescriptorFactory.fromResource(R.drawable._663399));
+                        }
+                        if((passedGroupId==9)&&(passedGroupId==localGroupId)){
+                            zIndex=2;
+                            mMap.addMarker(markerOptions.zIndex(zIndex).title("Distance: "+String.valueOf(df.format(distanceInMeters/1000))+" km"+" Available Seats: "+busLocationSnapshot.child("availableSeats").getValue().toString()+" License Plate No.: "+busLocationSnapshot.child("licensePlate").getValue().toString())).setIcon(BitmapDescriptorFactory.fromResource(R.drawable._0099ff));
+                        }
+                        if((passedGroupId==10)&&(passedGroupId==localGroupId)){
+                            zIndex=2;
+                            mMap.addMarker(markerOptions.zIndex(zIndex).title("Distance : "+String.valueOf(df.format(distanceInMeters/1000))+" km"+" Available Seats: "+busLocationSnapshot.child("availableSeats").getValue().toString()+" License Plate No.: "+busLocationSnapshot.child("licensePlate").getValue().toString())).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ff9933));
+                        }
+
+
+
+//                        Log.d("Route","Estimated Speed: "+speed);
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Nullable
     @Override
@@ -777,10 +847,10 @@ public class TestMapsFragment extends Fragment implements MapClick{
 //            startingStop.setLng(90.365533);
 
 
-////////            enable for up
-//            startingStop.setName("Shyamoli");
-//            startingStop.setLat(23.774545853558333);
-//            startingStop.setLng(90.3658781270351);
+//////            enable for up
+            startingStop.setName("Shyamoli");
+            startingStop.setLat(23.774545853558333);
+            startingStop.setLng(90.3658781270351);
 
 ////            enable for down
 //                endingStop.setName("Shyamoli");
@@ -788,10 +858,10 @@ public class TestMapsFragment extends Fragment implements MapClick{
 //                endingStop.setLng(90.365667223853);
 
 
-//            enable for up
-            startingStop.setName("Mohammadpur");
-            startingStop.setLat(23.756961809167528);
-            startingStop.setLng(90.36157122318448);
+////            enable for up
+//            startingStop.setName("Mohammadpur");
+//            startingStop.setLat(23.756961809167528);
+//            startingStop.setLng(90.36157122318448);
 
 ////            enable for down
 //            endingStop.setName("Mohammadpur");
@@ -848,8 +918,8 @@ public class TestMapsFragment extends Fragment implements MapClick{
 
 
     @Override
-    public void onClick(String s) {
-        String routeNo = s;
+    public void onClick(String routeNo) {
+
         Toast.makeText(getActivity(), "On Click Route No.: " + routeNo, Toast.LENGTH_SHORT).show();
 //        if (!commonRoutes.isEmpty()) {
 //            hideLayers();
@@ -861,36 +931,23 @@ public class TestMapsFragment extends Fragment implements MapClick{
         //            setProperties(Integer.parseInt(s));
                     for (Polyline polyline: polylines) {
                         Log.d("onClick","polyline route No.: "+polyline.getTag());
-                        if(polyline.getTag().toString().contains(routeNo))
+                        if(polyline.getTag().toString().contains("Route No.: "+routeNo))
                         {
-                            polyline.setColor(R.color.rounded_rectangle_2_copy_2_color);
-                            Log.d("onClick","polyline route No.: "+polyline.getTag());
+
+                            Log.d("onClick","if: polyline route No.: "+polyline.getTag());
+                            polyline.setWidth(25);
+
+                        }
+                        if(!polyline.getTag().toString().contains("Route No.: "+routeNo))
+                        {
+
+                            Log.d("onClick","else: polyline route No.: "+polyline.getTag());
+                            polyline.setWidth(0);
+
 
 
                         }
-                        if(!polyline.getTag().toString().contains(routeNo))
-                        {
-                            polyline.setColor(R.color.mapbox_plugins_white);
-                            Log.d("onClick","polyline route No.: "+polyline.getTag());
 
-
-                        }
-
-//                        if(polyline.getTag().toString().contains("3"))
-//                        {
-//                            polyline.setColor(R.color.rounded_rectangle_2_color);
-//                            Log.d("onClick","polyline route No.: "+polyline.getTag());
-//                        }
-//                        if(polyline.getTag().toString().contains("6"))
-//                        {
-//                            polyline.setColor(R.color.rounded_rectangle_2_color);
-//                            Log.d("onClick","polyline route No.: "+polyline.getTag());
-//                        }
-//                        if(polyline.getTag().toString().contains("17"))
-//                        {
-//                            polyline.setColor(R.color.Color_BlueViolet);
-//                            Log.d("onClick","polyline route No.: "+polyline.getTag());
-//                        }
                     }
                     }
                 else{
@@ -900,4 +957,50 @@ public class TestMapsFragment extends Fragment implements MapClick{
 
 
     }
+
+
+    @Override
+    public void onClick(String routeNo,String groupId) {
+
+        Toast.makeText(getActivity(), "On Click Route No.: " + routeNo, Toast.LENGTH_SHORT).show();
+
+        getBusLocationFromDB(groupId);
+//        if (!commonRoutes.isEmpty()) {
+//            hideLayers();
+//            setProperties(Integer.parseInt(s));
+//        }
+        if (!polylines.isEmpty()) {
+            Log.d("onClick","polyline size: "+polylines.size());
+            //            hideLayers();
+            //            setProperties(Integer.parseInt(s));
+            for (Polyline polyline: polylines) {
+                Log.d("onClick","polyline route No.: "+polyline.getTag());
+                if(polyline.getTag().toString().contains("Route No.: "+routeNo))
+                {
+
+                    Log.d("onClick","if: polyline route No.: "+polyline.getTag());
+                    polyline.setWidth(25);
+
+                }
+                if(!polyline.getTag().toString().contains("Route No.: "+routeNo))
+                {
+
+                    Log.d("onClick","else: polyline route No.: "+polyline.getTag());
+                    polyline.setWidth(0);
+
+
+
+                }
+
+            }
+        }
+        else{
+            Log.d("onClick","polyline size: "+polylines.size());
+        }
+
+
+
+    }
+
+
 }

@@ -1097,4 +1097,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, MapClic
             setProperties(Integer.parseInt(s));
         }
     }
+    @Override
+    public void onClick(String routeNo,String groupId) {
+
+    }
 }
