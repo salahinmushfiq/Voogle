@@ -34,7 +34,7 @@ import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
-    DatabaseReference stopRef,root;
+    DatabaseReference stopRef,root,stopNewRef;
     ActivityMainBinding activityMainBinding;
     ArrayList<String>stopNames;
     String stopName;
@@ -53,9 +53,10 @@ public class MainActivity extends AppCompatActivity {
         stopNames=new ArrayList<>();
         sourceRoute=new ArrayList<>();
         destinationRoute=new ArrayList<>();
-        stopRef = FirebaseDatabase.getInstance().getReference().child("root").child("stops");
-        initACTV(stopRef);
-
+//        stopRef = FirebaseDatabase.getInstance().getReference().child("root").child("stops");
+//        initACTV(stopRef);
+        stopNewRef = FirebaseDatabase.getInstance().getReference().child("root").child("stopsNew");
+        initACTVNew(stopNewRef);
 
 
         super.onCreate(savedInstanceState);
@@ -64,24 +65,51 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void initACTV(DatabaseReference stopRef) {
+//    private void initACTV(DatabaseReference stopRef) {
+//        stopRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                if (dataSnapshot.exists()) {
+//                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+//                        stopName= data.child("name").getValue().toString();
+//                        stopNames.add(stopName);
+//
+//
+//
+//
+//                    }
+//                    ArrayAdapter placesAdapter=new ArrayAdapter(MainActivity.this,android.R.layout.simple_list_item_1, stopNames);
+//                    placesAdapter.notifyDataSetChanged();
+//                    activityMainBinding.sourceACTV.setAdapter(placesAdapter);
+//                    activityMainBinding.sourceACTV.setThreshold(2);
+//                    activityMainBinding.destinationACTV.setAdapter(placesAdapter);
+//                    activityMainBinding.destinationACTV.setThreshold(2);
+//                } else {
+//                    //   Toast.makeText(ListActivity.this, "Empty Database", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//                Toast.makeText(MainActivity.this, databaseError.toString(), Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
+    private void initACTVNew(DatabaseReference stopRef) {
         stopRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    for (DataSnapshot data : dataSnapshot.getChildren()) {
-                        stopName= data.child("name").getValue().toString();
+                    for (DataSnapshot stop : dataSnapshot.getChildren()) {
+                        stopName= stop.child("name").getValue().toString();
                         stopNames.add(stopName);
-                        ArrayAdapter placesAdapter=new ArrayAdapter(MainActivity.this,android.R.layout.simple_list_item_1, stopNames);
-                        placesAdapter.notifyDataSetChanged();
-                        activityMainBinding.sourceACTV.setAdapter(placesAdapter);
-                        activityMainBinding.sourceACTV.setThreshold(2);
-                        activityMainBinding.destinationACTV.setAdapter(placesAdapter);
-                        activityMainBinding.destinationACTV.setThreshold(2);
-
-
-
                     }
+                    ArrayAdapter placesAdapter=new ArrayAdapter(MainActivity.this,android.R.layout.simple_list_item_1, stopNames);
+                    placesAdapter.notifyDataSetChanged();
+                    activityMainBinding.sourceACTV.setAdapter(placesAdapter);
+                    activityMainBinding.sourceACTV.setThreshold(2);
+                    activityMainBinding.destinationACTV.setAdapter(placesAdapter);
+                    activityMainBinding.destinationACTV.setThreshold(2);
                 } else {
                     //   Toast.makeText(ListActivity.this, "Empty Database", Toast.LENGTH_SHORT).show();
                 }
@@ -93,7 +121,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
     public void onClickOnGo(View view) {
         Intent goToHome=new Intent(MainActivity.this,HomeActivity.class);
         //ArrayList<String>stopNames=new ArrayList<>();
@@ -109,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else{
             getLatLngFromDB(source,destination,goToHome);
+            getLatLngFromDBNew(source,destination,goToHome);
             Log.d("check","Source: "+source+" Destination: "+destination);
         }
        // Toast.makeText(this, destination, Toast.LENGTH_SHORT).show();
@@ -143,10 +171,11 @@ public class MainActivity extends AppCompatActivity {
                       //     Toast.makeText(MainActivity.this,"Stop: "+stop, Toast.LENGTH_SHORT).show();
                             lat = Double.valueOf(data.child("lat").getValue().toString());
                             lng = Double.valueOf(data.child("lng").getValue().toString());
-                            s_no = Integer.valueOf(data.child("s_no").getValue().toString());
+//                            s_no = Integer.parseInt(data.child("s_no").getValue().toString());
                             GlobalVariables.sourceLat=lat;
                             GlobalVariables.sourceLng=lng;
-                            GlobalVariables.sourceS_no=s_no;
+//                            GlobalVariables.sourceS_no=s_no;
+//                            GlobalVariables.sourceS_no=s_no;
 
                             for (DataSnapshot routes : data.child("route").getChildren()) {
 
@@ -163,10 +192,11 @@ public class MainActivity extends AppCompatActivity {
                             stopName = data.child("name").getValue().toString();
                             lat = Double.valueOf(data.child("lat").getValue().toString());
                             lng = Double.valueOf(data.child("lng").getValue().toString());
-                            s_no = Integer.valueOf(data.child("s_no").getValue().toString());
+//                            s_no = Integer.parseInt(data.child("s_no").getValue().toString());
                             GlobalVariables.destinationLat=lat;
                             GlobalVariables.destinationLng=lng;
-                            GlobalVariables.destinationS_no=s_no;
+//                            GlobalVariables.destinationS_no=s_no;
+//                            GlobalVariables.destinationS_no=s_no;
                             for (DataSnapshot routes : data.child("route").getChildren()) {
                                destinationRoute.add(Integer.valueOf(routes.getValue().toString()));
                             }
@@ -177,13 +207,13 @@ public class MainActivity extends AppCompatActivity {
 //                            goToHome.putExtra("destinationS_no", String.valueOf(s_no));
 
                         }
-                        stopNames.add(stopName);
-                        ArrayAdapter placesAdapter=new ArrayAdapter(MainActivity.this,android.R.layout.simple_list_item_1, stopNames);
-                        placesAdapter.notifyDataSetChanged();
-                        activityMainBinding.sourceACTV.setAdapter(placesAdapter);
-                        activityMainBinding.sourceACTV.setThreshold(2);
-                        activityMainBinding.destinationACTV.setAdapter(placesAdapter);
-                        activityMainBinding.destinationACTV.setThreshold(2);
+//                        stopNames.add(stopName);
+//                        ArrayAdapter placesAdapter=new ArrayAdapter(MainActivity.this,android.R.layout.simple_list_item_1, stopNames);
+//                        placesAdapter.notifyDataSetChanged();
+//                        activityMainBinding.sourceACTV.setAdapter(placesAdapter);
+//                        activityMainBinding.sourceACTV.setThreshold(2);
+//                        activityMainBinding.destinationACTV.setAdapter(placesAdapter);
+//                        activityMainBinding.destinationACTV.setThreshold(2);
 
 
                     }
@@ -205,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("check","Destination Route: "+GlobalVariables.sourceRoutes.toString());
              //       Toast.makeText(MainActivity.this, "Global Variable"+GlobalVariables.sourceRoutes.toString(), Toast.LENGTH_SHORT).show();
 
-                    startActivity(goToHome);
+//                    startActivity(goToHome);
                 } else {
                       Toast.makeText(MainActivity.this, "Empty Database", Toast.LENGTH_SHORT).show();
                 }
@@ -217,6 +247,67 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, databaseError.toString(), Toast.LENGTH_SHORT).show();
             }
         });
+
+    }
+
+
+
+    public void getLatLngFromDBNew(String source, String destination, Intent goToHome) {
+
+        stopNewRef = FirebaseDatabase.getInstance().getReference().child("root").child("stopsNew");
+        stopNewRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+                        if(data.child("name").getValue().toString().trim().equals(source)) {
+                            stopName = data.child("name").getValue().toString();
+                            lat = Double.valueOf(data.child("lat").getValue().toString());
+                            lng = Double.valueOf(data.child("lng").getValue().toString());
+                            GlobalVariables.sourceNewLat=lat;
+                            GlobalVariables.sourceNewLng=lng;
+                            GlobalVariables.sourceNewName=stopName;
+
+                            for (DataSnapshot routes : data.child("route").getChildren()) {
+
+                                sourceRoute.add(Integer.parseInt(routes.getValue().toString().trim()));
+
+                            }
+
+
+                        }
+                        if(data.child("name").getValue().toString().trim().equals(destination)) {
+                            stopName = data.child("name").getValue().toString();
+                            lat = Double.valueOf(data.child("lat").getValue().toString());
+                            lng = Double.valueOf(data.child("lng").getValue().toString());
+//                            s_no = Integer.valueOf(data.child("s_no").getValue().toString());
+                            GlobalVariables.destinationNewLat=lat;
+                            GlobalVariables.destinationNewLng=lng;
+                            GlobalVariables.destinationNewName=stopName;
+                            for (DataSnapshot routes : data.child("route").getChildren()) {
+
+                                destinationRoute.add(Integer.valueOf(routes.getValue().toString()));
+
+                            }
+
+
+                        }
+
+                    }
+
+                    startActivity(goToHome);
+                } else {
+                    Toast.makeText(MainActivity.this, "Empty Database", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(MainActivity.this, databaseError.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
     }
 }
