@@ -16,11 +16,11 @@ import java.util.ArrayList;
 
 
 public class PhoneNoAdapter  extends RecyclerView.Adapter<PhoneNoAdapter.ViewHolder> {
-    ArrayList<String> licensePlates;
+    ArrayList<String> phoneNumbers;
     Context context;
 
     public PhoneNoAdapter(ArrayList<String> licensePlates, Context context) {
-        this.licensePlates = licensePlates;
+        this.phoneNumbers = licensePlates;
         this.context = context;
     }
 
@@ -33,13 +33,13 @@ public class PhoneNoAdapter  extends RecyclerView.Adapter<PhoneNoAdapter.ViewHol
 
     @Override
     public void onBindViewHolder(@NonNull PhoneNoAdapter.ViewHolder holder, int position) {
-        holder.phoneNumberItemLayoutBinding.textView.setText(this.licensePlates.get(position));
+        holder.phoneNumberItemLayoutBinding.textView.setText(this.phoneNumbers.get(position));
 
     }
 
     @Override
     public int getItemCount() {
-        return this.licensePlates.size();
+        return this.phoneNumbers.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

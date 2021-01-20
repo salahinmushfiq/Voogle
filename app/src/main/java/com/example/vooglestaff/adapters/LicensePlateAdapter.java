@@ -24,7 +24,7 @@ public class LicensePlateAdapter extends RecyclerView.Adapter<LicensePlateAdapte
 
     public LicensePlateAdapter(Context context, ArrayList<String> licensePlates) {
         this.licensePlates = licensePlates;
-        Toast.makeText(context, "Constructor : "+this.licensePlates, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context, "Constructor : "+this.licensePlates, Toast.LENGTH_SHORT).show();
         this.context=context;
     }
 
@@ -38,13 +38,13 @@ public class LicensePlateAdapter extends RecyclerView.Adapter<LicensePlateAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String licensePlate=licensePlates.get(position);
-        Toast.makeText(context, "ONBIND : "+licensePlate, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context, "ONBIND : "+licensePlate, Toast.LENGTH_SHORT).show();
         holder.licensePlateItemLayoutBinding.textView.setText(licensePlate);
     }
 
     @Override
     public int getItemCount() {
-        Toast.makeText(context, "size: "+licensePlates.size(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context, "size: "+licensePlates.size(), Toast.LENGTH_SHORT).show();
         return licensePlates.size();
     }
 

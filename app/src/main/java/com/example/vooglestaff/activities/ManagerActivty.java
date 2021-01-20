@@ -1,6 +1,7 @@
 package com.example.vooglestaff.activities;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +22,7 @@ import com.example.vooglestaff.pojoClass.Manager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -44,6 +46,11 @@ public class ManagerActivty extends AppCompatActivity {
     PhoneNoAdapter phoneNoAdapter;
     private String name;
     private String licenseNo;
+    private Intent goToHomeActivity;
+
+    private FirebaseAnalytics mFirebaseAnalytics;
+//    private String currentUsermail;
+    private String currentUsermail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +62,17 @@ public class ManagerActivty extends AppCompatActivity {
         manager = new Manager();
 
 
+
+
     }
 
     public void licensePlateBtnOnClick(View view) {
         activityManagerBinding.phoneNoRV.setVisibility(View.GONE);
         activityManagerBinding.addPhoneNoACTV.setVisibility(View.GONE);
         activityManagerBinding.addPhoneNoBtn.setVisibility(View.GONE);
+        activityManagerBinding.addNameACTV.setVisibility(View.GONE);
+        activityManagerBinding.addLicNoACTV.setVisibility(View.GONE);
+
         activityManagerBinding.licensePlateRV.setVisibility(View.VISIBLE);
         activityManagerBinding.addLicensePlateBtn.setVisibility(View.VISIBLE);
         activityManagerBinding.addLicensePlateACTV.setVisibility(View.VISIBLE);
@@ -82,13 +94,13 @@ public class ManagerActivty extends AppCompatActivity {
                                     activityManagerBinding.licensePlateRV.setAdapter(licensePlateAdapter);
                                     activityManagerBinding.licensePlateRV.setVisibility(View.VISIBLE);
 
-                                    try {
-                                        for (String busId : manager.getLicensePlate()) {
-                                            Toast.makeText(ManagerActivty.this, "Bus Id: " + busId, Toast.LENGTH_SHORT).show();
-                                        }
-                                    } catch (Exception e) {
-                                        Toast.makeText(ManagerActivty.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
+//                                    try {
+//                                        for (String busId : manager.getLicensePlate()) {
+//                                            Toast.makeText(ManagerActivty.this, "Bus Id: " + busId, Toast.LENGTH_SHORT).show();
+//                                        }
+//                                    } catch (Exception e) {
+//                                        Toast.makeText(ManagerActivty.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+//                                    }
 
                                     activityManagerBinding.licensePlateRV.setLayoutManager(new LinearLayoutManager(ManagerActivty.this));
 
@@ -224,7 +236,7 @@ public class ManagerActivty extends AppCompatActivity {
 
                     String driverId = databaseReference.child("root").child("ManagerList").child(manager.getManagerId()).child("driverPhoneNumbers").child(String.valueOf(driverPhoneNoCount)).push().getKey();
                     if (driverId != null)
-                        databaseReference.child("root").child("ManagerList").child(manager.getManagerId()).child("driverPhoneNumbers").child(String.valueOf(driverPhoneNoCount)).setValue(new DriverPhoneMac(String.valueOf(driverPhoneNoCount), driverId, phoneNo, "default", licenseNo, name)).addOnSuccessListener(aVoid -> {
+                            databaseReference.child("root").child("ManagerList").child(manager.getManagerId()).child("driverPhoneNumbers").child(String.valueOf(driverPhoneNoCount)).setValue(new DriverPhoneMac(String.valueOf(driverPhoneNoCount), driverId, phoneNo, "default", licenseNo, name)).addOnSuccessListener(aVoid -> {
                             driverPhoneNoCount = driverPhoneNoCount + 1;
                             databaseReference.child("root").child("ManagerList").child(manager.getManagerId()).child("driverPhoneNoCount").setValue(driverPhoneNoCount);
                         });
@@ -238,5 +250,14 @@ public class ManagerActivty extends AppCompatActivity {
 
 
         });
+    }
+
+    public void signOutBtnOnClick(View view) {
+        currentUsermail=mAuth.getCurrentUser().getEmail().toString();
+        if(currentUsermail!=null){
+            mAuth.signOut();
+            goToHomeActivity = new Intent(ManagerActivty.this,MainActivity.class );
+            startActivity(goToHomeActivity);
+        }
     }
 }

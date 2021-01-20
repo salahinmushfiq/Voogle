@@ -3,15 +3,21 @@
     package="com.example.vooglestaff">
 
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/voogle_staff_app_logo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".activities.DriverActivity"></activity>
-        <activity android:name=".activities.ManagerActivty" />
+        android:theme="@style/AppTheme3.NoActionBar"
+        >
+        <activity android:name=".activities.CheckerActivity"
+
+            ></activity>
+        <activity android:name=".activities.DriverActivity"  />
+        <activity android:name=".activities.ManagerActivty"
+            android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

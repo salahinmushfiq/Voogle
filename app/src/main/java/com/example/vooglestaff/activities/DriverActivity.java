@@ -48,6 +48,7 @@ public class DriverActivity extends AppCompatActivity {
     DatabaseReference databaseReference;
     Context mContext;
     FirebaseAuth firebaseAuth;
+    String driverLicenseNo,licensePlateNo,groupId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +56,21 @@ public class DriverActivity extends AppCompatActivity {
         setContentView(R.layout.activity_driver);
         firebaseAuth=FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference("");
-        if (ContextCompat.checkSelfPermission(DriverActivity.this,
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(DriverActivity.this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+
+        driverLicenseNo =null;
+        licensePlateNo=null;
+        groupId=null;
+
+        driverLicenseNo=getIntent().getStringExtra("driverLicenseNo");
+        licensePlateNo=getIntent().getStringExtra("licensePlateNo");
+        groupId=getIntent().getStringExtra("groupId");
+
+
+
+
+
+        if (ContextCompat.checkSelfPermission(DriverActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(DriverActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
 
     }
@@ -76,9 +88,13 @@ public class DriverActivity extends AppCompatActivity {
 
             locationPojoClass.setLat(latitude);
             locationPojoClass.setLng(longitude);
-            locationPojoClass.setLicensePlate(GlobalVariables.licensePlate);
+            locationPojoClass.setLicensePlate(licensePlateNo);
+            locationPojoClass.setLicenseNo(driverLicenseNo);
+            locationPojoClass.setGroupId(Integer.parseInt(groupId));
+
+
             Toast.makeText(mContext, "License Plate: " + locationPojoClass.getLicensePlate(), Toast.LENGTH_SHORT).show();
-            databaseReference.child("root").child("locations").child(GlobalVariables.licensePlate).setValue(locationPojoClass).addOnCompleteListener(task -> {
+            databaseReference.child("root").child("locations").child(licensePlateNo).setValue(locationPojoClass).addOnCompleteListener(task -> {
                 if (task.isComplete()) {
                     Toast.makeText(mContext, "Location written", Toast.LENGTH_SHORT).show();
                 }
@@ -176,7 +192,9 @@ public class DriverActivity extends AppCompatActivity {
                 lng=location.getLongitude();
                 locationPojoClass.setLat(lat);
                 locationPojoClass.setLng(lng);
-                locationPojoClass.setLicensePlate(GlobalVariables.licensePlate);
+                locationPojoClass.setLicensePlate(licensePlateNo);
+                locationPojoClass.setLicenseNo(driverLicenseNo);
+                locationPojoClass.setGroupId(Integer.parseInt(groupId));
                 Toast.makeText(DriverActivity.this, "Lat "+String.valueOf(lat), Toast.LENGTH_SHORT).show();
                 Toast.makeText(DriverActivity.this, "", Toast.LENGTH_SHORT).show();
                 Toast.makeText(mContext, "License Plate: "+GlobalVariables.licensePlate, Toast.LENGTH_SHORT).show();
@@ -198,6 +216,7 @@ public class DriverActivity extends AppCompatActivity {
 
     public void signOutBtnOnClick(View view) {
         firebaseAuth.signOut();
+
         Intent goToMainActivity=new Intent(DriverActivity.this,MainActivity.class);
         startActivity(goToMainActivity);
 

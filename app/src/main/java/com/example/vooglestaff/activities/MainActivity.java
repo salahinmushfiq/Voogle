@@ -53,12 +53,13 @@ public class MainActivity extends AppCompatActivity {
     String phoneNumber, groupId, licensePlate;
     JSONObject signInJson;
     private FirebaseAuth mAuth;
-    DatabaseReference databaseReference;
+    DatabaseReference rootRef,databaseReference;
     Manager currentManager;
     ArrayList<Manager> managerList = new ArrayList<>();
     private static final String TAG = "MainActivity";
     DriverPhoneMac currentDriver;
-    String MAC_ID;
+    String MAC_ID,currentUsermail,currentUserId;
+    Intent goToManagerActivity,goToDriverActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +68,43 @@ public class MainActivity extends AppCompatActivity {
         MAC_ID = DeviceInformation.getMAC((WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE));
         mAuth = FirebaseAuth.getInstance();
         // loginPopupBinding = DataBindingUtil.inflate(LayoutInflater.from(this), R.layout.login_popup_manager, null, false);
-        //
+        goToDriverActivity=new Intent(this,DriverActivity.class);
+        rootRef=FirebaseDatabase.getInstance().getReference("root");
+
+
+//        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+//            Toast.makeText(this, mAuth.getCurrentUser().getEmail().toString(), Toast.LENGTH_SHORT).show();
+//            currentUsermail=mAuth.getCurrentUser().getEmail().toString();
+//            currentUserId=mAuth.getCurrentUser().getUid();
+//            if(currentUsermail!=null){
+//                rootRef.child("ManagerList").addValueEventListener(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//
+//                        for(DataSnapshot manager:dataSnapshot.getChildren())
+//                        {
+//                            if(manager.child("email").getValue().toString().toLowerCase().equals(currentUsermail.toString().toLowerCase()))
+//                            {
+//                                goToManagerActivity = new Intent(MainActivity.this, ManagerActivty.class);
+//                                startActivity(goToManagerActivity);
+//                            }
+//                        }
+//
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                    }
+//
+//
+//                });
+////            Toast.makeText(this, String.valueOf(rootRef.child("ManagerList").get.contains(currentUserId)), Toast.LENGTH_SHORT).show();
+//
+//            }
+//        }
+
+
     }
 
     private void alertDialogManager() {
@@ -115,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
             FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).addOnSuccessListener(task -> {
                 Toast.makeText(MainActivity.this, "Sign In Successful", Toast.LENGTH_SHORT).show();
                 ad.dismiss();
-                Intent goToManagerActivity = new Intent(MainActivity.this, ManagerActivty.class);
+                goToManagerActivity = new Intent(MainActivity.this, ManagerActivty.class);
                 startActivity(goToManagerActivity);
             }).addOnFailureListener(e -> Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
         } else {
@@ -170,6 +207,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
+                    String driverLicenseNo;
                     Log.i(TAG, "onDataChange: " + snapshot.toString());
                     if (snapshot.hasChildren())
                         for (DataSnapshot dataSnapshot1 : snapshot.getChildren()) {
@@ -177,14 +215,31 @@ public class MainActivity extends AppCompatActivity {
                             try {
                                 currentManager = dataSnapshot1.getValue(Manager.class);
                                 assert currentManager != null;
-                                for (DriverPhoneMac dPM : currentManager.getDriverPhoneNumbers()
-                                ) {
+                                for (DriverPhoneMac dPM : currentManager.getDriverPhoneNumbers())
+                                {
                                     if (dPM.getNumber().equals(phoneNumber)) {
                                         if (dPM.getMacId().equals(MAC_ID) || dPM.getMacId().equals("default")) {
                                             currentDriver = dPM;
-                                            if (dPM.getMacId().equals("default"))
+                                            if (dPM.getMacId().equals("default")) {
                                                 databaseReference.child(currentManager.getManagerId()).child("driverPhoneNumbers").child(currentDriver.getLocalId()).child("macId").setValue(MAC_ID);
-                                            FirebaseDatabase.getInstance().getReference("root").child("locations").child(licensePlate).child("licenseNo").setValue(dPM.getLicenseNo());
+//                                                FirebaseDatabase.getInstance().getReference("root").child("locations").child(licensePlate).child("licenseNo").setValue(dPM.getLicenseNo());
+
+                                                goToDriverActivity.putExtra("driverLicenseNo", currentDriver.getLicenseNo());
+                                                goToDriverActivity.putExtra("licensePlateNo", licensePlate);
+                                                goToDriverActivity.putExtra("groupId", groupId);
+                                                startActivity(goToDriverActivity);
+
+                                            }
+
+                                            if(dPM.getMacId().equals(currentDriver.getMacId())){
+                                                goToDriverActivity.putExtra("driverLicenseNo", currentDriver.getLicenseNo());
+                                                goToDriverActivity.putExtra("licensePlateNo", licensePlate);
+                                                goToDriverActivity.putExtra("groupId", groupId);
+                                                startActivity(goToDriverActivity);
+
+                                            }
+
+
                                         } else {
                                             Toast.makeText(getApplicationContext(), "This Device needs to be registered, Contact administration", Toast.LENGTH_LONG).show();
                                         }
@@ -410,8 +465,8 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             // User is signed in
-            Intent goToDriverActivity = new Intent(MainActivity.this, DriverActivity.class);
-            startActivity(goToDriverActivity);
+            Intent goCheckerActivity = new Intent(MainActivity.this, CheckerActivity.class);
+            startActivity(goCheckerActivity);
         } else {
             // No user is signed in
             alertDialogChecker();

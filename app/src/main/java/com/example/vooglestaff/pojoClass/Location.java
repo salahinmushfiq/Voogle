@@ -3,6 +3,23 @@ package com.example.vooglestaff.pojoClass;
 public class Location {
     Double lat, lng;
     private String licensePlate, licenseNo;
+    int groupId,availableSeats;
+
+    public int getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
+    }
+
+    public int getAvailableSeats() {
+        return availableSeats;
+    }
+
+    public void setAvailableSeats(int availableSeats) {
+        this.availableSeats = availableSeats;
+    }
 
     public Location() {
 
