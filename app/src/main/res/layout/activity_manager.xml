@@ -80,7 +80,7 @@
             android:id="@+id/licensePlateRV"
             android:layout_width="427dp"
             android:layout_height="389dp"
-            android:background="@color/colorPrimary"
+
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -99,7 +99,6 @@
             android:layout_width="405dp"
             android:layout_height="578dp"
             android:layout_marginTop="540dp"
-            android:background="@color/Color_Green"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

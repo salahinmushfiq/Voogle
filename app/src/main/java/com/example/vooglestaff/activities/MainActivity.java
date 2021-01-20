@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     DriverPhoneMac currentDriver;
     String MAC_ID,currentUsermail,currentUserId;
-    Intent goToManagerActivity,goToDriverActivity;
+    Intent goToManagerActivity,goToDriverActivity,goToCheckerActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         // loginPopupBinding = DataBindingUtil.inflate(LayoutInflater.from(this), R.layout.login_popup_manager, null, false);
         goToDriverActivity=new Intent(this,DriverActivity.class);
+        goToCheckerActivity=new Intent(this,CheckerActivity.class);
         rootRef=FirebaseDatabase.getInstance().getReference("root");
 
 
@@ -231,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
 
                                             }
 
-                                            if(dPM.getMacId().equals(currentDriver.getMacId())){
+                                            if(currentDriver.getMacId().equals(MAC_ID)){
                                                 goToDriverActivity.putExtra("driverLicenseNo", currentDriver.getLicenseNo());
                                                 goToDriverActivity.putExtra("licensePlateNo", licensePlate);
                                                 goToDriverActivity.putExtra("groupId", groupId);
@@ -356,22 +357,77 @@ public class MainActivity extends AppCompatActivity {
         phoneNumber = loginPopupCheckerBinding.phoneNoET.getText().toString();
         groupId = loginPopupCheckerBinding.managerIdET.getText().toString();
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("root/ManagerList/");
-
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        databaseReference = FirebaseDatabase.getInstance().getReference("root").child("ManagerList");
+        databaseReference.orderByChild("groupId").equalTo(groupId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @SuppressWarnings("SuspiciousMethodCalls")
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Manager manager = dataSnapshot.getValue(Manager.class);
-                currentManager.getDriverPhoneNumbers();
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String driverLicenseNo;
+                    Log.i(TAG, "onDataChange: " + snapshot.toString());
+                    if (snapshot.hasChildren())
+                        for (DataSnapshot dataSnapshot1 : snapshot.getChildren()) {
+                            Log.i(TAG, "onDataChange Inside: " + dataSnapshot1.toString());
+                            try {
+                                currentManager = dataSnapshot1.getValue(Manager.class);
+                                assert currentManager != null;
+                                for (String checkerPhoneNo : currentManager.getCheckerPhoneNumbers())
+                                {
+                                    if((checkerPhoneNo.equals(phoneNumber)))
+                                    {
+                                        goToCheckerActivity.putExtra("groupId",groupId);
+                                        startActivity(goToCheckerActivity);
+                                    }
+                                    else{
+                                        Toast.makeText(MainActivity.this, "You are not registered to this bus group. Please Contact with the authority.", Toast.LENGTH_SHORT).show();
+                                    }
+//                                    if (dPM.getNumber().equals(phoneNumber)) {
+//                                        if (dPM.getMacId().equals(MAC_ID) || dPM.getMacId().equals("default")) {
+//                                            currentDriver = dPM;
+//                                            if (dPM.getMacId().equals("default")) {
+//                                                databaseReference.child(currentManager.getManagerId()).child("driverPhoneNumbers").child(currentDriver.getLocalId()).child("macId").setValue(MAC_ID);
+////                                                FirebaseDatabase.getInstance().getReference("root").child("locations").child(licensePlate).child("licenseNo").setValue(dPM.getLicenseNo());
+//
+//                                                goToDriverActivity.putExtra("driverLicenseNo", currentDriver.getLicenseNo());
+//                                                goToDriverActivity.putExtra("licensePlateNo", licensePlate);
+//                                                goToDriverActivity.putExtra("groupId", groupId);
+//                                                startActivity(goToDriverActivity);
+//
+//                                            }
+//
+//                                            if(currentDriver.getMacId().equals(MAC_ID)){
+//                                                goToDriverActivity.putExtra("driverLicenseNo", currentDriver.getLicenseNo());
+//                                                goToDriverActivity.putExtra("licensePlateNo", licensePlate);
+//                                                goToDriverActivity.putExtra("groupId", groupId);
+//                                                startActivity(goToDriverActivity);
+//
+//                                            }
+//
+//
+//                                        } else {
+//                                            Toast.makeText(getApplicationContext(), "This Device needs to be registered, Contact administration", Toast.LENGTH_LONG).show();
+//                                        }
+//                                        return;
+//                                    }
+                                }
+                                Log.i(TAG, "onChildAdded: " + currentManager.getDriverPhoneNumbers().contains(new DriverPhoneMac(phoneNumber, true)));
 
+                            } catch (Exception x) {
+                                x.printStackTrace();
+                            }
+                        }
+                        // managerList=dataSnapshot.getValue(Manager.class);
+                    else {
+                        currentManager = snapshot.getValue(Manager.class);
+                        Log.i(TAG, "onChildAdded: " + currentManager.getDriverPhoneNumbers().contains("phone:" + phoneNumber));
+                    }
+                }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError error) {
 
             }
-
-
         });
 
 //        licensePlate=loginPopupDriverBinding.licensePlateET.getText().toString();
