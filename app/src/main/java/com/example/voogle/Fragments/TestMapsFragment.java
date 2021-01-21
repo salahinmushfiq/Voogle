@@ -791,22 +791,18 @@ public class TestMapsFragment extends Fragment implements MapClick{
                                 double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
                                 zIndex=2;
 
-                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex).title(String.valueOf(df.format(distanceInMeters/1000))+" km away "+df.format(estimatedTimeForArrival) +"min away"+busLocationSnapshot.child("availableSeats").getValue().toString()+" seats"+" "+df.format(estimatedFare)+" tk approx."+"Plate: "+busLocationSnapshot.child("licensePlate").getValue().toString() ));
+                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex));
                                 marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_purple));
                                 marker.setTag(licensePlate);
                             }else{
                                 double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
                                 zIndex=2;
 
-                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex).title(String.valueOf(df.format(distanceInMeters/1000))+" km away "+df.format(estimatedTimeForArrival)+"min away"+busLocationSnapshot.child("availableSeats").getValue().toString()+" seats"+" "+df.format(estimatedFare)+" tk approx."+"Plate: "+busLocationSnapshot.child("licensePlate").getValue().toString() ));
+                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex));
                                 marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_purple));
                                 marker.setTag(licensePlate);
                             }
 
-
-
-
-//                            mMap.addMarker(markerOptions.zIndex(zIndex).title(String.valueOf(df.format(distanceInMeters/1000))+" km"+" "+busLocationSnapshot.child("availableSeats").getValue().toString()+" seats"+" "+"Plate: "+busLocationSnapshot.child("licensePlate").getValue().toString()+" "+df.format(((distanceTowardsDestination/1000)*1.7))+" "+" tk approx." )).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_purple));
                         }
                         if((passedGroupId==9)&&(passedGroupId==localGroupId)){
                             licensePlate = busLocationSnapshot.child("licensePlate").getValue().toString();
@@ -818,11 +814,29 @@ public class TestMapsFragment extends Fragment implements MapClick{
                             busLocation.setLatitude(lat);
                             busLocation.setLongitude (lng);
 
-
                             distanceInMeters=busLocation.distanceTo(userLocation);
                             distanceTowardsDestination=busLocation.distanceTo(endingLocation);
-                            zIndex=2;
-                            mMap.addMarker(markerOptions.zIndex(zIndex).title(String.valueOf(df.format(distanceInMeters/1000))+" km"+" "+busLocationSnapshot.child("availableSeats").getValue().toString()+" seats"+" "+"Plate: "+busLocationSnapshot.child("licensePlate").getValue().toString()+" "+df.format(((distanceTowardsDestination/1000)*1.7))+" "+" tk approx." )).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_sky_blue));
+
+                            double estimatedFare=Math.floor((distanceTowardsDestination/1000)*GlobalVariables.fareNormal);
+                            if(estimatedFare<7)
+                            {
+                                estimatedFare=7;
+                                double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
+                                zIndex=2;
+
+                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex));
+                                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_sky_blue));
+                                marker.setTag(licensePlate);
+                            }else{
+                                double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
+                                zIndex=2;
+
+                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex).title(String.valueOf(df.format(distanceInMeters/1000))+" km away "+df.format(estimatedTimeForArrival)+"min away"+busLocationSnapshot.child("availableSeats").getValue().toString()+" seats"+" "+df.format(estimatedFare)+" tk approx."+"Plate: "+busLocationSnapshot.child("licensePlate").getValue().toString() ));
+                                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_sky_blue));
+                                marker.setTag(licensePlate);
+                            }
+
+
                         }
                         if((passedGroupId==10)&&(passedGroupId==localGroupId)){
                             licensePlate = busLocationSnapshot.child("licensePlate").getValue().toString();
@@ -834,11 +848,27 @@ public class TestMapsFragment extends Fragment implements MapClick{
                             busLocation.setLatitude(lat);
                             busLocation.setLongitude (lng);
 
-
                             distanceInMeters=busLocation.distanceTo(userLocation);
                             distanceTowardsDestination=busLocation.distanceTo(endingLocation);
-                            zIndex=2;
-                            mMap.addMarker(markerOptions.zIndex(zIndex).title(String.valueOf(df.format(distanceInMeters/1000))+" km"+" "+busLocationSnapshot.child("availableSeats").getValue().toString()+" seats"+" "+"Plate: "+busLocationSnapshot.child("licensePlate").getValue().toString()+" "+df.format(((distanceTowardsDestination/1000)*1.7))+" "+" tk approx." )).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_orange));
+
+                            double estimatedFare=Math.floor((distanceTowardsDestination/1000)*GlobalVariables.fareNormal);
+                            if(estimatedFare<7)
+                            {
+                                estimatedFare=7;
+                                double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
+                                zIndex=2;
+
+                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex));
+                                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_orange));
+                                marker.setTag(licensePlate);
+                            }else{
+                                double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
+                                zIndex=2;
+
+                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex).title(String.valueOf(df.format(distanceInMeters/1000))+" km away "+df.format(estimatedTimeForArrival)+"min away"+busLocationSnapshot.child("availableSeats").getValue().toString()+" seats"+" "+df.format(estimatedFare)+" tk approx."+"Plate: "+busLocationSnapshot.child("licensePlate").getValue().toString() ));
+                                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_orange));
+                                marker.setTag(licensePlate);
+                            }
                         }
                         if((passedGroupId==16)&&(passedGroupId==localGroupId)){
                             licensePlate = busLocationSnapshot.child("licensePlate").getValue().toString();
@@ -853,8 +883,25 @@ public class TestMapsFragment extends Fragment implements MapClick{
 
                             distanceInMeters=busLocation.distanceTo(userLocation);
                             distanceTowardsDestination=busLocation.distanceTo(endingLocation);
-                            zIndex=2;
-                            mMap.addMarker(markerOptions.zIndex(zIndex).title(String.valueOf(df.format(distanceInMeters/1000))+" km"+" "+busLocationSnapshot.child("availableSeats").getValue().toString()+" seats"+" "+"Plate: "+busLocationSnapshot.child("licensePlate").getValue().toString()+" "+df.format(((distanceTowardsDestination/1000)*1.7))+" "+" tk approx." )).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_green_2));
+
+                            double estimatedFare=Math.floor((distanceTowardsDestination/1000)*GlobalVariables.fareNormal);
+                            if(estimatedFare<7)
+                            {
+                                estimatedFare=7;
+                                double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
+                                zIndex=2;
+
+                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex));
+                                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_green_2));
+                                marker.setTag(licensePlate);
+                            }else{
+                                double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
+                                zIndex=2;
+
+                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex).title(String.valueOf(df.format(distanceInMeters/1000))+" km away "+df.format(estimatedTimeForArrival)+"min away"+busLocationSnapshot.child("availableSeats").getValue().toString()+" seats"+" "+df.format(estimatedFare)+" tk approx."+"Plate: "+busLocationSnapshot.child("licensePlate").getValue().toString() ));
+                                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_green_2));
+                                marker.setTag(licensePlate);
+                            }
                         }
                         if((passedGroupId==11)&&(passedGroupId==localGroupId)){
                             licensePlate = busLocationSnapshot.child("licensePlate").getValue().toString();
@@ -866,11 +913,28 @@ public class TestMapsFragment extends Fragment implements MapClick{
                             busLocation.setLatitude(lat);
                             busLocation.setLongitude (lng);
 
-
                             distanceInMeters=busLocation.distanceTo(userLocation);
                             distanceTowardsDestination=busLocation.distanceTo(endingLocation);
-                            zIndex=2;
-                            mMap.addMarker(markerOptions.zIndex(zIndex).title(String.valueOf(df.format(distanceInMeters/1000))+" km"+" "+busLocationSnapshot.child("availableSeats").getValue().toString()+" seats"+" "+"Plate: "+busLocationSnapshot.child("licensePlate").getValue().toString()+" "+df.format(((distanceTowardsDestination/1000)*1.7))+" "+" tk approx." )).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_brown));
+
+                            double estimatedFare=Math.floor((distanceTowardsDestination/1000)*GlobalVariables.fareNormal);
+                            if(estimatedFare<7)
+                            {
+                                estimatedFare=7;
+                                double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
+                                zIndex=2;
+
+                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex));
+                                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_brown));
+                                marker.setTag(licensePlate);
+                            }else{
+                                double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
+                                zIndex=2;
+
+                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex));
+                                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_brown));
+                                marker.setTag(licensePlate);
+                            }
+
                         }
                         if((passedGroupId==12)&&(passedGroupId==localGroupId)){
                             licensePlate = busLocationSnapshot.child("licensePlate").getValue().toString();
@@ -885,8 +949,25 @@ public class TestMapsFragment extends Fragment implements MapClick{
 
                             distanceInMeters=busLocation.distanceTo(userLocation);
                             distanceTowardsDestination=busLocation.distanceTo(endingLocation);
-                            zIndex=2;
-                            mMap.addMarker(markerOptions.zIndex(zIndex).title(String.valueOf(df.format(distanceInMeters/1000))+" km"+" "+busLocationSnapshot.child("availableSeats").getValue().toString()+" seats"+" "+"Plate: "+busLocationSnapshot.child("licensePlate").getValue().toString()+" "+df.format(((distanceTowardsDestination/1000)*1.7))+" "+" tk approx." )).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_yellow));
+
+                            double estimatedFare=Math.floor((distanceTowardsDestination/1000)*GlobalVariables.fareNormal);
+                            if(estimatedFare<7)
+                            {
+                                estimatedFare=7;
+                                double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
+                                zIndex=2;
+
+                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex));
+                                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_yellow));
+                                marker.setTag(licensePlate);
+                            }else{
+                                double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
+                                zIndex=2;
+
+                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex));
+                                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_yellow));
+                                marker.setTag(licensePlate);
+                            }
                         }
                         if((passedGroupId==17)&&(passedGroupId==localGroupId)){
                             licensePlate = busLocationSnapshot.child("licensePlate").getValue().toString();
@@ -898,11 +979,28 @@ public class TestMapsFragment extends Fragment implements MapClick{
                             busLocation.setLatitude(lat);
                             busLocation.setLongitude (lng);
 
-
                             distanceInMeters=busLocation.distanceTo(userLocation);
                             distanceTowardsDestination=busLocation.distanceTo(endingLocation);
-                            zIndex=2;
-                            mMap.addMarker(markerOptions.zIndex(zIndex).title(String.valueOf(df.format(distanceInMeters/1000))+" km"+" "+busLocationSnapshot.child("availableSeats").getValue().toString()+" seats"+" "+"Plate: "+busLocationSnapshot.child("licensePlate").getValue().toString()+" "+df.format(((distanceTowardsDestination/1000)*1.7))+" "+" tk approx." )).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_navy_blue));
+
+                            double estimatedFare=Math.floor((distanceTowardsDestination/1000)*GlobalVariables.fareNormal);
+                            if(estimatedFare<7)
+                            {
+                                estimatedFare=7;
+                                double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
+                                zIndex=2;
+
+                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex));
+                                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_navy_blue));
+                                marker.setTag(licensePlate);
+                            }else{
+                                double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
+                                zIndex=2;
+
+                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex));
+                                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_navy_blue));
+                                marker.setTag(licensePlate);
+                            }
+
                         }
 
 //                        Log.d("Route","Estimated Speed: "+speed);
@@ -1060,8 +1158,11 @@ public class TestMapsFragment extends Fragment implements MapClick{
                     @Override
                     public boolean onMarkerClick(Marker marker) {
 
+                        if(marker.getTag()!=null)
+                        {
+                            alertDialogBusDetails(marker.getTag().toString());
+                        }
 
-                        alertDialogBusDetails(marker.getTag().toString());
                         return false;
                     }
                 });
