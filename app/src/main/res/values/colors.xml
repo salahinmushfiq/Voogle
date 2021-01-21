@@ -22,6 +22,16 @@
 
 
 
+
+	<color name="bus_purple">#663399</color>
+	<color name="bus_green">#339966</color>
+	<color name="bus_orange">#ff9933</color>
+	<color name="bus_navy_blue">#007799</color>
+	<color name="bus_sky_blue">#0099ff</color>
+	<color name="bus_brown">#663300</color>
+	<color name="bus_yellow">#FFD700</color>
+
+
 <!--	<color name="colorPrimary">#008577</color>-->
 <!--	<color name="colorPrimaryDark">#00574B</color>-->
 <!--	<color name="colorAccent">#1E90FF</color>-->

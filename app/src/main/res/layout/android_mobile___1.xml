@@ -217,7 +217,7 @@
 				android:layout_height="26.892242431641dp" />
 
 			<ImageView android:id="@+id/_006699"
-				android:src="@drawable/_006699"
+				android:src="@drawable/bus_navy_blue"
 				android:contentDescription="_006699"
 				 android:layout_marginLeft="174.00415039062dp"
 				 android:layout_marginStart="174.00415039062dp"
@@ -226,7 +226,7 @@
 				android:layout_height="24.553802490234dp" />
 
 			<ImageView android:id="@+id/_663300"
-				android:src="@drawable/_663300"
+				android:src="@drawable/bus_brown"
 				android:contentDescription="_663300"
 				 android:layout_marginLeft="155.30633544922dp"
 				 android:layout_marginStart="155.30633544922dp"
@@ -235,7 +235,7 @@
 				android:layout_height="24.553802490234dp" />
 
 			<ImageView android:id="@+id/__ff3333"
-				android:src="@drawable/__ff3333"
+				android:src="@drawable/bus_red"
 				android:contentDescription="__ff3333"
 				 android:layout_marginLeft="155.77783203125dp"
 				 android:layout_marginStart="155.77783203125dp"
@@ -244,7 +244,7 @@
 				android:layout_height="23.384567260742dp" />
 
 			<ImageView android:id="@+id/_0099ff"
-				android:src="@drawable/_0099ff"
+				android:src="@drawable/bus_sky_blue"
 				android:contentDescription="_0099ff"
 				 android:layout_marginLeft="190.19268798828dp"
 				 android:layout_marginStart="190.19268798828dp"
@@ -253,7 +253,7 @@
 				android:layout_height="23.969192504883dp" />
 
 			<ImageView android:id="@+id/_663399"
-				android:src="@drawable/_663399"
+				android:src="@drawable/bus_purple"
 				android:contentDescription="_663399"
 				 android:layout_marginLeft="100.57273864746dp"
 				 android:layout_marginStart="100.57273864746dp"

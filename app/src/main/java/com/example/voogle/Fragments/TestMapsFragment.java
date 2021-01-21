@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.app.AlertDialog;
 import android.graphics.Color;
 import android.icu.util.Calendar;
 
@@ -31,12 +32,14 @@ import com.example.voogle.PojoClasses.Bus;
 import com.example.voogle.PojoClasses.StopNew;
 import com.example.voogle.R;
 import com.example.voogle.databinding.FragmentTestMapsBinding;
+import com.example.voogle.databinding.PopupBusDetailsBinding;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -65,7 +68,7 @@ public class TestMapsFragment extends Fragment implements MapClick{
     MapView mapView;
     ArrayList<Bus> busList;
     Bus currentBus;
-    Location userLocation,busLocation,startingStopLocalLocation,endingStopLocalLocation,endingLocation;
+    Location userLocation,busLocation,startingStopLocalLocation,endingStopLocalLocation,endingLocation,startingLocation;
     Calendar cal;
     Date currentLocalTime;
     SimpleDateFormat date ;
@@ -76,12 +79,19 @@ public class TestMapsFragment extends Fragment implements MapClick{
     Polyline polyline;
     ArrayList<Polyline>polylines;
     MarkerOptions markerOptions;
-    static DecimalFormat df = new DecimalFormat("0.000");
+    static DecimalFormat df = new DecimalFormat("0.00");
     FragmentTestMapsBinding fragmentTestMapsBinding;
     private RouteButtonAdapter routeButtonAdapter;
     private BusButtonAdapter busButtonAdapter;
     BusButtonDetailsAdapter busButtonDetailsAdapter;
+    AlertDialog.Builder alert;
+    View alertView;
+    AlertDialog alertDialog, ad;
+    PopupBusDetailsBinding popupBusDetailsBinding;
+    Marker markersss;
+    private DatabaseReference locationRef;
 // you can get seconds by adding  "...:ss" to it
+
 
 
     private void getRouteDataFromDBNew(StopNew startingStop, StopNew endingStop) {
@@ -125,6 +135,7 @@ public class TestMapsFragment extends Fragment implements MapClick{
                             possibleRoutes.add(Long.valueOf(route.getKey()));
                             locations=new ArrayList<>();
                             if(direction.equals("up")) {
+
                                 Log.d("getDistanceForUp", "Route No.:"+ route.getValue().toString());
                                 getDistanceForUp(route);
                                 mMap.setOnPolylineClickListener(new GoogleMap.OnPolylineClickListener() {
@@ -147,7 +158,9 @@ public class TestMapsFragment extends Fragment implements MapClick{
 //                                possibleRoutes.add(Long.valueOf(route.getKey()));
                             }
                             if(!possibleRoutes.contains(Long.valueOf(route.getKey()))){
+
                                 possibleRoutes.add(Long.valueOf(route.getKey()));
+
                             }
 
                         }
@@ -724,13 +737,17 @@ public class TestMapsFragment extends Fragment implements MapClick{
     }
     private void getBusLocationFromDB(String groupId) {
 
-        
+
+
+
 
         stopRef = FirebaseDatabase.getInstance().getReference().child("root").child("locations");
         stopRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
+
+
 
                     for (DataSnapshot busLocationSnapshot : dataSnapshot.getChildren()) {
 
@@ -758,7 +775,6 @@ public class TestMapsFragment extends Fragment implements MapClick{
                             licensePlate = busLocationSnapshot.child("licensePlate").getValue().toString();
                             lat = Double.valueOf(busLocationSnapshot.child("lat").getValue().toString());
                             lng = Double.valueOf(busLocationSnapshot.child("lng").getValue().toString());
-                            currentBusLocation = new LatLng(lat, lng);
 
                             busLocation=new Location(licensePlate);
                             busLocation.setLatitude(lat);
@@ -768,10 +784,29 @@ public class TestMapsFragment extends Fragment implements MapClick{
                             distanceInMeters=busLocation.distanceTo(userLocation);
                             distanceTowardsDestination=busLocation.distanceTo(endingLocation);
 
+                            double estimatedFare=Math.floor((distanceTowardsDestination/1000)*GlobalVariables.fareNormal);
+                            if(estimatedFare<7)
+                            {
+                                estimatedFare=7;
+                                double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
+                                zIndex=2;
+
+                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex).title(String.valueOf(df.format(distanceInMeters/1000))+" km away "+df.format(estimatedTimeForArrival) +"min away"+busLocationSnapshot.child("availableSeats").getValue().toString()+" seats"+" "+df.format(estimatedFare)+" tk approx."+"Plate: "+busLocationSnapshot.child("licensePlate").getValue().toString() ));
+                                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_purple));
+                                marker.setTag(licensePlate);
+                            }else{
+                                double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
+                                zIndex=2;
+
+                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex).title(String.valueOf(df.format(distanceInMeters/1000))+" km away "+df.format(estimatedTimeForArrival)+"min away"+busLocationSnapshot.child("availableSeats").getValue().toString()+" seats"+" "+df.format(estimatedFare)+" tk approx."+"Plate: "+busLocationSnapshot.child("licensePlate").getValue().toString() ));
+                                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_purple));
+                                marker.setTag(licensePlate);
+                            }
 
 
-                            zIndex=2;
-                            mMap.addMarker(markerOptions.zIndex(zIndex).title(String.valueOf(df.format(distanceInMeters/1000))+" km"+" "+busLocationSnapshot.child("availableSeats").getValue().toString()+" seats"+" "+"Plate: "+busLocationSnapshot.child("licensePlate").getValue().toString()+" "+df.format(((distanceTowardsDestination/1000)*1.7))+" "+" tk approx." )).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_purple));
+
+
+//                            mMap.addMarker(markerOptions.zIndex(zIndex).title(String.valueOf(df.format(distanceInMeters/1000))+" km"+" "+busLocationSnapshot.child("availableSeats").getValue().toString()+" seats"+" "+"Plate: "+busLocationSnapshot.child("licensePlate").getValue().toString()+" "+df.format(((distanceTowardsDestination/1000)*1.7))+" "+" tk approx." )).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_purple));
                         }
                         if((passedGroupId==9)&&(passedGroupId==localGroupId)){
                             licensePlate = busLocationSnapshot.child("licensePlate").getValue().toString();
@@ -906,6 +941,8 @@ public class TestMapsFragment extends Fragment implements MapClick{
 
 
         fragmentTestMapsBinding= DataBindingUtil.inflate(inflater,R.layout.fragment_test_maps, container, false);
+
+
         mapView=fragmentTestMapsBinding.map;
         mapView.onCreate(savedInstanceState);
         mapView.onResume();
@@ -999,6 +1036,8 @@ public class TestMapsFragment extends Fragment implements MapClick{
                 endingLocation=new Location("destination");
                 endingLocation.setLatitude(GlobalVariables.destinationNewLat);
                 endingLocation.setLongitude (GlobalVariables.destinationNewLng);
+
+
                 mMap.addMarker(new MarkerOptions().position( new LatLng(GlobalVariables.destinationNewLat,GlobalVariables.destinationNewLng)).title(GlobalVariables.destinationNewName)).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.end));
 
 
@@ -1016,6 +1055,18 @@ public class TestMapsFragment extends Fragment implements MapClick{
                         Toast.makeText(getContext(), polyline.getTag().toString(), Toast.LENGTH_SHORT).show();
                     }
                 });
+
+                mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker) {
+
+
+                        alertDialogBusDetails(marker.getTag().toString());
+                        return false;
+                    }
+                });
+
+
             }
         });
 
@@ -1108,6 +1159,85 @@ public class TestMapsFragment extends Fragment implements MapClick{
 
 
     }
+
+    private void alertDialogBusDetails(String passedLicensePlate) {
+
+
+
+        alert = new AlertDialog.Builder(getActivity());
+        alertView = getLayoutInflater().inflate(R.layout.popup_bus_details, null);
+
+        alertDialog = alert.create();
+
+        if (alertDialog.getWindow() != null)
+            alertDialog.getWindow().setBackgroundDrawable(null);
+
+        popupBusDetailsBinding = DataBindingUtil.bind(alertView);
+
+        locationRef = FirebaseDatabase.getInstance().getReference().child("root").child("locations");
+        locationRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+
+                    for (DataSnapshot bus : dataSnapshot.getChildren()) {
+
+                        String licensePlate = bus.child("licensePlate").getValue().toString();
+                        if(passedLicensePlate.equals(licensePlate))
+                        {
+                            lat = Double.valueOf(bus.child("lat").getValue().toString());
+                            lng = Double.valueOf(bus.child("lng").getValue().toString());
+
+                            String licenseNo=bus.child("licenseNo").getValue().toString();
+                            String availableSeats=bus.child("availableSeats").getValue().toString();
+                            busLocation=new Location(licensePlate);
+                            busLocation.setLatitude(lat);
+                            busLocation.setLongitude (lng);
+
+
+                            double distanceInMeters = busLocation.distanceTo(userLocation);
+                            double distanceFromSourceToDestination=userLocation.distanceTo(endingLocation);
+                            double distanceTowardsDestination=(busLocation.distanceTo(endingLocation))/1000;
+                            double estimatedFare=Math.floor((distanceFromSourceToDestination/1000)*GlobalVariables.fareNormal);
+                            double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
+
+                            popupBusDetailsBinding.licensePlateTV.setText("License Plate: "+licensePlate);
+                            popupBusDetailsBinding.licenseNoTV.setText("License No.: "+licenseNo);
+                            popupBusDetailsBinding.busDistanceToUserTV.setText("Bus Distance: "+df.format(distanceInMeters/1000)+" km away");
+                            popupBusDetailsBinding.arrivalTimeTV.setText("Approx Arrival Time: "+df.format(estimatedTimeForArrival)+" minutes");
+                            popupBusDetailsBinding.availableSeatsTV.setText("Available Seats: "+availableSeats);
+                            popupBusDetailsBinding.busDistanceToDestinationTV.setText("Distance to Destination: "+df.format(distanceTowardsDestination)+" km");
+
+                            if(estimatedFare<7){
+                                popupBusDetailsBinding.expectedFare.setText("Approx fare: 7 tk");
+                            }else{
+                                popupBusDetailsBinding.expectedFare.setText("Approx fare: "+String.valueOf(estimatedFare)+" tk");
+                            }
+
+
+                        }
+
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+//        popupBusDetailsBinding.arrivalTimeTV.setText("Works");
+        alert.setView(alertView);
+
+        ad = alert.show();
+
+
+        // alertDialog.show();
+
+    }
+
 
 
 }

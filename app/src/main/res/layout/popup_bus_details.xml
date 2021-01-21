@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.NoActionBar.PopupOverlay"
+        android:padding="10dp">
+        <TextView
+            android:id="@+id/licensePlateTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="licensePlate"
+            android:textSize="20dp"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            android:elevation="5dp"
+
+            app:cardCornerRadius="5dp"
+            android:textColor="@color/Color_Black"
+            android:textFontWeight="12"
+            android:layout_marginBottom="7dp" />
+        <TextView
+            android:id="@+id/licenseNoTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="licenseNo"
+            android:textSize="20dp"
+            android:textAlignment="center"
+            app:layout_constraintTop_toBottomOf="@+id/licensePlateTV"
+            app:layout_constraintEnd_toEndOf="parent"
+
+            app:layout_constraintVertical_bias="0.0"
+            android:elevation="5dp"
+
+            app:cardCornerRadius="5dp"
+            android:textColor="@color/Color_Black"
+            android:textFontWeight="12"
+            android:layout_marginBottom="7dp" />
+        <TextView
+            android:id="@+id/arrivalTimeTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="arrival time"
+            android:textSize="20dp"
+            android:textAlignment="center"
+            app:layout_constraintTop_toBottomOf="@+id/licenseNoTV"
+            app:layout_constraintEnd_toEndOf="parent"
+
+            app:layout_constraintVertical_bias="0.0"
+            android:elevation="5dp"
+
+            app:cardCornerRadius="5dp"
+            android:textColor="@color/Color_Black"
+            android:textFontWeight="12"
+            android:layout_marginBottom="7dp" />
+        <TextView
+            android:id="@+id/busDistanceToUserTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="busDistanceToUser"
+            android:textSize="20dp"
+            android:textAlignment="center"
+            app:layout_constraintTop_toBottomOf="@+id/arrivalTimeTV"
+            app:layout_constraintEnd_toEndOf="parent"
+
+            app:layout_constraintVertical_bias="0.0"
+            android:elevation="20dp"
+
+            app:cardCornerRadius="5dp"
+            android:textColor="@color/Color_Black"
+            android:textFontWeight="12"
+            android:layout_marginBottom="7dp" />
+        <TextView
+            android:id="@+id/busDistanceToDestinationTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="busDistanceToDestination"
+            android:textSize="20dp"
+            android:textAlignment="center"
+            app:layout_constraintTop_toBottomOf="@+id/busDistanceToUserTV"
+            app:layout_constraintEnd_toEndOf="parent"
+
+            app:layout_constraintVertical_bias="0.0"
+            android:elevation="5dp"
+            app:cardCornerRadius="5dp"
+            android:textColor="@color/Color_Black"
+            android:textFontWeight="12"
+            android:layout_marginBottom="7dp" />
+        <TextView
+            android:id="@+id/expectedFare"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="expected fare"
+            android:textSize="20dp"
+            android:textAlignment="center"
+            app:layout_constraintTop_toBottomOf="@+id/busDistanceToDestinationTV"
+            app:layout_constraintEnd_toEndOf="parent"
+
+            app:layout_constraintVertical_bias="0.0"
+            android:elevation="5dp"
+
+            app:cardCornerRadius="5dp"
+            android:textColor="@color/Color_Black"
+            android:textFontWeight="12"
+            android:layout_marginBottom="7dp" />
+        <TextView
+            android:id="@+id/availableSeatsTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="available seats"
+            android:textSize="20dp"
+            android:textAlignment="center"
+            app:layout_constraintTop_toBottomOf="@+id/expectedFare"
+            app:layout_constraintEnd_toEndOf="parent"
+
+            app:layout_constraintVertical_bias="0.0"
+            android:elevation="5dp"
+
+            app:cardCornerRadius="5dp"
+            android:textColor="@color/Color_Black"
+            android:textFontWeight="12"
+            android:layout_marginBottom="7dp" />
+        <Button android:id="@+id/licenseVerifyBTn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:text="Verify License"
+
+            app:layout_constraintTop_toBottomOf="@+id/availableSeatsTV"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            android:elevation="5dp"
+
+            android:background="@drawable/rounded_rectangle_2_shape"
+            app:cardCornerRadius="25dp"
+            android:textColor="@color/Color_White"
+            android:layout_marginBottom="7dp"
+            android:layout_marginTop="20dp">
+
+        </Button>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
