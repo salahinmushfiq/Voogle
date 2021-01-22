@@ -15,7 +15,8 @@
             android:id="@+id/fragmentContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_constraintBottom_toBottomOf="@+id/toolbar"
+            app:layout_constraintBottom_toBottomOf="parent"
+
             >
 
             <ImageView
@@ -23,13 +24,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/copyright"
-                tools:ignore="MissingConstraints" />
+                tools:ignore="MissingConstraints"
+
+                />
         </FrameLayout>
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/voogleTitle"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="300dp"
             android:paddingTop="90sp"
             android:paddingBottom="90dp"
             android:src="@drawable/voogle_name"

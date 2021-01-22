@@ -1,6 +1,10 @@
 package com.example.voogle.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import com.example.voogle.Adapters.BusFragmentPagerAdapter;
@@ -105,5 +109,5 @@ public class HomeActivity extends AppCompatActivity {
 
 
     }
-
+    
 }

@@ -142,9 +142,9 @@
             app:cardCornerRadius="25dp"
             android:textColor="@color/Color_White"
             android:layout_marginBottom="7dp"
-            android:layout_marginTop="20dp">
-
-        </Button>
+            android:layout_marginTop="20dp"
+            android:onClick="onClickOnVerify"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -9,12 +9,14 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.icu.util.Calendar;
 
 import android.icu.util.TimeZone;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -1120,7 +1122,9 @@ public class TestMapsFragment extends Fragment implements MapClick{
                 endingStop.setLat(GlobalVariables.destinationNewLat);
                 endingStop.setLng(GlobalVariables.destinationNewLng);
                 busList = new ArrayList<>();
-                //            //enable for down
+
+
+                //                   enable for down
 //                startingStop.setName("Science Laboratory");
 //                startingStop.setLat(23.73917813218871);
 //                startingStop.setLng(90.38343505809199);
@@ -1129,6 +1133,7 @@ public class TestMapsFragment extends Fragment implements MapClick{
                 userLocation=new Location("userLocation");
                 userLocation.setLatitude(GlobalVariables.sourceNewLat);
                 userLocation.setLongitude (GlobalVariables.sourceNewLng);
+
                 mMap.addMarker(new MarkerOptions().position( new LatLng(GlobalVariables.sourceNewLat,GlobalVariables.sourceNewLng)).title("Me")).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.human));
 
                 endingLocation=new Location("destination");
@@ -1140,21 +1145,23 @@ public class TestMapsFragment extends Fragment implements MapClick{
 
 
                 polylines=new ArrayList();
-//          getRouteDataFromDB(possibleRoutes);
                 getRouteDataFromDBNew(startingStop,endingStop);
-//                getBusList();
 
                 getBusLocationFromDB();
                 getBusList();
                 Log.d("onMapReady","BusList"+busList.toString());
+
                 mMap.setOnPolylineClickListener(new GoogleMap.OnPolylineClickListener() {
+
                     @Override
                     public void onPolylineClick(Polyline polyline) {
                         Toast.makeText(getContext(), polyline.getTag().toString(), Toast.LENGTH_SHORT).show();
                     }
+
                 });
 
                 mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+
                     @Override
                     public boolean onMarkerClick(Marker marker) {
 
@@ -1165,6 +1172,7 @@ public class TestMapsFragment extends Fragment implements MapClick{
 
                         return false;
                     }
+
                 });
 
 
@@ -1180,15 +1188,11 @@ public class TestMapsFragment extends Fragment implements MapClick{
     public void onClick(String routeNo) {
 
         Toast.makeText(getActivity(), "On Click Route No.: " + routeNo, Toast.LENGTH_SHORT).show();
-//        if (!commonRoutes.isEmpty()) {
-//            hideLayers();
-//            setProperties(Integer.parseInt(s));
-//        }
+
                 if (!polylines.isEmpty()) {
                     Log.d("onClick","polyline size: "+polylines.size());
-        //            hideLayers();
-        //            setProperties(Integer.parseInt(s));
                     for (Polyline polyline: polylines) {
+
                         Log.d("onClick","polyline route No.: "+polyline.getTag());
                         if(polyline.getTag().toString().contains("Route No.: "+routeNo))
                         {
@@ -1203,17 +1207,13 @@ public class TestMapsFragment extends Fragment implements MapClick{
                             Log.d("onClick","else: polyline route No.: "+polyline.getTag());
                             polyline.setWidth(0);
 
-
-
                         }
 
                     }
-                    }
+                }
                 else{
                     Log.d("onClick","polyline size: "+polylines.size());
                 }
-
-
 
     }
 
@@ -1331,8 +1331,41 @@ public class TestMapsFragment extends Fragment implements MapClick{
 
 //        popupBusDetailsBinding.arrivalTimeTV.setText("Works");
         alert.setView(alertView);
+        popupBusDetailsBinding.licenseVerifyBTn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                alert.show().dismiss();
+
+                Log.d("sms","entered");
+//                Intent goToVerifyLicense = new Intent(Intent.ACTION_MAIN);
+
+//                goToVerifyLicense.addCategory(Intent.CATEGORY_DEFAULT);
+//
+//                goToVerifyLicense.setType("vnd.android-dir/mms-sms");
+//
+//                goToVerifyLicense.putExtra("sms_body", popupBusDetailsBinding.licenseNoTV.getText().toString());
+//
+//                goToVerifyLicense.putExtra("address", "12125551212");
+                Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+                sendIntent.setData(Uri.parse("sms:"));
+//                String str = "name1, name2, name3, name4";
+
+                String[] parts = popupBusDetailsBinding.licenseNoTV.getText().toString().split(": ", 2);
+                String string1 = parts[0];
+                String licenseNo = parts[1];
+                sendIntent.putExtra("sms_body", "DL"+" "+"V"+" "+licenseNo);
+                sendIntent.putExtra("address", "26969");
+
+
+
+                startActivity(sendIntent);
+            }
+        });
 
         ad = alert.show();
+
+
+
 
 
         // alertDialog.show();

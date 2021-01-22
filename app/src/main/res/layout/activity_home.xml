@@ -9,14 +9,14 @@
         android:background="@color/Green_Emerald"
         tools:context=".Fragments.HomeActivity">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#00ff40"
-            app:layout_constraintTop_toTopOf="parent">
+<!--        <androidx.appcompat.widget.Toolbar-->
+<!--            android:id="@+id/toolbar"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:background="#00ff40"-->
+<!--            app:layout_constraintTop_toTopOf="parent">-->
 
-        </androidx.appcompat.widget.Toolbar>
+<!--        </androidx.appcompat.widget.Toolbar>-->
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -11,50 +11,83 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".Fragments.TestMapsFragment"
     >
-    <RelativeLayout
+<!--    <RelativeLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:background="@color/mapbox_plugins_white"-->
+<!--        xmlns:app="http://schemas.android.com/apk/res-auto">-->
+
+<!--        <com.google.android.gms.maps.MapView-->
+<!--            android:id="@+id/map"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="420dp" />-->
+
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:id="@+id/busRV"-->
+<!--            android:layout_marginTop="420dp"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="60dp"-->
+<!--            android:layout_alignTop=""-->
+
+<!--             />-->
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:id="@+id/busDetailsRV"-->
+<!--            android:layout_marginTop="480dp"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="400dp"-->
+<!--            android:layout_alignBottom="@+id/goBTN"-->
+
+<!--            />-->
+
+<!--&lt;!&ndash;        <Button&ndash;&gt;-->
+<!--&lt;!&ndash;            android:id="@+id/goBtn"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_width="250dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_height="50dp"&ndash;&gt;-->
+
+<!--&lt;!&ndash;            android:text="Go"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:textFontWeight="30dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_alignParentBottom="true"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_marginBottom="60dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_marginLeft="100dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_marginRight="100dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:background="@drawable/rounded_rectangle_4"&ndash;&gt;-->
+<!--&lt;!&ndash;            >&ndash;&gt;-->
+
+<!--&lt;!&ndash;        </Button>&ndash;&gt;-->
+
+<!--    </RelativeLayout>-->
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/Color_White"
+    >
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/map"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/mapbox_plugins_white"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
-
-        <com.google.android.gms.maps.MapView
-            android:id="@+id/map"
-            android:layout_width="match_parent"
-            android:layout_height="280dp" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/busRV"
-            android:layout_marginTop="300dp"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
+        android:layout_height="0px"
+        app:layout_constraintBottom_toTopOf="@+id/busRV"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginBottom="20px"
+        />
 
 
-             />
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/busDetailsRV"
-            android:layout_marginTop="370dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/goBTN"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/busRV"
 
-            />
+        android:layout_width="match_parent"
+        android:layout_height="200px"
+        android:layout_marginTop="20px"
+        app:layout_constraintBottom_toTopOf="@+id/busDetailsRV"
+        tools:ignore="MissingConstraints" />
 
-        <Button
-            android:id="@+id/goBtn"
-            android:layout_width="250dp"
-            android:layout_height="50dp"
 
-            android:text="Go"
-            android:textFontWeight="30dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="60dp"
-            android:layout_marginLeft="100dp"
-            android:layout_marginRight="100dp"
-            android:background="@drawable/rounded_rectangle_4"
-            >
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/busDetailsRV"
+        android:layout_width="match_parent"
+        android:layout_height="500px"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
-        </Button>
-
-    </RelativeLayout>
-
+</androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
