@@ -1,5 +1,6 @@
 package com.example.voogle.Adapters;
 
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,28 +25,29 @@ import java.util.ArrayList;
 public class BusButtonAdapter extends RecyclerView.Adapter<BusButtonAdapter.ViewHolder> {
 
     FragmentActivity context;
-    ArrayList<Bus>busList;
-    private MapClick mapClick;;
+    ArrayList<Bus> busList;
+    private MapClick mapClick;
+    ;
 
     public BusButtonAdapter(FragmentActivity context, ArrayList<Bus> busList, MapClick mapClick) {
         this.context = context;
         this.busList = busList;
-        this.mapClick=mapClick;
+        this.mapClick = mapClick;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        BusButtonLayoutBinding busButtonItemLayoutBinding= DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.bus_button_layout, parent, false);
+        BusButtonLayoutBinding busButtonItemLayoutBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.bus_button_layout, parent, false);
         return new ViewHolder(busButtonItemLayoutBinding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 //        holder.busButtonItemLayoutBinding.routeBtn.setText("Route No. "+String.valueOf(busList.get(position).getRoute_no()));
-        if(busList.get(position).getGroupId()==11)   //ATCL
+        if (busList.get(position).getGroupId() == 11)   //ATCL
         {
-            holder.busButtonItemLayoutBinding.routeBtn.setBackgroundColor( ContextCompat.getColor(holder.busButtonItemLayoutBinding.getRoot().getContext(), R.color.bus_brown)) ;
+            holder.busButtonItemLayoutBinding.routeBtn.setBackgroundColor(ContextCompat.getColor(holder.busButtonItemLayoutBinding.getRoot().getContext(), R.color.bus_brown));
             holder.busButtonItemLayoutBinding.routeBtn.setText(busList.get(position).getGroupName());
 //        holder.busButtonItemLayoutBinding.busGroupNameTV.setText(busList.get(position).getGroupName());
 //        holder.busButtonItemLayoutBinding.routeBtn.setVisibility(View.GONE);
@@ -54,14 +56,14 @@ public class BusButtonAdapter extends RecyclerView.Adapter<BusButtonAdapter.View
                 @Override
                 public void onClick(View v) {
                     mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()));
-                    mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()),String.valueOf(busList.get(position).getGroupId()));
-                    Log.d("getBusList: ","Route No.:"+busList.get(position).getRoute_no());
+                    mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()), String.valueOf(busList.get(position).getGroupId()));
+                    Log.d("getBusList: ", "Route No.:" + busList.get(position).getRoute_no());
                 }
             });
         }
-        if(busList.get(position).getGroupId()==12) //FTCL
+        if (busList.get(position).getGroupId() == 12) //FTCL
         {
-            holder.busButtonItemLayoutBinding.routeBtn.setBackgroundColor( ContextCompat.getColor(holder.busButtonItemLayoutBinding.getRoot().getContext(), R.color.bus_yellow)) ;
+            holder.busButtonItemLayoutBinding.routeBtn.setBackgroundColor(ContextCompat.getColor(holder.busButtonItemLayoutBinding.getRoot().getContext(), R.color.bus_yellow));
             holder.busButtonItemLayoutBinding.routeBtn.setText(busList.get(position).getGroupName());
 //        holder.busButtonItemLayoutBinding.busGroupNameTV.setText(busList.get(position).getGroupName());
 //        holder.busButtonItemLayoutBinding.routeBtn.setVisibility(View.GONE);
@@ -70,14 +72,14 @@ public class BusButtonAdapter extends RecyclerView.Adapter<BusButtonAdapter.View
                 @Override
                 public void onClick(View v) {
                     mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()));
-                    mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()),String.valueOf(busList.get(position).getGroupId()));
-                    Log.d("getBusList: ","Route No.:"+busList.get(position).getRoute_no());
+                    mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()), String.valueOf(busList.get(position).getGroupId()));
+                    Log.d("getBusList: ", "Route No.:" + busList.get(position).getRoute_no());
                 }
             });
         }
-        if(busList.get(position).getGroupId()==16) //Raja City
+        if (busList.get(position).getGroupId() == 16) //Raja City
         {
-            holder.busButtonItemLayoutBinding.routeBtn.setBackgroundColor( ContextCompat.getColor(holder.busButtonItemLayoutBinding.getRoot().getContext(), R.color.rounded_rectangle_2_color)) ;
+            holder.busButtonItemLayoutBinding.routeBtn.setBackgroundColor(ContextCompat.getColor(holder.busButtonItemLayoutBinding.getRoot().getContext(), R.color.rounded_rectangle_2_color));
             holder.busButtonItemLayoutBinding.routeBtn.setText(busList.get(position).getGroupName());
 //        holder.busButtonItemLayoutBinding.busGroupNameTV.setText(busList.get(position).getGroupName());
 //        holder.busButtonItemLayoutBinding.routeBtn.setVisibility(View.GONE);
@@ -86,14 +88,14 @@ public class BusButtonAdapter extends RecyclerView.Adapter<BusButtonAdapter.View
                 @Override
                 public void onClick(View v) {
                     mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()));
-                    mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()),String.valueOf(busList.get(position).getGroupId()));
-                    Log.d("getBusList: ","Route No.:"+busList.get(position).getRoute_no());
+                    mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()), String.valueOf(busList.get(position).getGroupId()));
+                    Log.d("getBusList: ", "Route No.:" + busList.get(position).getRoute_no());
                 }
             });
         }
-        if(busList.get(position).getGroupId()==17) //Moitri
+        if (busList.get(position).getGroupId() == 17) //Moitri
         {
-            holder.busButtonItemLayoutBinding.routeBtn.setBackgroundColor( ContextCompat.getColor(holder.busButtonItemLayoutBinding.getRoot().getContext(), R.color.bus_navy_blue)) ;
+            holder.busButtonItemLayoutBinding.routeBtn.setBackgroundColor(ContextCompat.getColor(holder.busButtonItemLayoutBinding.getRoot().getContext(), R.color.bus_navy_blue));
             holder.busButtonItemLayoutBinding.routeBtn.setText(busList.get(position).getGroupName());
 
 //        holder.busButtonItemLayoutBinding.busGroupNameTV.setText(busList.get(position).getGroupName());
@@ -103,14 +105,15 @@ public class BusButtonAdapter extends RecyclerView.Adapter<BusButtonAdapter.View
                 @Override
                 public void onClick(View v) {
                     mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()));
-                    mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()),String.valueOf(busList.get(position).getGroupId()));
+                    mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()), String.valueOf(busList.get(position).getGroupId()));
 
                 }
             });
         }
-        if(busList.get(position).getGroupId()==0)
-        {
-            holder.busButtonItemLayoutBinding.routeBtn.setBackgroundColor( ContextCompat.getColor(holder.busButtonItemLayoutBinding.getRoot().getContext(), R.color.bus_purple)) ;
+        if (busList.get(position).getGroupId() == 0) {
+//            Log.w("Test", "onBindViewHolder: TRYING BAHON" );
+            holder.busButtonItemLayoutBinding.routeBtn.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(holder.busButtonItemLayoutBinding.getRoot().getContext(), R.color.bus_purple)));
+            ;
             holder.busButtonItemLayoutBinding.routeBtn.setText(busList.get(position).getGroupName());
 //        holder.busButtonItemLayoutBinding.busGroupNameTV.setText(busList.get(position).getGroupName());
 //        holder.busButtonItemLayoutBinding.routeBtn.setVisibility(View.GONE);
@@ -119,14 +122,13 @@ public class BusButtonAdapter extends RecyclerView.Adapter<BusButtonAdapter.View
                 @Override
                 public void onClick(View v) {
                     mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()));
-                    mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()),String.valueOf(busList.get(position).getGroupId()));
-                    Log.d("getBusList: ","Route No.:"+busList.get(position).getRoute_no());
+                    mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()), String.valueOf(busList.get(position).getGroupId()));
+                    Log.d("getBusList: ", "Route No.:" + busList.get(position).getRoute_no());
                 }
             });
         }
-        if(busList.get(position).getGroupId()==9)
-        {
-            holder.busButtonItemLayoutBinding.routeBtn.setBackgroundColor( ContextCompat.getColor(holder.busButtonItemLayoutBinding.getRoot().getContext(), R.color.bus_sky_blue)) ;
+        if (busList.get(position).getGroupId() == 9) {
+            holder.busButtonItemLayoutBinding.routeBtn.setBackgroundColor(ContextCompat.getColor(holder.busButtonItemLayoutBinding.getRoot().getContext(), R.color.bus_sky_blue));
             holder.busButtonItemLayoutBinding.routeBtn.setText(busList.get(position).getGroupName());
 //        holder.busButtonItemLayoutBinding.busGroupNameTV.setText(busList.get(position).getGroupName());
 //        holder.busButtonItemLayoutBinding.routeBtn.setVisibility(View.GONE);
@@ -135,14 +137,13 @@ public class BusButtonAdapter extends RecyclerView.Adapter<BusButtonAdapter.View
                 @Override
                 public void onClick(View v) {
                     mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()));
-                    Log.d("getBusList: ","Route No.:"+busList.get(position).getRoute_no());
-                    mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()),String.valueOf(busList.get(position).getGroupId()));
+                    Log.d("getBusList: ", "Route No.:" + busList.get(position).getRoute_no());
+                    mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()), String.valueOf(busList.get(position).getGroupId()));
                 }
             });
         }
-        if(busList.get(position).getGroupId()==10)
-        {
-            holder.busButtonItemLayoutBinding.routeBtn.setBackgroundColor( ContextCompat.getColor(holder.busButtonItemLayoutBinding.getRoot().getContext(), R.color.bus_orange)) ;
+        if (busList.get(position).getGroupId() == 10) {
+            holder.busButtonItemLayoutBinding.routeBtn.setBackgroundColor(ContextCompat.getColor(holder.busButtonItemLayoutBinding.getRoot().getContext(), R.color.bus_orange));
             holder.busButtonItemLayoutBinding.routeBtn.setText(busList.get(position).getGroupName());
 //        holder.busButtonItemLayoutBinding.busGroupNameTV.setText(busList.get(position).getGroupName());
 //        holder.busButtonItemLayoutBinding.routeBtn.setVisibility(View.GONE);
@@ -151,8 +152,8 @@ public class BusButtonAdapter extends RecyclerView.Adapter<BusButtonAdapter.View
                 @Override
                 public void onClick(View v) {
                     mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()));
-                    mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()),String.valueOf(busList.get(position).getGroupId()));
-                    Log.d("getBusList: ","Route No.:"+busList.get(position).getRoute_no());
+                    mapClick.onClick(String.valueOf(busList.get(position).getRoute_no()), String.valueOf(busList.get(position).getGroupId()));
+                    Log.d("getBusList: ", "Route No.:" + busList.get(position).getRoute_no());
                 }
             });
         }
@@ -167,9 +168,10 @@ public class BusButtonAdapter extends RecyclerView.Adapter<BusButtonAdapter.View
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         BusButtonLayoutBinding busButtonItemLayoutBinding;
+
         public ViewHolder(@NonNull BusButtonLayoutBinding itemView) {
             super(itemView.getRoot());
-            busButtonItemLayoutBinding=itemView;
+            busButtonItemLayoutBinding = itemView;
         }
     }
 }

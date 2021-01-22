@@ -9,10 +9,11 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         >
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:cardCornerRadius="15dp"
+            app:cardBackgroundColor="@color/Color_White"
             app:cardElevation="20dp"
             android:padding="20sp"
             tools:ignore="MissingConstraints">
@@ -45,7 +46,7 @@
 
                     />
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

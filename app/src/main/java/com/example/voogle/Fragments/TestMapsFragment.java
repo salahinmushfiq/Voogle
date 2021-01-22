@@ -60,26 +60,26 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-public class TestMapsFragment extends Fragment implements MapClick{
+public class TestMapsFragment extends Fragment implements MapClick {
 
     private GoogleMap mMap;
-    private DatabaseReference stopRef,root,routeRef,currentRouteRef,busRef;
-    private Double lat,lng;
+    private DatabaseReference stopRef, root, routeRef, currentRouteRef, busRef;
+    private Double lat, lng;
     ArrayList<Long> possibleRoutes;
     LocationManager locationManager;
     MapView mapView;
     ArrayList<Bus> busList;
     Bus currentBus;
-    Location userLocation,busLocation,startingStopLocalLocation,endingStopLocalLocation,endingLocation,startingLocation;
+    Location userLocation, busLocation, startingStopLocalLocation, endingStopLocalLocation, endingLocation, startingLocation;
     Calendar cal;
     Date currentLocalTime;
-    SimpleDateFormat date ;
-    StopNew startingStop,endingStop;
-    ArrayList <Location>locations;
-    int iteratorForStart,iteratorForEnd;
+    SimpleDateFormat date;
+    StopNew startingStop, endingStop;
+    ArrayList<Location> locations;
+    int iteratorForStart, iteratorForEnd;
     PolylineOptions lineOptions;
     Polyline polyline;
-    ArrayList<Polyline>polylines;
+    ArrayList<Polyline> polylines;
     MarkerOptions markerOptions;
     static DecimalFormat df = new DecimalFormat("0.00");
     FragmentTestMapsBinding fragmentTestMapsBinding;
@@ -94,88 +94,87 @@ public class TestMapsFragment extends Fragment implements MapClick{
     private DatabaseReference locationRef;
 // you can get seconds by adding  "...:ss" to it
 
+    HashMap<String, Marker> keyMarkerPair = new HashMap<>();
 
 
     private void getRouteDataFromDBNew(StopNew startingStop, StopNew endingStop) {
-        startingStopLocalLocation=new Location(startingStop.getName());
+        startingStopLocalLocation = new Location(startingStop.getName());
         startingStopLocalLocation.setLatitude(startingStop.getLat());
         startingStopLocalLocation.setLongitude(startingStop.getLng());
 
-        endingStopLocalLocation=new Location(endingStop.getName());
+        endingStopLocalLocation = new Location(endingStop.getName());
         endingStopLocalLocation.setLatitude(endingStop.getLat());
         endingStopLocalLocation.setLongitude(endingStop.getLng());
 
 
-        double distance= startingStopLocalLocation.distanceTo(endingStopLocalLocation)/10000;
+        double distance = startingStopLocalLocation.distanceTo(endingStopLocalLocation) / 10000;
 //
 
-        Log.d("Distance","Distance: "+distance);
+        Log.d("Distance", "Distance: " + distance);
         routeRef = FirebaseDatabase.getInstance().getReference().child("root").child("routeNew");
         routeRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    Map<Integer,String> sourceExistingRoutes = new HashMap<Integer,String>();
-                    Map<Integer,String> returnedSourceExistingRoutes = new HashMap<Integer,String>();
-                    boolean checkedRoute=false;
+                    Map<Integer, String> sourceExistingRoutes = new HashMap<Integer, String>();
+                    Map<Integer, String> returnedSourceExistingRoutes = new HashMap<Integer, String>();
+                    boolean checkedRoute = false;
                     for (DataSnapshot route : dataSnapshot.getChildren()) {
 
 
-                        checkedRoute= (detectingAvailableRoutes(route,sourceExistingRoutes,startingStop,endingStop));
+                        checkedRoute = (detectingAvailableRoutes(route, sourceExistingRoutes, startingStop, endingStop));
 
                         //find common route for source and destination
-                        if(checkedRoute){
-                            Log.d("getRouteDataFromDBNew","Route found: true for: "+route.getKey());
-                            iteratorForStart=-1;
-                            iteratorForEnd=-1;
-                            String direction=traverseRoute(route,iteratorForStart,iteratorForEnd,startingStop,endingStop);
+                        if (checkedRoute) {
+                            Log.d("getRouteDataFromDBNew", "Route found: true for: " + route.getKey());
+                            iteratorForStart = -1;
+                            iteratorForEnd = -1;
+                            String direction = traverseRoute(route, iteratorForStart, iteratorForEnd, startingStop, endingStop);
 //                            Log.d("getRouteDataFromDBNew","Route Direction : "+direction);
 //                            Log.d("getRouteDataFromDBNew","Iterator Start : "+iteratorForStart);
 //                            Log.d("getRouteDataFromDBNew","Iterator End : "+iteratorForEnd);
 
                             currentRouteRef = routeRef.child(route.getKey());
                             possibleRoutes.add(Long.valueOf(route.getKey()));
-                            locations=new ArrayList<>();
-                            if(direction.equals("up")) {
+                            locations = new ArrayList<>();
+                            if (direction.equals("up")) {
 
-                                Log.d("getDistanceForUp", "Route No.:"+ route.getValue().toString());
+                                Log.d("getDistanceForUp", "Route No.:" + route.getValue().toString());
                                 getDistanceForUp(route);
                                 mMap.setOnPolylineClickListener(new GoogleMap.OnPolylineClickListener() {
                                     @Override
                                     public void onPolylineClick(Polyline polyline) {
-                                        Toast.makeText(getContext(),"Route: "+ polyline.getTag().toString(), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getContext(), "Route: " + polyline.getTag().toString(), Toast.LENGTH_SHORT).show();
                                     }
                                 });
 //                                possibleRoutes.add(Long.valueOf(route.getKey()));
                             }
-                            if(direction.equals("down")) {
-                                Log.d("getDistanceForDown", "Route No.:"+ route.getValue().toString());
+                            if (direction.equals("down")) {
+                                Log.d("getDistanceForDown", "Route No.:" + route.getValue().toString());
                                 getDistanceForDown(route);
                                 mMap.setOnPolylineClickListener(new GoogleMap.OnPolylineClickListener() {
                                     @Override
                                     public void onPolylineClick(Polyline polyline) {
-                                        Toast.makeText(getContext(),"Route: "+ polyline.getTag().toString(), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getContext(), "Route: " + polyline.getTag().toString(), Toast.LENGTH_SHORT).show();
                                     }
                                 });
 //                                possibleRoutes.add(Long.valueOf(route.getKey()));
                             }
-                            if(!possibleRoutes.contains(Long.valueOf(route.getKey()))){
+                            if (!possibleRoutes.contains(Long.valueOf(route.getKey()))) {
 
                                 possibleRoutes.add(Long.valueOf(route.getKey()));
 
                             }
 
-                        }
-                        else{
-                            Log.d("getRouteDataFromDBNew","Route found: false for: "+route.getKey());
+                        } else {
+                            Log.d("getRouteDataFromDBNew", "Route found: false for: " + route.getKey());
 
                         }
-
 
 
                     }
 //                    getBusList();
-                    Log.d("getRouteDataFromDBNew","RouteList"+possibleRoutes.get(0).toString());
+                    Log.d("getRouteDataFromDBNew", "RouteList" + possibleRoutes.get(0).toString());
 
                 }
             }
@@ -214,17 +213,17 @@ public class TestMapsFragment extends Fragment implements MapClick{
 //                        fragmentTestMapsBinding.busRV.setAdapter(routeButtonAdapter);
 //                        fragmentTestMapsBinding.busRV.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
 
-                        busButtonAdapter=new BusButtonAdapter(getActivity(), busList, (MapClick) TestMapsFragment.this);
-                        busButtonDetailsAdapter=new BusButtonDetailsAdapter(getActivity(), busList, (MapClick) TestMapsFragment.this);
+                        busButtonAdapter = new BusButtonAdapter(getActivity(), busList, (MapClick) TestMapsFragment.this);
+                        busButtonDetailsAdapter = new BusButtonDetailsAdapter(getActivity(), busList, (MapClick) TestMapsFragment.this);
 
 
-                        fragmentTestMapsBinding.busRV.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false));
+                        fragmentTestMapsBinding.busRV.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
                         fragmentTestMapsBinding.busRV.setAdapter(busButtonAdapter);
 
                         fragmentTestMapsBinding.busDetailsRV.setLayoutManager(new GridLayoutManager(getActivity(), 2));
                         fragmentTestMapsBinding.busDetailsRV.setAdapter(busButtonDetailsAdapter);
                         for (Bus bus : busList) {
-                            Log.d("getBusList:", "Bus Name: "+bus.getGroupName());
+                            Log.d("getBusList:", "Bus Name: " + bus.getGroupName());
                         }
                     }
 
@@ -238,8 +237,9 @@ public class TestMapsFragment extends Fragment implements MapClick{
         });
 
     }
+
     private void getDistanceForUp(DataSnapshot route) {
-        Log.d("getDistanceForUp", "Route No.:"+ route.getValue().toString());
+        Log.d("getDistanceForUp", "Route No.:" + route.getValue().toString());
 
 
         currentRouteRef.addValueEventListener(new ValueEventListener() {
@@ -251,19 +251,19 @@ public class TestMapsFragment extends Fragment implements MapClick{
 
                     Random rnd = new Random();
                     int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
-                    Toast.makeText(getContext(), "Route No.:"+ route.getKey().toString(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Route No.:" + route.getKey().toString(), Toast.LENGTH_SHORT).show();
                     for (DataSnapshot stops : route.getChildren()) {
 
-                        Log.d("getDistanceForUp", "Stop No.:"+ stops.getValue().toString());
+                        Log.d("getDistanceForUp", "Stop No.:" + stops.getValue().toString());
 //                        Log.d("getDistanceForUp", "testssss: previously stated" + startingStop.getName());
-                        if ((startingStop.getName().equals(stops.child("name").getValue().toString()))&&(Integer.valueOf(stops.child("up").getValue().toString())==1)&&(locations.size())==0){
+                        if ((startingStop.getName().equals(stops.child("name").getValue().toString())) && (Integer.valueOf(stops.child("up").getValue().toString()) == 1) && (locations.size()) == 0) {
                             Location location = new Location(startingStop.getName());
                             location.setLatitude(startingStop.getLat());
                             location.setLongitude(startingStop.getLng());
                             locations.add(location);
-                            Log.d("getDistanceForUp", "Started getting location"+ stops.child("name").getValue().toString());
+                            Log.d("getDistanceForUp", "Started getting location" + stops.child("name").getValue().toString());
                         }
-                        if ((Integer.valueOf(stops.child("up").getValue().toString())==0)&&((locations.size())!=0)) {
+                        if ((Integer.valueOf(stops.child("up").getValue().toString()) == 0) && ((locations.size()) != 0)) {
                             Location location = new Location(stops.child("name").getValue().toString());
                             location.setLatitude(Double.valueOf(stops.child("lat").getValue().toString()));
                             location.setLongitude(Double.valueOf(stops.child("lng").getValue().toString()));
@@ -271,7 +271,7 @@ public class TestMapsFragment extends Fragment implements MapClick{
                             Log.d("getDistanceForUp", "Iteration Running");
                             Log.d("getDistanceForUp", "Current iteration" + stops.child("name").getValue().toString());
                         }
-                        if ((endingStop.getName().equals(stops.child("name").getValue().toString()))&&(Integer.valueOf(stops.child("up").getValue().toString())==1)) {
+                        if ((endingStop.getName().equals(stops.child("name").getValue().toString())) && (Integer.valueOf(stops.child("up").getValue().toString()) == 1)) {
                             Log.d("getDistanceForUp", "Done iterating" + stops.child("name").getValue().toString());
                             int iterator = 0;
                             Log.d("getDistanceForUp", "Size: : " + String.valueOf(locations.size()));
@@ -281,31 +281,30 @@ public class TestMapsFragment extends Fragment implements MapClick{
                             for (Location location : locations) {
 
 
-                                if(iterator>=locations.indexOf(location.getProvider())&&(iterator<locations.size()-1))
-                                {
+                                if (iterator >= locations.indexOf(location.getProvider()) && (iterator < locations.size() - 1)) {
 
-                                    polyline=mMap.addPolyline(lineOptions.add(new LatLng(location.getLatitude(), location.getLongitude()))
+                                    polyline = mMap.addPolyline(lineOptions.add(new LatLng(location.getLatitude(), location.getLongitude()))
                                             .color(color)
                                             .width(15));
-                                   polyline.setClickable(true);
-                                   polyline.setTag("Route No.: "+route.getKey());
-                                   polylines.add(polyline);
+                                    polyline.setClickable(true);
+                                    polyline.setTag("Route No.: " + route.getKey());
+                                    polylines.add(polyline);
 
 
                                     // draw the polyline for the route so far
 
                                     distance += locations.get(iterator).distanceTo(locations.get(iterator + 1));
 //                                    Log.d("getDistanceForUp", "Name: : " + location.getProvider());
-                                    Log.d("getDistanceForUp", "From: " + locations.get(iterator).getProvider()+" To: "+locations.get(iterator + 1).getProvider());
+                                    Log.d("getDistanceForUp", "From: " + locations.get(iterator).getProvider() + " To: " + locations.get(iterator + 1).getProvider());
                                     Log.d("getDistanceForUp", "Distance: : " + (distance));
                                     iterator++;
                                 }
-                                if(iterator>=locations.indexOf(location.getProvider())&&(iterator==locations.size()-1)){
-                                    polyline=mMap.addPolyline(lineOptions.add(new LatLng(location.getLatitude(), location.getLongitude()))
+                                if (iterator >= locations.indexOf(location.getProvider()) && (iterator == locations.size() - 1)) {
+                                    polyline = mMap.addPolyline(lineOptions.add(new LatLng(location.getLatitude(), location.getLongitude()))
                                             .color(color)
                                             .width(15));
                                     polyline.setClickable(true);
-                                    polyline.setTag("Route No.: "+route.getKey().toString()+" Distance: "+df.format(distance/1000)+"km "+"Time: "+df.format((distance/1000)/GlobalVariables.averageSpeedOfDhaka)+"min");
+                                    polyline.setTag("Route No.: " + route.getKey().toString() + " Distance: " + df.format(distance / 1000) + "km " + "Time: " + df.format((distance / 1000) / GlobalVariables.averageSpeedOfDhaka) + "min");
                                     polylines.add(polyline);
 
                                 }
@@ -401,7 +400,7 @@ public class TestMapsFragment extends Fragment implements MapClick{
     }
 
     private void getDistanceForDown(DataSnapshot route) {
-        Log.d("getDistanceForDown", "Route No.:"+ route.getValue().toString());
+        Log.d("getDistanceForDown", "Route No.:" + route.getValue().toString());
 
 
         currentRouteRef.addValueEventListener(new ValueEventListener() {
@@ -413,19 +412,19 @@ public class TestMapsFragment extends Fragment implements MapClick{
 
                     Random rnd = new Random();
                     int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
-                    Toast.makeText(getContext(), "Route No.:"+ route.getKey().toString(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Route No.:" + route.getKey().toString(), Toast.LENGTH_SHORT).show();
                     for (DataSnapshot stops : route.getChildren()) {
 
-                        Log.d("getDistanceForDown", "Stop No.:"+ stops.getValue().toString());
+                        Log.d("getDistanceForDown", "Stop No.:" + stops.getValue().toString());
 //                        Log.d("getDistanceForUp", "testssss: previously stated" + startingStop.getName());
-                        if ((endingStop.getName().equals(stops.child("name").getValue().toString()))&&(Integer.valueOf(stops.child("down").getValue().toString())==1)&&(locations.size())==0){
+                        if ((endingStop.getName().equals(stops.child("name").getValue().toString())) && (Integer.valueOf(stops.child("down").getValue().toString()) == 1) && (locations.size()) == 0) {
                             Location location = new Location(startingStop.getName());
                             location.setLatitude(startingStop.getLat());
                             location.setLongitude(startingStop.getLng());
                             locations.add(location);
-                            Log.d("getDistanceForDown", "Started getting location"+ stops.child("name").getValue().toString());
+                            Log.d("getDistanceForDown", "Started getting location" + stops.child("name").getValue().toString());
                         }
-                        if ((Integer.valueOf(stops.child("down").getValue().toString())==0)&&((locations.size())!=0)) {
+                        if ((Integer.valueOf(stops.child("down").getValue().toString()) == 0) && ((locations.size()) != 0)) {
                             Location location = new Location(stops.child("name").getValue().toString());
                             location.setLatitude(Double.valueOf(stops.child("lat").getValue().toString()));
                             location.setLongitude(Double.valueOf(stops.child("lng").getValue().toString()));
@@ -434,7 +433,7 @@ public class TestMapsFragment extends Fragment implements MapClick{
                             Log.d("getDistanceFoDown", "Current iteration" + stops.child("name").getValue().toString());
 
                         }
-                        if ((startingStop.getName().equals(stops.child("name").getValue().toString()))&&(Integer.valueOf(stops.child("up").getValue().toString())==1)) {
+                        if ((startingStop.getName().equals(stops.child("name").getValue().toString())) && (Integer.valueOf(stops.child("up").getValue().toString()) == 1)) {
                             Log.d("getDistanceForDown", "Done Iterating: " + stops.child("name").getValue().toString());
                             int iterator = 0;
                             Log.d("getDistanceForDown", "Size: : " + String.valueOf(locations.size()));
@@ -444,30 +443,30 @@ public class TestMapsFragment extends Fragment implements MapClick{
                             for (Location location : locations) {
 
 
-                                if(iterator>=locations.indexOf(location.getProvider())&&(iterator<locations.size()-1))
-                                {
+                                if (iterator >= locations.indexOf(location.getProvider()) && (iterator < locations.size() - 1)) {
 
-                                    polyline=mMap.addPolyline(lineOptions.add(new LatLng(location.getLatitude(), location.getLongitude()))
+                                    polyline = mMap.addPolyline(lineOptions.add(new LatLng(location.getLatitude(), location.getLongitude()))
                                             .color(color)
                                             .width(15));
                                     polyline.setClickable(true);
-                                    polyline.setTag("Route No.: "+route.getKey());
-                                   polylines.add(polyline);
+                                    polyline.setTag("Route No.: " + route.getKey());
+                                    polylines.add(polyline);
 
 
                                     // draw the polyline for the route so far
 
                                     distance += locations.get(iterator).distanceTo(locations.get(iterator + 1));
 //                                    Log.d("getDistanceForUp", "Name: : " + location.getProvider());
-                                    Log.d("getDistanceForDown", "From: " + locations.get(iterator).getProvider()+" To: "+locations.get(iterator + 1).getProvider());
+                                    Log.d("getDistanceForDown", "From: " + locations.get(iterator).getProvider() + " To: " + locations.get(iterator + 1).getProvider());
                                     Log.d("getDistanceForDown", "Distance: : " + (distance));
                                     iterator++;
-                                }if(iterator>=locations.indexOf(location.getProvider())&&(iterator==locations.size()-1)){
-                                    polyline=mMap.addPolyline(lineOptions.add(new LatLng(location.getLatitude(), location.getLongitude()))
+                                }
+                                if (iterator >= locations.indexOf(location.getProvider()) && (iterator == locations.size() - 1)) {
+                                    polyline = mMap.addPolyline(lineOptions.add(new LatLng(location.getLatitude(), location.getLongitude()))
                                             .color(color)
                                             .width(15));
                                     polyline.setClickable(true);
-                                    polyline.setTag("Route No.: "+route.getKey().toString()+" Distance: "+df.format(distance/1000)+" km");
+                                    polyline.setTag("Route No.: " + route.getKey().toString() + " Distance: " + df.format(distance / 1000) + " km");
 
                                     polylines.add(polyline);
 
@@ -571,96 +570,93 @@ public class TestMapsFragment extends Fragment implements MapClick{
         startingStopLocation.setLongitude(startingStop.getLng());
 
 
-        ArrayList<Double> sourceDownUpDistance=new ArrayList();
+        ArrayList<Double> sourceDownUpDistance = new ArrayList();
         for (DataSnapshot stops : route.getChildren()) {
 
 
-            Log.d("traverseRoute","start "+iteratorForStart);
-            Log.d("traverseRoute","end "+iteratorForEnd);
+            Log.d("traverseRoute", "start " + iteratorForStart);
+            Log.d("traverseRoute", "end " + iteratorForEnd);
 
 
-                if((startingStop.getName().equals(stops.child("name").getValue().toString())))  {
+            if ((startingStop.getName().equals(stops.child("name").getValue().toString()))) {
 
-                    iteratorForStart=Integer.valueOf(stops.getKey().toString());
+                iteratorForStart = Integer.valueOf(stops.getKey().toString());
 
-                        if(Integer.valueOf(stops.child("up").getValue().toString())==1){
-                            Log.d("traverseRoute", "stop: " + stops.child("name").getValue().toString());
-                            Log.d("traverseRoute", "Route: " + stops.child("route").getValue().toString());
-                            Log.d("traverseRoute", "up: " + stops.child("up").getValue().toString());
-                            Log.d("traverseRoute", "down: " + stops.child("down").getValue().toString());
-                            Log.d("traverseRoute", "iterator Start: " + iteratorForStart);
-                            startingStopLocalLocation = new Location(stops.child("name").getValue().toString());
-                            startingStopLocalLocation.setLatitude(Double.valueOf(stops.child("lat").getValue().toString()));
-                            startingStopLocalLocation.setLongitude(Double.valueOf(stops.child("lng").getValue().toString()));
+                if (Integer.valueOf(stops.child("up").getValue().toString()) == 1) {
+                    Log.d("traverseRoute", "stop: " + stops.child("name").getValue().toString());
+                    Log.d("traverseRoute", "Route: " + stops.child("route").getValue().toString());
+                    Log.d("traverseRoute", "up: " + stops.child("up").getValue().toString());
+                    Log.d("traverseRoute", "down: " + stops.child("down").getValue().toString());
+                    Log.d("traverseRoute", "iterator Start: " + iteratorForStart);
+                    startingStopLocalLocation = new Location(stops.child("name").getValue().toString());
+                    startingStopLocalLocation.setLatitude(Double.valueOf(stops.child("lat").getValue().toString()));
+                    startingStopLocalLocation.setLongitude(Double.valueOf(stops.child("lng").getValue().toString()));
 
-                            double distanceStart = startingStopLocation.distanceTo(startingStopLocalLocation);
-                            Log.d("traverseRoute", "Distance Start Up: " + distanceStart);
-                            sourceDownUpDistance.add(1,distanceStart);
-                        }
-                        if(Integer.valueOf(stops.child("down").getValue().toString())==1){
-
-                            Log.d("traverseRoute", "stop: " + stops.child("name").getValue().toString());
-                            Log.d("traverseRoute", "Route: " + stops.child("route").getValue().toString());
-                            Log.d("traverseRoute", "up: " + stops.child("up").getValue().toString());
-                            Log.d("traverseRoute", "down: " + stops.child("down").getValue().toString());
-                            Log.d("traverseRoute", "iterator Start: " + iteratorForStart);
-                            startingStopLocalLocation = new Location(stops.child("name").getValue().toString());
-                            startingStopLocalLocation.setLatitude(Double.valueOf(stops.child("lat").getValue().toString()));
-                            startingStopLocalLocation.setLongitude(Double.valueOf(stops.child("lng").getValue().toString()));
-
-                            double distanceStart = startingStopLocation.distanceTo(startingStopLocalLocation);
-                            Log.d("traverseRoute", "Distance Start Down: " + distanceStart);
-                            sourceDownUpDistance.add(0,distanceStart);
-                        }
-
-
+                    double distanceStart = startingStopLocation.distanceTo(startingStopLocalLocation);
+                    Log.d("traverseRoute", "Distance Start Up: " + distanceStart);
+                    sourceDownUpDistance.add(1, distanceStart);
                 }
-                if((this.endingStop.getName().equals(stops.child("name").getValue().toString())) &&(iteratorForEnd==-1))
-                {
-                    iteratorForEnd=Integer.valueOf(stops.getKey());
-                    if(iteratorForEnd!=-1){
+                if (Integer.valueOf(stops.child("down").getValue().toString()) == 1) {
 
-                        Log.d("traverseRoute","iterator End: "+iteratorForEnd);
-                        if(Integer.valueOf(stops.child("down").getValue().toString())==1) {
-                            Log.d("traverseRoute","stop"+stops.child("name").getValue().toString());
-                            Log.d("traverseRoute","Route"+stops.child("route").getValue().toString());
-                            Log.d("traverseRoute", "up: " + stops.child("up").getValue().toString());
-                            Log.d("traverseRoute", "down: " + stops.child("down").getValue().toString());
-                            endingStopLocalLocation = new Location(endingStop.getName());
-                            endingStopLocalLocation.setLatitude(endingStop.getLat());
-                            endingStopLocalLocation.setLongitude(endingStop.getLng());
-                            double distanceEnd = startingStopLocation.distanceTo(endingStopLocalLocation);
-                            Log.d("traverseRoute", "Distance End Down: " + distanceEnd);
-                        }
-                        if(Integer.valueOf(stops.child("up").getValue().toString())==1) {
-                            Log.d("traverseRoute","stop"+stops.child("name").getValue().toString());
-                            Log.d("traverseRoute","Route"+stops.child("route").getValue().toString());
-                            Log.d("traverseRoute", "up: " + stops.child("up").getValue().toString());
-                            Log.d("traverseRoute", "down: " + stops.child("down").getValue().toString());
-                            endingStopLocalLocation = new Location(endingStop.getName());
-                            endingStopLocalLocation.setLatitude(endingStop.getLat());
-                            endingStopLocalLocation.setLongitude(endingStop.getLng());
-                            double distanceEnd = startingStopLocation.distanceTo(endingStopLocalLocation);
-                            Log.d("traverseRoute", "Distance End Up: " + distanceEnd);
-                        }
+                    Log.d("traverseRoute", "stop: " + stops.child("name").getValue().toString());
+                    Log.d("traverseRoute", "Route: " + stops.child("route").getValue().toString());
+                    Log.d("traverseRoute", "up: " + stops.child("up").getValue().toString());
+                    Log.d("traverseRoute", "down: " + stops.child("down").getValue().toString());
+                    Log.d("traverseRoute", "iterator Start: " + iteratorForStart);
+                    startingStopLocalLocation = new Location(stops.child("name").getValue().toString());
+                    startingStopLocalLocation.setLatitude(Double.valueOf(stops.child("lat").getValue().toString()));
+                    startingStopLocalLocation.setLongitude(Double.valueOf(stops.child("lng").getValue().toString()));
+
+                    double distanceStart = startingStopLocation.distanceTo(startingStopLocalLocation);
+                    Log.d("traverseRoute", "Distance Start Down: " + distanceStart);
+                    sourceDownUpDistance.add(0, distanceStart);
+                }
+
+
+            }
+            if ((this.endingStop.getName().equals(stops.child("name").getValue().toString())) && (iteratorForEnd == -1)) {
+                iteratorForEnd = Integer.valueOf(stops.getKey());
+                if (iteratorForEnd != -1) {
+
+                    Log.d("traverseRoute", "iterator End: " + iteratorForEnd);
+                    if (Integer.valueOf(stops.child("down").getValue().toString()) == 1) {
+                        Log.d("traverseRoute", "stop" + stops.child("name").getValue().toString());
+                        Log.d("traverseRoute", "Route" + stops.child("route").getValue().toString());
+                        Log.d("traverseRoute", "up: " + stops.child("up").getValue().toString());
+                        Log.d("traverseRoute", "down: " + stops.child("down").getValue().toString());
+                        endingStopLocalLocation = new Location(endingStop.getName());
+                        endingStopLocalLocation.setLatitude(endingStop.getLat());
+                        endingStopLocalLocation.setLongitude(endingStop.getLng());
+                        double distanceEnd = startingStopLocation.distanceTo(endingStopLocalLocation);
+                        Log.d("traverseRoute", "Distance End Down: " + distanceEnd);
                     }
-
+                    if (Integer.valueOf(stops.child("up").getValue().toString()) == 1) {
+                        Log.d("traverseRoute", "stop" + stops.child("name").getValue().toString());
+                        Log.d("traverseRoute", "Route" + stops.child("route").getValue().toString());
+                        Log.d("traverseRoute", "up: " + stops.child("up").getValue().toString());
+                        Log.d("traverseRoute", "down: " + stops.child("down").getValue().toString());
+                        endingStopLocalLocation = new Location(endingStop.getName());
+                        endingStopLocalLocation.setLatitude(endingStop.getLat());
+                        endingStopLocalLocation.setLongitude(endingStop.getLng());
+                        double distanceEnd = startingStopLocation.distanceTo(endingStopLocalLocation);
+                        Log.d("traverseRoute", "Distance End Up: " + distanceEnd);
+                    }
                 }
 
-
+            }
 
 
         }
-        double downDistance=sourceDownUpDistance.get(0);
-        double upDistance=sourceDownUpDistance.get(1);
+        double downDistance = sourceDownUpDistance.get(0);
+        double upDistance = sourceDownUpDistance.get(1);
         String selectedDirection = null;
-        if(upDistance<downDistance){
-            Log.d("traverseRoute", "Selected: Up" );
-            selectedDirection= "up";
+        if (upDistance < downDistance) {
+            Log.d("traverseRoute", "Selected: Up");
+            selectedDirection = "up";
         }
-        if(downDistance<upDistance){
-            Log.d("traverseRoute", "Selected: Down" );
-            selectedDirection= "down";
+        if (downDistance < upDistance) {
+            Log.d("traverseRoute", "Selected: Down");
+            selectedDirection = "down";
         }
 
 
@@ -670,31 +666,28 @@ public class TestMapsFragment extends Fragment implements MapClick{
     private boolean detectingAvailableRoutes(DataSnapshot route, Map<Integer, String> sourceExistingRoutes, StopNew startingStop, StopNew endingStop) {
 
 
-        Log.d("detectingRoutes","Check source: "+startingStop.getName()+startingStop.getLat()+startingStop.getLng());
-        Log.d("detectingRoutes","Check destination: "+endingStop.getName()+endingStop.getLat()+endingStop.getLng());
-        boolean sourceFound=false;
-        boolean destinationFound=false;
-        for (DataSnapshot stops:route.getChildren()) {
-            if((stops.child("name").getValue().toString().equals(startingStop.getName())))
-            {
-                sourceFound=true;
+        Log.d("detectingRoutes", "Check source: " + startingStop.getName() + startingStop.getLat() + startingStop.getLng());
+        Log.d("detectingRoutes", "Check destination: " + endingStop.getName() + endingStop.getLat() + endingStop.getLng());
+        boolean sourceFound = false;
+        boolean destinationFound = false;
+        for (DataSnapshot stops : route.getChildren()) {
+            if ((stops.child("name").getValue().toString().equals(startingStop.getName()))) {
+                sourceFound = true;
             }
-            if((stops.child("name").getValue().toString().equals(endingStop.getName())))
-            {
-                destinationFound=true;
+            if ((stops.child("name").getValue().toString().equals(endingStop.getName()))) {
+                destinationFound = true;
             }
 
 
         }
-        if((destinationFound==true) && (sourceFound==true))
-        {
-            Log.d("detectedRoute","detectedRoute: "+route.getValue().toString());
+        if ((destinationFound == true) && (sourceFound == true)) {
+            Log.d("detectedRoute", "detectedRoute: " + route.getValue().toString());
 
 
             return true;
 
-        }else{
-            return  false;
+        } else {
+            return false;
         }
 
     }
@@ -714,17 +707,24 @@ public class TestMapsFragment extends Fragment implements MapClick{
                         lat = Double.valueOf(bus.child("lat").getValue().toString());
                         lng = Double.valueOf(bus.child("lng").getValue().toString());
                         LatLng currentBusLocation = new LatLng(lat, lng);
-                        MarkerOptions markerOptions= new MarkerOptions().position(currentBusLocation).title(licensePlate);
+                        MarkerOptions markerOptions = new MarkerOptions().position(currentBusLocation).title(licensePlate);
 
-                        mMap.addMarker(markerOptions.zIndex(1)).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_red));
-                        busLocation=new Location(licensePlate);
+                        Marker marker = keyMarkerPair.get(licensePlate);
+                        if (marker == null)
+                            keyMarkerPair.put(licensePlate, marker = mMap.addMarker(markerOptions.zIndex(1).title(licensePlate)));
+                        marker.setPosition(currentBusLocation);
+                        marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_red));
+                        marker.setTag(licensePlate);
+
+//                        mMap.addMarker(markerOptions.zIndex(1)).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_red));
+                        busLocation = new Location(licensePlate);
                         busLocation.setLatitude(lat);
-                        busLocation.setLongitude (lng);
-                        double distanceInMeters=busLocation.distanceTo(userLocation);
+                        busLocation.setLongitude(lng);
+                        double distanceInMeters = busLocation.distanceTo(userLocation);
 //                        double speed=Double.valueOf(busLocation.getSpeed());
 
-                        Log.d("Bus","License Plate: "+licensePlate);
-                        Log.d("Bus","Estimated distanceInMeters: "+distanceInMeters);
+                        Log.d("Bus", "License Plate: " + licensePlate);
+                        Log.d("Bus", "Estimated distanceInMeters: " + distanceInMeters);
 //                        Log.d("Route","Estimated Speed: "+speed);
 
                     }
@@ -737,10 +737,8 @@ public class TestMapsFragment extends Fragment implements MapClick{
             }
         });
     }
+
     private void getBusLocationFromDB(String groupId) {
-
-
-
 
 
         stopRef = FirebaseDatabase.getInstance().getReference().child("root").child("locations");
@@ -750,258 +748,252 @@ public class TestMapsFragment extends Fragment implements MapClick{
                 if (dataSnapshot.exists()) {
 
 
-
                     for (DataSnapshot busLocationSnapshot : dataSnapshot.getChildren()) {
 
                         String licensePlate = busLocationSnapshot.child("licensePlate").getValue().toString();
                         lat = Double.valueOf(busLocationSnapshot.child("lat").getValue().toString());
                         lng = Double.valueOf(busLocationSnapshot.child("lng").getValue().toString());
                         LatLng currentBusLocation = new LatLng(lat, lng);
-                        MarkerOptions markerOptions= new MarkerOptions().position(currentBusLocation).title(licensePlate);
+                        MarkerOptions markerOptions = new MarkerOptions().position(currentBusLocation).title(licensePlate);
 //                        mMap.addMarker(markerOptions).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus));
 //
-                        busLocation=new Location(licensePlate);
+                        busLocation = new Location(licensePlate);
                         busLocation.setLatitude(lat);
-                        busLocation.setLongitude (lng);
-                        int localGroupId =Integer.valueOf(busLocationSnapshot.child("groupId").getValue().toString());
-                        int passedGroupId =Integer.valueOf(groupId);
-                        double distanceInMeters=busLocation.distanceTo(userLocation);
-                        double distanceTowardsDestination=busLocation.distanceTo(endingLocation);
+                        busLocation.setLongitude(lng);
+                        int localGroupId = Integer.valueOf(busLocationSnapshot.child("groupId").getValue().toString());
+                        int passedGroupId = Integer.valueOf(groupId);
+                        double distanceInMeters = busLocation.distanceTo(userLocation);
+                        double distanceTowardsDestination = busLocation.distanceTo(endingLocation);
 
 //                        double speed=Double.valueOf(busLocation.getSpeed());
 
-                        Log.d("Bus","License Plate: "+licensePlate);
-                        Log.d("Bus","Estimated distanceInMeters: "+distanceInMeters);
-                        int zIndex=0;
-                        if((passedGroupId==0)&&(passedGroupId==localGroupId)){
+                        Log.d("Bus", "License Plate: " + licensePlate);
+                        Log.d("Bus", "Estimated distanceInMeters: " + distanceInMeters);
+                        int zIndex = 0;
+                        if ((passedGroupId == 0) && (passedGroupId == localGroupId)) {
                             licensePlate = busLocationSnapshot.child("licensePlate").getValue().toString();
                             lat = Double.valueOf(busLocationSnapshot.child("lat").getValue().toString());
                             lng = Double.valueOf(busLocationSnapshot.child("lng").getValue().toString());
 
-                            busLocation=new Location(licensePlate);
+                            busLocation = new Location(licensePlate);
                             busLocation.setLatitude(lat);
-                            busLocation.setLongitude (lng);
+                            busLocation.setLongitude(lng);
 
 
-                            distanceInMeters=busLocation.distanceTo(userLocation);
-                            distanceTowardsDestination=busLocation.distanceTo(endingLocation);
+                            distanceInMeters = busLocation.distanceTo(userLocation);
+                            distanceTowardsDestination = busLocation.distanceTo(endingLocation);
 
-                            double estimatedFare=Math.floor((distanceTowardsDestination/1000)*GlobalVariables.fareNormal);
-                            if(estimatedFare<7)
-                            {
-                                estimatedFare=7;
-                                double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
-                                zIndex=2;
+                            double estimatedFare = Math.floor((distanceTowardsDestination / 1000) * GlobalVariables.fareNormal);
 
-                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex));
-                                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_purple));
-                                marker.setTag(licensePlate);
-                            }else{
-                                double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
-                                zIndex=2;
+                                estimatedFare = 7;
+                                double estimatedTimeForArrival = ((distanceInMeters / 1000) / GlobalVariables.averageSpeedOfDhaka);
+                                zIndex = 2;
+                                /*
+                                * TODO: See following block
+                                * Try to fetch marker from our hashmap keyMarkerPair by licensePlate
+                                * if null, add a new marker to the hashmap
+                                * all the same, change position of the marker to current bus
+                                * */
+                                Marker marker = keyMarkerPair.get(licensePlate);
+                                if (marker == null)
+                                    keyMarkerPair.put(licensePlate, marker = mMap.addMarker(markerOptions.zIndex(zIndex)));
+                                    marker.setPosition(currentBusLocation);
+                                    marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_purple));
+                                    marker.setTag(licensePlate);
 
-                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex));
-                                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_purple));
-                                marker.setTag(licensePlate);
-                            }
 
                         }
-                        if((passedGroupId==9)&&(passedGroupId==localGroupId)){
+                        if ((passedGroupId == 9) && (passedGroupId == localGroupId)) {
                             licensePlate = busLocationSnapshot.child("licensePlate").getValue().toString();
                             lat = Double.valueOf(busLocationSnapshot.child("lat").getValue().toString());
                             lng = Double.valueOf(busLocationSnapshot.child("lng").getValue().toString());
                             currentBusLocation = new LatLng(lat, lng);
 
-                            busLocation=new Location(licensePlate);
+                            busLocation = new Location(licensePlate);
                             busLocation.setLatitude(lat);
-                            busLocation.setLongitude (lng);
+                            busLocation.setLongitude(lng);
 
-                            distanceInMeters=busLocation.distanceTo(userLocation);
-                            distanceTowardsDestination=busLocation.distanceTo(endingLocation);
+                            distanceInMeters = busLocation.distanceTo(userLocation);
+                            distanceTowardsDestination = busLocation.distanceTo(endingLocation);
 
-                            double estimatedFare=Math.floor((distanceTowardsDestination/1000)*GlobalVariables.fareNormal);
-                            if(estimatedFare<7)
-                            {
-                                estimatedFare=7;
-                                double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
-                                zIndex=2;
+                            double estimatedFare = Math.floor((distanceTowardsDestination / 1000) * GlobalVariables.fareNormal);
 
-                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex));
-                                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_sky_blue));
-                                marker.setTag(licensePlate);
-                            }else{
-                                double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
-                                zIndex=2;
-
-                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex).title(String.valueOf(df.format(distanceInMeters/1000))+" km away "+df.format(estimatedTimeForArrival)+"min away"+busLocationSnapshot.child("availableSeats").getValue().toString()+" seats"+" "+df.format(estimatedFare)+" tk approx."+"Plate: "+busLocationSnapshot.child("licensePlate").getValue().toString() ));
-                                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_sky_blue));
-                                marker.setTag(licensePlate);
-                            }
+                            estimatedFare = 7;
+                            double estimatedTimeForArrival = ((distanceInMeters / 1000) / GlobalVariables.averageSpeedOfDhaka);
+                            zIndex = 2;
+                            /*
+                             * TODO: See following block
+                             * Try to fetch marker from our hashmap keyMarkerPair by licensePlate
+                             * if null, add a new marker to the hashmap
+                             * all the same, change position of the marker to current bus
+                             * */
+                            Marker marker = keyMarkerPair.get(licensePlate);
+                            if (marker == null)
+                                keyMarkerPair.put(licensePlate, marker = mMap.addMarker(markerOptions.zIndex(zIndex)));
+                            marker.setPosition(currentBusLocation);
+                            marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_sky_blue));
+                            marker.setTag(licensePlate);
 
 
                         }
-                        if((passedGroupId==10)&&(passedGroupId==localGroupId)){
+                        if ((passedGroupId == 10) && (passedGroupId == localGroupId)) {
                             licensePlate = busLocationSnapshot.child("licensePlate").getValue().toString();
                             lat = Double.valueOf(busLocationSnapshot.child("lat").getValue().toString());
                             lng = Double.valueOf(busLocationSnapshot.child("lng").getValue().toString());
                             currentBusLocation = new LatLng(lat, lng);
 
-                            busLocation=new Location(licensePlate);
+                            busLocation = new Location(licensePlate);
                             busLocation.setLatitude(lat);
-                            busLocation.setLongitude (lng);
+                            busLocation.setLongitude(lng);
 
-                            distanceInMeters=busLocation.distanceTo(userLocation);
-                            distanceTowardsDestination=busLocation.distanceTo(endingLocation);
+                            distanceInMeters = busLocation.distanceTo(userLocation);
+                            distanceTowardsDestination = busLocation.distanceTo(endingLocation);
 
-                            double estimatedFare=Math.floor((distanceTowardsDestination/1000)*GlobalVariables.fareNormal);
-                            if(estimatedFare<7)
-                            {
-                                estimatedFare=7;
-                                double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
-                                zIndex=2;
+                            double estimatedFare = Math.floor((distanceTowardsDestination / 1000) * GlobalVariables.fareNormal);
 
-                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex));
-                                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_orange));
-                                marker.setTag(licensePlate);
-                            }else{
-                                double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
-                                zIndex=2;
+                            estimatedFare = 7;
+                            double estimatedTimeForArrival = ((distanceInMeters / 1000) / GlobalVariables.averageSpeedOfDhaka);
+                            zIndex = 2;
+                            /*
+                             * TODO: See following block
+                             * Try to fetch marker from our hashmap keyMarkerPair by licensePlate
+                             * if null, add a new marker to the hashmap
+                             * all the same, change position of the marker to current bus
+                             * */
+                            Marker marker = keyMarkerPair.get(licensePlate);
+                            if (marker == null)
+                                keyMarkerPair.put(licensePlate, marker = mMap.addMarker(markerOptions.zIndex(zIndex)));
+                            marker.setPosition(currentBusLocation);
+                            marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_orange));
+                            marker.setTag(licensePlate);
 
-                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex).title(String.valueOf(df.format(distanceInMeters/1000))+" km away "+df.format(estimatedTimeForArrival)+"min away"+busLocationSnapshot.child("availableSeats").getValue().toString()+" seats"+" "+df.format(estimatedFare)+" tk approx."+"Plate: "+busLocationSnapshot.child("licensePlate").getValue().toString() ));
-                                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_orange));
-                                marker.setTag(licensePlate);
-                            }
                         }
-                        if((passedGroupId==16)&&(passedGroupId==localGroupId)){
+                        if ((passedGroupId == 16) && (passedGroupId == localGroupId)) {
                             licensePlate = busLocationSnapshot.child("licensePlate").getValue().toString();
                             lat = Double.valueOf(busLocationSnapshot.child("lat").getValue().toString());
                             lng = Double.valueOf(busLocationSnapshot.child("lng").getValue().toString());
                             currentBusLocation = new LatLng(lat, lng);
 
-                            busLocation=new Location(licensePlate);
+                            busLocation = new Location(licensePlate);
                             busLocation.setLatitude(lat);
-                            busLocation.setLongitude (lng);
+                            busLocation.setLongitude(lng);
 
 
-                            distanceInMeters=busLocation.distanceTo(userLocation);
-                            distanceTowardsDestination=busLocation.distanceTo(endingLocation);
+                            distanceInMeters = busLocation.distanceTo(userLocation);
+                            distanceTowardsDestination = busLocation.distanceTo(endingLocation);
 
-                            double estimatedFare=Math.floor((distanceTowardsDestination/1000)*GlobalVariables.fareNormal);
-                            if(estimatedFare<7)
-                            {
-                                estimatedFare=7;
-                                double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
-                                zIndex=2;
+                            double estimatedFare = Math.floor((distanceTowardsDestination / 1000) * GlobalVariables.fareNormal);
 
-                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex));
-                                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_green_2));
-                                marker.setTag(licensePlate);
-                            }else{
-                                double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
-                                zIndex=2;
-
-                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex).title(String.valueOf(df.format(distanceInMeters/1000))+" km away "+df.format(estimatedTimeForArrival)+"min away"+busLocationSnapshot.child("availableSeats").getValue().toString()+" seats"+" "+df.format(estimatedFare)+" tk approx."+"Plate: "+busLocationSnapshot.child("licensePlate").getValue().toString() ));
-                                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_green_2));
-                                marker.setTag(licensePlate);
-                            }
+                            estimatedFare = 7;
+                            double estimatedTimeForArrival = ((distanceInMeters / 1000) / GlobalVariables.averageSpeedOfDhaka);
+                            zIndex = 2;
+                            /*
+                             * TODO: See following block
+                             * Try to fetch marker from our hashmap keyMarkerPair by licensePlate
+                             * if null, add a new marker to the hashmap
+                             * all the same, change position of the marker to current bus
+                             * */
+                            Marker marker = keyMarkerPair.get(licensePlate);
+                            if (marker == null)
+                                keyMarkerPair.put(licensePlate, marker = mMap.addMarker(markerOptions.zIndex(zIndex)));
+                            marker.setPosition(currentBusLocation);
+                            marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_green_2));
+                            marker.setTag(licensePlate);
                         }
-                        if((passedGroupId==11)&&(passedGroupId==localGroupId)){
+                        if ((passedGroupId == 11) && (passedGroupId == localGroupId)) {
                             licensePlate = busLocationSnapshot.child("licensePlate").getValue().toString();
                             lat = Double.valueOf(busLocationSnapshot.child("lat").getValue().toString());
                             lng = Double.valueOf(busLocationSnapshot.child("lng").getValue().toString());
                             currentBusLocation = new LatLng(lat, lng);
 
-                            busLocation=new Location(licensePlate);
+                            busLocation = new Location(licensePlate);
                             busLocation.setLatitude(lat);
-                            busLocation.setLongitude (lng);
+                            busLocation.setLongitude(lng);
 
-                            distanceInMeters=busLocation.distanceTo(userLocation);
-                            distanceTowardsDestination=busLocation.distanceTo(endingLocation);
+                            distanceInMeters = busLocation.distanceTo(userLocation);
+                            distanceTowardsDestination = busLocation.distanceTo(endingLocation);
 
-                            double estimatedFare=Math.floor((distanceTowardsDestination/1000)*GlobalVariables.fareNormal);
-                            if(estimatedFare<7)
-                            {
-                                estimatedFare=7;
-                                double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
-                                zIndex=2;
+                            double estimatedFare = Math.floor((distanceTowardsDestination / 1000) * GlobalVariables.fareNormal);
 
-                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex));
-                                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_brown));
-                                marker.setTag(licensePlate);
-                            }else{
-                                double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
-                                zIndex=2;
-
-                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex));
-                                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_brown));
-                                marker.setTag(licensePlate);
-                            }
+                            estimatedFare = 7;
+                            double estimatedTimeForArrival = ((distanceInMeters / 1000) / GlobalVariables.averageSpeedOfDhaka);
+                            zIndex = 2;
+                            /*
+                             * TODO: See following block
+                             * Try to fetch marker from our hashmap keyMarkerPair by licensePlate
+                             * if null, add a new marker to the hashmap
+                             * all the same, change position of the marker to current bus
+                             * */
+                            Marker marker = keyMarkerPair.get(licensePlate);
+                            if (marker == null)
+                                keyMarkerPair.put(licensePlate, marker = mMap.addMarker(markerOptions.zIndex(zIndex)));
+                            marker.setPosition(currentBusLocation);
+                            marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_brown));
+                            marker.setTag(licensePlate);
 
                         }
-                        if((passedGroupId==12)&&(passedGroupId==localGroupId)){
+                        if ((passedGroupId == 12) && (passedGroupId == localGroupId)) {
                             licensePlate = busLocationSnapshot.child("licensePlate").getValue().toString();
                             lat = Double.valueOf(busLocationSnapshot.child("lat").getValue().toString());
                             lng = Double.valueOf(busLocationSnapshot.child("lng").getValue().toString());
                             currentBusLocation = new LatLng(lat, lng);
 
-                            busLocation=new Location(licensePlate);
+                            busLocation = new Location(licensePlate);
                             busLocation.setLatitude(lat);
-                            busLocation.setLongitude (lng);
+                            busLocation.setLongitude(lng);
 
 
-                            distanceInMeters=busLocation.distanceTo(userLocation);
-                            distanceTowardsDestination=busLocation.distanceTo(endingLocation);
+                            distanceInMeters = busLocation.distanceTo(userLocation);
+                            distanceTowardsDestination = busLocation.distanceTo(endingLocation);
 
-                            double estimatedFare=Math.floor((distanceTowardsDestination/1000)*GlobalVariables.fareNormal);
-                            if(estimatedFare<7)
-                            {
-                                estimatedFare=7;
-                                double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
-                                zIndex=2;
+                            double estimatedFare = Math.floor((distanceTowardsDestination / 1000) * GlobalVariables.fareNormal);
 
-                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex));
-                                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_yellow));
-                                marker.setTag(licensePlate);
-                            }else{
-                                double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
-                                zIndex=2;
-
-                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex));
-                                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_yellow));
-                                marker.setTag(licensePlate);
-                            }
+                            estimatedFare = 7;
+                            double estimatedTimeForArrival = ((distanceInMeters / 1000) / GlobalVariables.averageSpeedOfDhaka);
+                            zIndex = 2;
+                            /*
+                             * TODO: See following block
+                             * Try to fetch marker from our hashmap keyMarkerPair by licensePlate
+                             * if null, add a new marker to the hashmap
+                             * all the same, change position of the marker to current bus
+                             * */
+                            Marker marker = keyMarkerPair.get(licensePlate);
+                            if (marker == null)
+                                keyMarkerPair.put(licensePlate, marker = mMap.addMarker(markerOptions.zIndex(zIndex)));
+                            marker.setPosition(currentBusLocation);
+                            marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.yellowbus2));
+                            marker.setTag(licensePlate);
                         }
-                        if((passedGroupId==17)&&(passedGroupId==localGroupId)){
+                        if ((passedGroupId == 17) && (passedGroupId == localGroupId)) {
                             licensePlate = busLocationSnapshot.child("licensePlate").getValue().toString();
                             lat = Double.valueOf(busLocationSnapshot.child("lat").getValue().toString());
                             lng = Double.valueOf(busLocationSnapshot.child("lng").getValue().toString());
                             currentBusLocation = new LatLng(lat, lng);
 
-                            busLocation=new Location(licensePlate);
+                            busLocation = new Location(licensePlate);
                             busLocation.setLatitude(lat);
-                            busLocation.setLongitude (lng);
+                            busLocation.setLongitude(lng);
 
-                            distanceInMeters=busLocation.distanceTo(userLocation);
-                            distanceTowardsDestination=busLocation.distanceTo(endingLocation);
+                            distanceInMeters = busLocation.distanceTo(userLocation);
+                            distanceTowardsDestination = busLocation.distanceTo(endingLocation);
 
-                            double estimatedFare=Math.floor((distanceTowardsDestination/1000)*GlobalVariables.fareNormal);
-                            if(estimatedFare<7)
-                            {
-                                estimatedFare=7;
-                                double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
-                                zIndex=2;
+                            double estimatedFare = Math.floor((distanceTowardsDestination / 1000) * GlobalVariables.fareNormal);
 
-                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex));
-                                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_navy_blue));
-                                marker.setTag(licensePlate);
-                            }else{
-                                double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
-                                zIndex=2;
-
-                                Marker marker=mMap.addMarker(markerOptions.zIndex(zIndex));
-                                marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_navy_blue));
-                                marker.setTag(licensePlate);
-                            }
+                            estimatedFare = 7;
+                            double estimatedTimeForArrival = ((distanceInMeters / 1000) / GlobalVariables.averageSpeedOfDhaka);
+                            zIndex = 2;
+                            /*
+                             * TODO: See following block
+                             * Try to fetch marker from our hashmap keyMarkerPair by licensePlate
+                             * if null, add a new marker to the hashmap
+                             * all the same, change position of the marker to current bus
+                             * */
+                            Marker marker = keyMarkerPair.get(licensePlate);
+                            if (marker == null)
+                                keyMarkerPair.put(licensePlate, marker = mMap.addMarker(markerOptions.zIndex(zIndex)));
+                            marker.setPosition(currentBusLocation);
+                            marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus_navy_blue));
+                            marker.setTag(licensePlate);
 
                         }
 
@@ -1017,6 +1009,7 @@ public class TestMapsFragment extends Fragment implements MapClick{
             }
         });
     }
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Nullable
     @Override
@@ -1024,26 +1017,28 @@ public class TestMapsFragment extends Fragment implements MapClick{
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        possibleRoutes=new ArrayList<Long>();
-        root= FirebaseDatabase.getInstance().getReference().child("root");
+        possibleRoutes = new ArrayList<Long>();
+        root = FirebaseDatabase.getInstance().getReference().child("root");
         startingStop = new StopNew();
         endingStop = new StopNew();
-        cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+1:00"));
-        currentLocalTime = cal.getTime();
-        date =  new SimpleDateFormat("HH:mm:ss");
-
-// you can get seconds by adding  "...:ss" to it
-//        date.setTimeZone(TimeZone.getTimeZone("GMT+1:00"));
-        String localTime = date.format(currentLocalTime);
 
 
-        Log.d("Route", "Current Time In Oncreate: "+ localTime);
+//        cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+1:00"));
+//        currentLocalTime = cal.getTime();
+//        date =  new SimpleDateFormat("HH:mm:ss");
+//
+//// you can get seconds by adding  "...:ss" to it
+////        date.setTimeZone(TimeZone.getTimeZone("GMT+1:00"));
+//        String localTime = date.format(currentLocalTime);
+//
+//
+//        Log.d("Route", "Current Time In Oncreate: "+ localTime);
 
 
-        fragmentTestMapsBinding= DataBindingUtil.inflate(inflater,R.layout.fragment_test_maps, container, false);
+        fragmentTestMapsBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_test_maps, container, false);
 
 
-        mapView=fragmentTestMapsBinding.map;
+        mapView = fragmentTestMapsBinding.map;
         mapView.onCreate(savedInstanceState);
         mapView.onResume();
         mapView.getMapAsync(new OnMapReadyCallback() {
@@ -1130,26 +1125,26 @@ public class TestMapsFragment extends Fragment implements MapClick{
 //                startingStop.setLng(90.38343505809199);
 
 
-                userLocation=new Location("userLocation");
+                userLocation = new Location("userLocation");
                 userLocation.setLatitude(GlobalVariables.sourceNewLat);
-                userLocation.setLongitude (GlobalVariables.sourceNewLng);
+                userLocation.setLongitude(GlobalVariables.sourceNewLng);
 
-                mMap.addMarker(new MarkerOptions().position( new LatLng(GlobalVariables.sourceNewLat,GlobalVariables.sourceNewLng)).title("Me")).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.human));
+                mMap.addMarker(new MarkerOptions().position(new LatLng(GlobalVariables.sourceNewLat, GlobalVariables.sourceNewLng)).title("Me")).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.human));
 
-                endingLocation=new Location("destination");
+                endingLocation = new Location("destination");
                 endingLocation.setLatitude(GlobalVariables.destinationNewLat);
-                endingLocation.setLongitude (GlobalVariables.destinationNewLng);
+                endingLocation.setLongitude(GlobalVariables.destinationNewLng);
 
 
-                mMap.addMarker(new MarkerOptions().position( new LatLng(GlobalVariables.destinationNewLat,GlobalVariables.destinationNewLng)).title(GlobalVariables.destinationNewName)).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.end));
+                mMap.addMarker(new MarkerOptions().position(new LatLng(GlobalVariables.destinationNewLat, GlobalVariables.destinationNewLng)).title(GlobalVariables.destinationNewName)).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.end));
 
 
-                polylines=new ArrayList();
-                getRouteDataFromDBNew(startingStop,endingStop);
+                polylines = new ArrayList();
+                getRouteDataFromDBNew(startingStop, endingStop);
 
                 getBusLocationFromDB();
                 getBusList();
-                Log.d("onMapReady","BusList"+busList.toString());
+                Log.d("onMapReady", "BusList" + busList.toString());
 
                 mMap.setOnPolylineClickListener(new GoogleMap.OnPolylineClickListener() {
 
@@ -1165,8 +1160,7 @@ public class TestMapsFragment extends Fragment implements MapClick{
                     @Override
                     public boolean onMarkerClick(Marker marker) {
 
-                        if(marker.getTag()!=null)
-                        {
+                        if (marker.getTag() != null) {
                             alertDialogBusDetails(marker.getTag().toString());
                         }
 
@@ -1189,37 +1183,34 @@ public class TestMapsFragment extends Fragment implements MapClick{
 
         Toast.makeText(getActivity(), "On Click Route No.: " + routeNo, Toast.LENGTH_SHORT).show();
 
-                if (!polylines.isEmpty()) {
-                    Log.d("onClick","polyline size: "+polylines.size());
-                    for (Polyline polyline: polylines) {
+        if (!polylines.isEmpty()) {
+            Log.d("onClick", "polyline size: " + polylines.size());
+            for (Polyline polyline : polylines) {
 
-                        Log.d("onClick","polyline route No.: "+polyline.getTag());
-                        if(polyline.getTag().toString().contains("Route No.: "+routeNo))
-                        {
+                Log.d("onClick", "polyline route No.: " + polyline.getTag());
+                if (polyline.getTag().toString().contains("Route No.: " + routeNo)) {
 
-                            Log.d("onClick","if: polyline route No.: "+polyline.getTag());
-                            polyline.setWidth(25);
+                    Log.d("onClick", "if: polyline route No.: " + polyline.getTag());
+                    polyline.setWidth(25);
 
-                        }
-                        if(!polyline.getTag().toString().contains("Route No.: "+routeNo))
-                        {
-
-                            Log.d("onClick","else: polyline route No.: "+polyline.getTag());
-                            polyline.setWidth(0);
-
-                        }
-
-                    }
                 }
-                else{
-                    Log.d("onClick","polyline size: "+polylines.size());
+                if (!polyline.getTag().toString().contains("Route No.: " + routeNo)) {
+
+                    Log.d("onClick", "else: polyline route No.: " + polyline.getTag());
+                    polyline.setWidth(0);
+
                 }
+
+            }
+        } else {
+            Log.d("onClick", "polyline size: " + polylines.size());
+        }
 
     }
 
 
     @Override
-    public void onClick(String routeNo,String groupId) {
+    public void onClick(String routeNo, String groupId) {
 
         Toast.makeText(getActivity(), "On Click Route No.: " + routeNo, Toast.LENGTH_SHORT).show();
 
@@ -1229,40 +1220,34 @@ public class TestMapsFragment extends Fragment implements MapClick{
 //            setProperties(Integer.parseInt(s));
 //        }
         if (!polylines.isEmpty()) {
-            Log.d("onClick","polyline size: "+polylines.size());
+            Log.d("onClick", "polyline size: " + polylines.size());
             //            hideLayers();
             //            setProperties(Integer.parseInt(s));
-            for (Polyline polyline: polylines) {
-                Log.d("onClick","polyline route No.: "+polyline.getTag());
-                if(polyline.getTag().toString().contains("Route No.: "+routeNo))
-                {
+            for (Polyline polyline : polylines) {
+                Log.d("onClick", "polyline route No.: " + polyline.getTag());
+                if (polyline.getTag().toString().contains("Route No.: " + routeNo)) {
 
-                    Log.d("onClick","if: polyline route No.: "+polyline.getTag());
+                    Log.d("onClick", "if: polyline route No.: " + polyline.getTag());
                     polyline.setWidth(25);
 
                 }
-                if(!polyline.getTag().toString().contains("Route No.: "+routeNo))
-                {
+                if (!polyline.getTag().toString().contains("Route No.: " + routeNo)) {
 
-                    Log.d("onClick","else: polyline route No.: "+polyline.getTag());
+                    Log.d("onClick", "else: polyline route No.: " + polyline.getTag());
                     polyline.setWidth(0);
-
 
 
                 }
 
             }
+        } else {
+            Log.d("onClick", "polyline size: " + polylines.size());
         }
-        else{
-            Log.d("onClick","polyline size: "+polylines.size());
-        }
-
 
 
     }
 
     private void alertDialogBusDetails(String passedLicensePlate) {
-
 
 
         alert = new AlertDialog.Builder(getActivity());
@@ -1284,35 +1269,34 @@ public class TestMapsFragment extends Fragment implements MapClick{
                     for (DataSnapshot bus : dataSnapshot.getChildren()) {
 
                         String licensePlate = bus.child("licensePlate").getValue().toString();
-                        if(passedLicensePlate.equals(licensePlate))
-                        {
+                        if (passedLicensePlate.equals(licensePlate)) {
                             lat = Double.valueOf(bus.child("lat").getValue().toString());
                             lng = Double.valueOf(bus.child("lng").getValue().toString());
 
-                            String licenseNo=bus.child("licenseNo").getValue().toString();
-                            String availableSeats=bus.child("availableSeats").getValue().toString();
-                            busLocation=new Location(licensePlate);
+                            String licenseNo = bus.child("licenseNo").getValue().toString();
+                            String availableSeats = bus.child("availableSeats").getValue().toString();
+                            busLocation = new Location(licensePlate);
                             busLocation.setLatitude(lat);
-                            busLocation.setLongitude (lng);
+                            busLocation.setLongitude(lng);
 
 
                             double distanceInMeters = busLocation.distanceTo(userLocation);
-                            double distanceFromSourceToDestination=userLocation.distanceTo(endingLocation);
-                            double distanceTowardsDestination=(busLocation.distanceTo(endingLocation))/1000;
-                            double estimatedFare=Math.floor((distanceFromSourceToDestination/1000)*GlobalVariables.fareNormal);
-                            double estimatedTimeForArrival=((distanceInMeters/1000)/GlobalVariables.averageSpeedOfDhaka);
+                            double distanceFromSourceToDestination = userLocation.distanceTo(endingLocation);
+                            double distanceTowardsDestination = (busLocation.distanceTo(endingLocation)) / 1000;
+                            double estimatedFare = Math.floor((distanceFromSourceToDestination / 1000) * GlobalVariables.fareNormal);
+                            double estimatedTimeForArrival = ((distanceInMeters / 1000) / GlobalVariables.averageSpeedOfDhaka);
 
-                            popupBusDetailsBinding.licensePlateTV.setText("License Plate: "+licensePlate);
-                            popupBusDetailsBinding.licenseNoTV.setText("License No.: "+licenseNo);
-                            popupBusDetailsBinding.busDistanceToUserTV.setText("Bus Distance: "+df.format(distanceInMeters/1000)+" km away");
-                            popupBusDetailsBinding.arrivalTimeTV.setText("Approx Arrival Time: "+df.format(estimatedTimeForArrival)+" minutes");
-                            popupBusDetailsBinding.availableSeatsTV.setText("Available Seats: "+availableSeats);
-                            popupBusDetailsBinding.busDistanceToDestinationTV.setText("Distance to Destination: "+df.format(distanceTowardsDestination)+" km");
+                            popupBusDetailsBinding.licensePlateTV.setText("License Plate: " + licensePlate);
+                            popupBusDetailsBinding.licenseNoTV.setText("License No.: " + licenseNo);
+                            popupBusDetailsBinding.busDistanceToUserTV.setText("Bus Distance: " + df.format(distanceInMeters / 1000) + " km away");
+                            popupBusDetailsBinding.arrivalTimeTV.setText("Approx Arrival Time: " + df.format(estimatedTimeForArrival) + " minutes");
+                            popupBusDetailsBinding.availableSeatsTV.setText("Available Seats: " + availableSeats);
+                            popupBusDetailsBinding.busDistanceToDestinationTV.setText("Distance to Destination: " + df.format(distanceTowardsDestination) + " km");
 
-                            if(estimatedFare<7){
+                            if (estimatedFare < 7) {
                                 popupBusDetailsBinding.expectedFare.setText("Approx fare: 7 tk");
-                            }else{
-                                popupBusDetailsBinding.expectedFare.setText("Approx fare: "+String.valueOf(estimatedFare)+" tk");
+                            } else {
+                                popupBusDetailsBinding.expectedFare.setText("Approx fare: " + String.valueOf(estimatedFare) + " tk");
                             }
 
 
@@ -1336,7 +1320,7 @@ public class TestMapsFragment extends Fragment implements MapClick{
             public void onClick(View v) {
 //                alert.show().dismiss();
 
-                Log.d("sms","entered");
+                Log.d("sms", "entered");
 //                Intent goToVerifyLicense = new Intent(Intent.ACTION_MAIN);
 
 //                goToVerifyLicense.addCategory(Intent.CATEGORY_DEFAULT);
@@ -1353,9 +1337,8 @@ public class TestMapsFragment extends Fragment implements MapClick{
                 String[] parts = popupBusDetailsBinding.licenseNoTV.getText().toString().split(": ", 2);
                 String string1 = parts[0];
                 String licenseNo = parts[1];
-                sendIntent.putExtra("sms_body", "DL"+" "+"V"+" "+licenseNo);
+                sendIntent.putExtra("sms_body", "DL" + " " + "V" + " " + licenseNo);
                 sendIntent.putExtra("address", "26969");
-
 
 
                 startActivity(sendIntent);
@@ -1365,13 +1348,9 @@ public class TestMapsFragment extends Fragment implements MapClick{
         ad = alert.show();
 
 
-
-
-
         // alertDialog.show();
 
     }
-
 
 
 }
