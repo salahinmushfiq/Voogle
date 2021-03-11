@@ -571,6 +571,7 @@ public class TestMapsFragment extends Fragment implements MapClick {
 
 
         ArrayList<Double> sourceDownUpDistance = new ArrayList();
+
         for (DataSnapshot stops : route.getChildren()) {
 
 
@@ -594,7 +595,7 @@ public class TestMapsFragment extends Fragment implements MapClick {
 
                     double distanceStart = startingStopLocation.distanceTo(startingStopLocalLocation);
                     Log.d("traverseRoute", "Distance Start Up: " + distanceStart);
-                    sourceDownUpDistance.add(1, distanceStart);
+                    sourceDownUpDistance.add( distanceStart);
                 }
                 if (Integer.valueOf(stops.child("down").getValue().toString()) == 1) {
 
@@ -609,12 +610,12 @@ public class TestMapsFragment extends Fragment implements MapClick {
 
                     double distanceStart = startingStopLocation.distanceTo(startingStopLocalLocation);
                     Log.d("traverseRoute", "Distance Start Down: " + distanceStart);
-                    sourceDownUpDistance.add(0, distanceStart);
+                    sourceDownUpDistance.add( distanceStart);
                 }
 
 
             }
-            if ((this.endingStop.getName().equals(stops.child("name").getValue().toString())) && (iteratorForEnd == -1)) {
+            if ((endingStop.getName().equals(stops.child("name").getValue().toString())) && (iteratorForEnd == -1)) {
                 iteratorForEnd = Integer.valueOf(stops.getKey());
                 if (iteratorForEnd != -1) {
 

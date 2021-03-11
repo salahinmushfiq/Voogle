@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+tools:context=".Activities.MapsActivityShosti">
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/Color_White"
+    >
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+
+
+        <fragment
+            android:id="@+id/sourceFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+            />
+    <fragment
+        android:id="@+id/destinationFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/sourceFragment"
+        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+        />
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

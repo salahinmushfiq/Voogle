@@ -28,4 +28,5 @@
     <string name="_____________3_8__moitri___10min_________________________________string">3.8* Moitri 10min 10 tk                         5 km</string>
     <string name="_____________4_8__atcl____20min__________________________________string">4.8* ATCL 20min 10 tk                         10 km</string>
     <string name="title_activity_maps">Home</string>
+    <string name="title_activity_maps_shosti">Map</string>
 </resources>
